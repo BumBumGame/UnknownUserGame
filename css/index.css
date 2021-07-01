@@ -114,3 +114,34 @@ body{
 #goToMainPageFromLoginButton{
 	margin-top: 1% !important;
 }
+
+#newLoadingPage{
+	width: 100%;
+	margin: 0%;
+	padding : 0%;
+	display: none;
+}
+
+#newLoadingPage table{
+	width: 46%;
+	margin-left: 25%;
+	margin-right: 25%;
+	margin-top: 2%;	
+	padding: 2%;
+}
+
+#newLoadingPage table td{
+	border : none;
+	width: 50%;
+	margin: 0%;
+	color: #2EFE2E;
+	text-align: left;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+#newLoadingPage table td img{
+	margin-right: 7%;
+	margin-left: 53%;
+	width: 40%;
+}
