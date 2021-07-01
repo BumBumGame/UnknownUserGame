@@ -68,14 +68,14 @@ body{
 	text-shadow: 0px 0px 3px #2EFE2E;
 }
 
-#gameLoginForm{
+#gameLoginForm, #forgotPasswordForm{
 	display: none;
 	width: 100%;
 	margin: 0%;
 	padding: 0%;
 }
 
-#gameLoginForm input{
+#gameLoginForm input, #forgotPasswordForm input{
 	background: #151515;
 	color: #2EFE2E;
 	width: 80%;
@@ -96,22 +96,50 @@ body{
 	transition: 0.2s;
 }
 
-#gameLoginForm input[type=button]{
+#gameLoginForm input[type=button], #forgotPasswordForm input[type=button]{
 	 margin-top: 5%;
 	 cursor: pointer;
 }
 
-#gameLoginForm input:hover{
+#gameLoginForm p{
+	text-align: right;
+	width: 80%;
+	margin-left: 10%;
+	margin-right: 10%;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	padding-left: 0%;
+	padding-right: 0%;
+	padding-top: 1%;
+	padding-bottom: 1%;
+}
+
+#gameLoginForm p a{
+	cursor: pointer;
+	transition: 0.3s;
+	font-size: 1.15em;
+	font-weight: 300;
+	text-decoration: none;
+	color: #2EFE2E;
+	user-select: none;
+}
+
+#gameLoginForm p a:hover{
+	text-shadow: 0px 0px 4px #2EFE2E;
+	text-decoration: underline;
+}
+
+#gameLoginForm input:hover, #forgotPasswordForm input:hover{
 	border: 2px solid #2EFE2E;
 	text-shadow: 0px 0px 3px #2EFE2E;
 }
 
-#gameLoginForm input:focus{
+#gameLoginForm input:focus, #forgotPasswordForm input:focus{
 	border: 2px solid #2EFE2E;
 	outline: none;
 }
 
-#goToMainPageFromLoginButton{
+#goToMainPageFromLoginButton, #goBackToLoginFromForgotButton{
 	margin-top: 1% !important;
 }
 

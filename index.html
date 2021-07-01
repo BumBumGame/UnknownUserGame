@@ -14,12 +14,20 @@
 		    <button id="goToLoginButton">Log-In</button>
 			<br>
 			<button id="goToNewGameButton">Ich bin neu hier</button>
+			<br>
+			<button id="closeTabButton"><font color="red">X</font> Schließen</button>
 			</div>
 			
 			<form id="gameLoginForm">
 			 <input type="text" placeholder="Benutzername"/>
 			 <br>
 			 <input type="password" placeholder="Passwort"/>
+			 <br>
+			 
+			 <p>
+			 <a id="goToPasswordForgotButton">Passwort vergessen?</a>
+			 </p>
+			 
 			 <br>
 			 <input type="button" value="Login"/>
 			 <br>
@@ -38,6 +46,15 @@
 			 <button id="goToMainPageFromNewGameButton">Abbrechen</button>
 			 
 			</div>
+			
+			<form id="forgotPasswordForm">
+			 <input type="email" placeholder="Email-Adresse" required />
+			 <br>
+			 <input type="button" value="Passwort zurücksetzen"/>
+			 <br>
+			 <input id="goBackToLoginFromForgotButton" type="button" value="<- Zurück"/>
+			</form>
+			
 			</div>
 	 </div>
 </body>
