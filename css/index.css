@@ -1,0 +1,116 @@
+body{
+	background: black;
+}
+
+#gameLogin{
+	width: 36%;
+	margin-left: 30%;
+	margin-right: 30%;
+	margin-top: 8%;
+	background: #424242;
+	padding: 2%;
+	border-radius: 20px;
+	background-image: url("../img/glitchEffect.gif");
+	background-size: cover;
+	box-shadow: 0px 0px 5px #01DF01;
+	overflow: hidden;
+}
+
+#gameLogin img{
+	width: 20%;
+	margin-left: 40%;
+	margin-right: 40%;
+	padding: 0%;
+}
+
+#optionsSection{
+	width: 100%;
+	margin-left: 0%;
+	margin-right: 0%;
+	margin-top: 0%;
+	margin-bottom: 0%;
+	padding: 0%;
+	position: relative;
+	transition: 0.8s;
+}
+
+#firstButtons{
+	margin: 0%;
+	padding: 0%;
+	width: 100%;
+	display: block;
+}
+
+#gameLogin button{
+	background: #151515;
+	color: #2EFE2E;
+	text-align: center;
+	width: 80%;
+	margin-left: 10%;
+	margin-right: 10%;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	padding-left: 0%;
+	padding-right: 0%;		
+	padding-top: 1%;
+	padding-bottom: 1%;
+	font-size: 1.35em;
+	border: 2px solid #BDBDBD;
+	border-radius: 10px;
+	cursor: pointer;
+	box-shadow: 0px 0px 5px #01DF01;
+	text-shadow: 0px 0px 0px #2EFE2E;
+	transition: 0.2s;
+}
+
+#gameLogin button:hover{
+	border: 2px solid #2EFE2E;
+	text-shadow: 0px 0px 3px #2EFE2E;
+}
+
+#gameLoginForm{
+	display: none;
+	width: 100%;
+	margin: 0%;
+	padding: 0%;
+}
+
+#gameLoginForm input{
+	background: #151515;
+	color: #2EFE2E;
+	width: 80%;
+	margin-left: 10%;
+	margin-right: 10%;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	padding-left: 0%;
+	padding-right: 0%;
+	padding-top: 1%;
+	padding-bottom: 1%;
+	text-align: center;
+	font-size: 1.35em;
+	border: 2px solid #BDBDBD;
+	border-radius: 10px;
+	box-shadow: 0px 0px 5px #01DF01;
+	text-shadow: 0px 0px 0px #2EFE2E;
+	transition: 0.2s;
+}
+
+#gameLoginForm input[type=button]{
+	 margin-top: 5%;
+	 cursor: pointer;
+}
+
+#gameLoginForm input:hover{
+	border: 2px solid #2EFE2E;
+	text-shadow: 0px 0px 3px #2EFE2E;
+}
+
+#gameLoginForm input:focus{
+	border: 2px solid #2EFE2E;
+	outline: none;
+}
+
+#goToMainPageFromLoginButton{
+	margin-top: 1% !important;
+}
