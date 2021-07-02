@@ -4,12 +4,12 @@
 </head>
 <body>
 
-<form id="gameLoginForm">
+<form id="gameLoginForm" action="php/login.php" method="POST">
 <input type="text" name="username" placeholder="Benutzername"/>
 <br>
 <input type="password" name="password" placeholder="Passwort"/>
 <br>
-<input id="loginButton" type="button" name="login" value="Login"/>
+<input id="loginButton" type="submit" name="login" value="Login"/>
 </form>
 
 <form action="php/register.php" method="POST">

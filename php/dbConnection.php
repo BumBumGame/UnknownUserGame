@@ -1,21 +1,31 @@
 <?php
 
-$_db_host = 'localhost';
-$_db_user = 'UnknownUserGame';
-$_db_pass = 'mi0tv99lrYMHkAet';
-$_db_name = 'unknownusergame';
+class db {
 
-$db = new mysqli($_db_host, $_db_user, $_db_pass, $_db_name);
+private $_db_host = 'localhost';
+private $_db_user = 'UnknownUserGame';
+private $_db_pass = 'mi0tv99lrYMHkAet';
+private $_db_name = 'unknownusergame';
 
-if($db->connect_error){
-  die('connection failed'. $db->connect_error);
+private $dbKeyObject;
+
+
+public function __construct(){
+   $this->dbKeyObject = new mysqli($this->{"_db_host"}, $this->{"_db_user"}, $this->{"_db_pass"}, $this->{"_db_name"});
+
+  if($this->dbKeyObject->connect_error){
+    die('Error: Keine Verbindung zur Datenbank!'. $this->dbKeyObject->connect_error);
+  }
+
+    $this->dbKeyObject->query("SET NAMES 'utf8'");
 }
 
-  $db->query("SET NAMES 'utf8'");
+public function __destruct(){
+  $this->dbKeyObject->close();
+}
 
 
-
-function createAndCheckBasicDatabaseStructure($db){
+public function createAndCheckBasicDatabaseStructure(){
     $sqlStatements = array(
        "CREATE TABLE IF NOT EXISTS User (userID BIGINT NOT NULL AUTO_INCREMENT, userName VARCHAR(255), userPassword VARCHAR (260), userMailAdress VARCHAR(255), PRIMARY KEY (userID))",
     );
@@ -27,23 +37,23 @@ function createAndCheckBasicDatabaseStructure($db){
 
 
 
-function addUserToDatabase($db, $userName, $password, $mailAdress = ""){
+public function addUserToDatabase($userName, $password, $mailAdress = ""){
 
   if($mailAdress == ""){$mailAdress = null;};
 
    $sqlQuery = "INSERT INTO User (userName, userPassword, userMailAdress) VALUES (? , ? , ?)";
 
-   $statement = $db->prepare($sqlQuery);
+   $statement = $this->{"dbKeyObject"}->prepare($sqlQuery);
    $statement->bind_param("sss", $userName, $password, $mailAdress);
    $statement->execute();
    $statement->close();
 }
 
-function getUserIdForUserName($db, $userName){
+public function getUserIdForUserName($userName){
 
   $sqlQuery = "SELECT userID FROM User WHERE userName = ?";
 
-  $statement = $db->prepare($sqlQuery);
+  $statement = $this->dbKeyObject->prepare($sqlQuery);
   $statement->bind_param("s", $userName);
   $statement->execute();
 
@@ -56,40 +66,42 @@ function getUserIdForUserName($db, $userName){
   return $userID;
 }
 
-function getPasswordForUserID($db, $userID){
+public function getPasswordForUserID($userID){
   $sqlQuery = "SELECT userPassword FROM User WHERE userID = ".$userID;
 
-  $result = $db->query($sqlQuery);
+  $result = $this->dbKeyObject->query($sqlQuery);
 
   $password = $result->fetch_assoc()["userPassword"];
 
   return $password;
 }
 
-function getUserNameCount($db, $userName){
+public function getUserNameCount($userName){
    $sqlQuery = "SELECT COUNT(userName) AS userNameCount FROM User WHERE userName = ?";
 
-   $statement = $db->prepare($sqlQuery);
+   $statement = $this->dbKeyObject->prepare($sqlQuery);
    $statement->bind_param("s", $userName);
    $statement->execute();
 
    $result = $statement->get_result();
 
-   $userNameCount =$result->fetch_assoc()["userNameCount"];
+   $userNameCount = $result->fetch_assoc()["userNameCount"];
 
    $statement->close();
 
    return $userNameCount;
 }
 
-function userNameExists($db, $userName){
-   $userNameCount = getUserNameCount($db, $userName);
+public function userNameExists($userName){
+   $userNameCount = $this->getUserNameCount($userName);
 
    if($userNameCount >= 1){
      return true;
    }else{
      return false;
    }
+
+}
 
 }
 
