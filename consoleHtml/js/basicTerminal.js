@@ -67,9 +67,12 @@ function onCommandInput(){
      //Put Command in Log
      logCommand(inputCommand);
      //process Command
-     processCommand(inputCommand);
-     //Print out Answer to Command
-
+     var commandProcessing = new commandProcessor(inputCommand);
+     commandProcessing.processCommand();
+     //Print out Answer to Command if exists
+     if(commandProcessing.commandResponse != null){
+       logServerResponse(commandProcessing.commandResponse);
+     }
      //Add space for new Command input
      addCommandLineInputSpacing();
      //Re-enable Input and clear input
