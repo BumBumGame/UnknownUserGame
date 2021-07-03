@@ -1,0 +1,50 @@
+body{
+   background: black;
+   color: white;
+}
+
+#mainConsoleWindow{
+   position: absolute;
+   margin: 0.5%;
+   padding: 0.5%;
+   width: 98%;
+   height: 95%;
+   font-size: 1.1em;
+   overflow: auto;
+}
+
+#mainConsoleInput{
+  background: transparent;
+  width: 98%;
+  color: white;
+  padding: 0.2%;
+  font-size: inherit;
+  border: none;
+  font-family: inherit;
+}
+
+#mainConsoleInput:focus{
+	outline: none;
+}
+
+#consoleLog{
+  width: 100%;
+  margin: 0%;
+  padding: 0%;
+}
+
+#commandLine{
+  width: 100%;
+  margin: 0%;
+  padding: 0%;
+}
+
+.serverResponse{
+  width: 99%;
+  margin-left: 1%;
+  margin-right: 0%;
+  margin-top: 0%;
+  margin-bottom: 0%;
+  padding: 0%;
+  font-weight: bold;
+}

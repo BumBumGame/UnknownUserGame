@@ -27,7 +27,7 @@ public function __destruct(){
 
 public function createAndCheckBasicDatabaseStructure(){
     $sqlStatements = array(
-       "CREATE TABLE IF NOT EXISTS User (userID BIGINT NOT NULL AUTO_INCREMENT, userName VARCHAR(255), userPassword VARCHAR (260), userMailAdress VARCHAR(255), PRIMARY KEY (userID))",
+       "CREATE TABLE IF NOT EXISTS User (userID BIGINT NOT NULL AUTO_INCREMENT, userName VARCHAR(255), userPassword VARCHAR (260), userMailAdress VARCHAR(255), PRIMARY KEY (userID))"
     );
 
     for($i = 0; $i < count($sqlStatements); $i++){
