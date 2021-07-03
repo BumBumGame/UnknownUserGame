@@ -67,7 +67,7 @@ function onCommandInput(){
      //Put Command in Log
      logCommand(inputCommand);
      //process Command
-
+     processCommand(inputCommand);
      //Print out Answer to Command
 
      //Add space for new Command input
