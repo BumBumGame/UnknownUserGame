@@ -9,8 +9,6 @@ constructor(){
    this.localCommandStartAlias = [];
    this.localCommandDescriptions = [];
    this.localCommandFunction = [];
-  //Add Commands
-  this.addAllLocalCommands();
 }
 //Adds Command to Local Command definition
 addComand(commandStartAlias, commandDescritption, commandFunction){
@@ -64,16 +62,12 @@ if(commandResponse == null){
 return commandResponse;
 }
 
-//Function where all local Commands get added to List
-addAllLocalCommands(){
-  //Add clear Command
- this.addComand("clear", "Löscht den Kompletten Kommando-Log.", executeClearConsole);
- //Add help Command
- this.addComand("help", "Zeigt eine Liste der Verfügbaren Commands mit ihrer Beschreibung an. \n"
-                      + "Um genauere Informationen über einen Befehl zu erhalten schreiben sie: help [Befehl].", showHelpDialog);
 }
 
-}
+//-------------------------------------------------
+//Create Global Command Definition Object
+var localCommands = new localCommandDefinition();
+//-------------------------------------------------
 
 //Class that is used to process Commands-------------------------------------------------------------------------------------------
 class commandProcessor{
@@ -89,14 +83,12 @@ currentCommand;
 constructor(command){
   //Save Command to Datafield
  this.currentCommand = command.toLowerCase().trim();
- //Create Command Definition Object
- this.localCommandDefinition = new localCommandDefinition();
  //Standard init CommandAnswer
  this.currentCommandAnswer = null;
 }
 
 processCommand(){
-  var currentCommandResponse = this.localCommandDefinition.executeCommandFunction(this.currentCommand);
+  var currentCommandResponse = localCommands.executeCommandFunction(this.currentCommand);
   //Check if Command exists local
   if(currentCommandResponse != null) {
     //If he does exist
@@ -115,56 +107,4 @@ get commandResponse(){
     return this.currentCommandAnswer;
 }
 
-}
-
-//Functions for CommandExecution (Return null if no out to the console is needed) (Return Array of Strings for Answer: Each element = one line)
-//clear function
-function executeClearConsole(command){
-   clearCommandLog();
-   return null;
-}
-
-//function that displays help Dialog
-function showHelpDialog(command){
-  //Split Command into Parameters
-  var commandParameters = command.split(" ");
-  //Get Current Command Defintion
-  var localCommands = new localCommandDefinition();
-  //Define Output array
-  var outputArray;
-
-  //Print Command list if no Argument is given
-  if(commandParameters.length <= 1){
-  //define normal Start output
-   outputArray = localCommands.getLocalCommandDescription(localCommands.getCommandIndex("help"));
-   outputArray.push("");//Empty line
-
-   //Print each first line
-   //First print local commands
-    for(var i = 0; i < localCommands.localCommandCount; i++){
-      outputArray.push(localCommands.getLocalCommandAlias(i) + ": ");
-      outputArray.push("    " +localCommands.getFirstLineOfCommandDescription(i));
-      //Push Empty line
-      outputArray.push("");
-    }
-
-    //Second Print ServerCommands
-
-  }else{
-    //Take second Command and try to identify command and show Full description
-    //First Check local Commands
-    var secondCommandIndex = localCommands.getCommandIndex(commandParameters[1]);
-
-    if(secondCommandIndex != -1){
-       //Second command found locally
-       outputArray = localCommands.getLocalCommandDescription(secondCommandIndex);
-    }else{
-      //Check Server Commands
-      outputArray = ["Befehl '"+ commandParameters[1] +"' nicht gefunden!"];
-    }
-
-  }
-
-   //return Console output
-   return outputArray;
 }
