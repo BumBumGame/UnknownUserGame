@@ -22,7 +22,26 @@ addComand(commandStartAlias, commandDescritption, commandFunction){
 //Function that returns the Index of a Specific Command based on its Alias. Returns -1 of no Command is found
 getCommandIndex(command){
  var currentCommandStartAlias = command.split(" ")[0];
- return this.localCommandStartAlias.indexOf(currentCommandStartAlias);
+ return this.localCommandStartAlias.indexOf(currentCommandStartAlias.trim().toLowerCase());
+}
+
+//Function that returns the current count of local Commands
+get localCommandCount(){
+  return this.localCommandStartAlias.length;
+}
+
+getLocalCommandAlias(commandIndex){
+  return this.localCommandStartAlias[commandIndex];
+}
+
+getLocalCommandDescription(commandIndex){
+  var descriptionArray = this.localCommandDescriptions[commandIndex].split("\n");
+
+  return descriptionArray;
+}
+
+getFirstLineOfCommandDescription(commandIndex){
+  return this.localCommandDescriptions[commandIndex].split("\n")[0];
 }
 
 //Function that executes the a Command Based on their Alias. @Returns null if not successfull. @Returns Answer Array if successfull
@@ -50,7 +69,8 @@ addAllLocalCommands(){
   //Add clear Command
  this.addComand("clear", "Löscht den Kompletten Kommando-Log.", executeClearConsole);
  //Add help Command
- this.addComand("help", "Zeigt eine Liste der Verfügbaren Commands mit ihrer Beschreibung an.", showHelpDialog);
+ this.addComand("help", "Zeigt eine Liste der Verfügbaren Commands mit ihrer Beschreibung an. \n"
+                      + "Um genauere Informationen über einen Befehl zu erhalten schreiben sie: help [Befehl].", showHelpDialog);
 }
 
 }
@@ -106,5 +126,45 @@ function executeClearConsole(command){
 
 //function that displays help Dialog
 function showHelpDialog(command){
+  //Split Command into Parameters
+  var commandParameters = command.split(" ");
+  //Get Current Command Defintion
+  var localCommands = new localCommandDefinition();
+  //Define Output array
+  var outputArray;
 
+  //Print Command list if no Argument is given
+  if(commandParameters.length <= 1){
+  //define normal Start output
+   outputArray = localCommands.getLocalCommandDescription(localCommands.getCommandIndex("help"));
+   outputArray.push("");//Empty line
+
+   //Print each first line
+   //First print local commands
+    for(var i = 0; i < localCommands.localCommandCount; i++){
+      outputArray.push(localCommands.getLocalCommandAlias(i) + ": ");
+      outputArray.push("    " +localCommands.getFirstLineOfCommandDescription(i));
+      //Push Empty line
+      outputArray.push("");
+    }
+
+    //Second Print ServerCommands
+
+  }else{
+    //Take second Command and try to identify command and show Full description
+    //First Check local Commands
+    var secondCommandIndex = localCommands.getCommandIndex(commandParameters[1]);
+
+    if(secondCommandIndex != -1){
+       //Second command found locally
+       outputArray = localCommands.getLocalCommandDescription(secondCommandIndex);
+    }else{
+      //Check Server Commands
+      outputArray = ["Befehl '"+ commandParameters[1] +"' nicht gefunden!"];
+    }
+
+  }
+
+   //return Console output
+   return outputArray;
 }

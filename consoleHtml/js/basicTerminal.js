@@ -27,14 +27,15 @@ function logServerResponse(responseToLog){
   var newDiv = document.createElement("div");
   newDiv.classList.add("serverResponse");
 
-for(var i = 0; i < responseToLog.length; i++){
-  var newResponse = document.createTextNode(responseToLog[i]);
-  newDiv.append(newResponse);
+  //Start spacoing from CommandLog
+  var newLineObject = document.createElement("br");
+  newDiv.append(newLineObject);
 
-  if(!i < responseToLog.length - 1){
-    var newLineObject = document.createElement("br");
-    newDiv.append(newLineObject);
-  }
+for(var i = 0; i < responseToLog.length; i++){
+  var newPreformTextElement = document.createElement("pre");
+  var newResponse = document.createTextNode(responseToLog[i]);
+  newPreformTextElement.append(newResponse);
+  newDiv.append(newPreformTextElement);
 }
 
   consoleLog.append(newDiv);
@@ -43,11 +44,14 @@ for(var i = 0; i < responseToLog.length; i++){
 //Hides InputCommandLine
 function disableCommandInput(){
  commandLine.style.display = "none";
+ consoleInput.disabled = true;
 }
 
 //Shows InputCommandLine
 function enableCommandInput(){
   commandLine.removeAttribute("style");
+  consoleInput.removeAttribute("disabled");
+  consoleInput.focus();
 }
 
 //Adds spacing for Command input
@@ -95,11 +99,19 @@ function onKeyPress(e){
       case 13: //If Enter is pressed
       onEnterPress();
       break;
+      default:
+
+    if(document.activeElement != consoleInput){
+      if(e.key.match(".*")){
+        e.preventDefault();
+        consoleInput.value += e.key;
+        consoleInput.focus();
+      }
+      break;
     }
+   }
+
 }
 
 //Add Eventlistener for KeyboardInput
-document.addEventListener("keydown", onKeyPress);
-
-//Add Blur Eventlistener on Input to never have it lose focus
-consoleInput.addEventListener("blur", function () { setTimeout(function () {consoleInput.focus();}, 100); });
+document.addEventListener("keypress", onKeyPress);
