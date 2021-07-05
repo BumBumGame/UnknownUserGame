@@ -11,7 +11,7 @@ constructor(){
    this.localCommandFunction = [];
 }
 //Adds Command to Local Command definition
-addComand(commandStartAlias, commandDescritption, commandFunction){
+addCommand(commandStartAlias, commandDescritption, commandFunction){
   this.localCommandStartAlias.push(commandStartAlias.trim().toLowerCase());
   this.localCommandDescriptions.push(commandDescritption.trim());
   this.localCommandFunction.push(commandFunction);
@@ -28,18 +28,38 @@ get localCommandCount(){
   return this.localCommandStartAlias.length;
 }
 
+//Functions returns Command Allias as String  @param Index of Command
 getLocalCommandAlias(commandIndex){
   return this.localCommandStartAlias[commandIndex];
 }
 
+//Function returns commandDescritption as an Array to @param Index of Command
 getLocalCommandDescription(commandIndex){
   var descriptionArray = this.localCommandDescriptions[commandIndex].split("\n");
 
   return descriptionArray;
 }
 
+//Function returns the First Line of a commandDescritption as String @param Index of Command
 getFirstLineOfCommandDescription(commandIndex){
   return this.localCommandDescriptions[commandIndex].split("\n")[0];
+}
+
+//Function that returns all Commands that start with param
+getCommandsStartingWith(commandStart){
+  var fittingCommandArray = [];
+
+  //Check Start of each Alias and add any Matching to Array
+  for(var i = 0; i < this.localCommandStartAlias.length; i++){
+
+    if(this.localCommandStartAlias[i].startsWith(commandStart)){
+      fittingCommandArray.push(this.localCommandStartAlias[i]);
+    }
+
+  }
+
+  //Return array of found Commands
+  return fittingCommandArray;
 }
 
 //Function that executes the a Command Based on their Alias. @Returns null if not successfull. @Returns Answer Array if successfull

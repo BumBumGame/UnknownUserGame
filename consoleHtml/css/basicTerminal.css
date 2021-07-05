@@ -33,6 +33,16 @@ body{
   padding: 0%;
 }
 
+#consoleLog pre{
+  white-space: pre-wrap;       /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: normal;
+  margin: 0%;
+  padding: 0%;
+}
+
 #commandLine{
   width: 100%;
   margin: 0%;
@@ -48,9 +58,4 @@ body{
   padding: 0%;
   font-weight: bold;
   font-size: 1.2em;
-}
-
-.serverResponse pre{
-  margin: 0%;
-  padding: 0%;
 }

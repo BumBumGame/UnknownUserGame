@@ -21,6 +21,15 @@ function logCommand(commandToLog){
  consoleLog.append(newLineObject);
 }
 
+//Prints normal Text to the console
+function printOnConsole(output){
+   var textToPrint = document.createTextNode(output);
+   var rawOutputObject = document.createElement("pre");
+
+   rawOutputObject.append(textToPrint);
+   consoleLog.append(rawOutputObject)
+}
+
 //Logs ServerResponse in Command Log
 //@param responseToLog:Array with each line
 function logServerResponse(responseToLog){
@@ -93,11 +102,41 @@ function onEnterPress(){
    }
 }
 
+function autoComplete(){
+  //If Console input is active
+  if(document.activeElement == consoleInput){
+    var fittingCommands = localCommands.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
+
+    if(fittingCommands.length != 0){
+
+         if(fittingCommands.length == 1){
+            consoleInput.value = fittingCommands[0];
+         }else{
+            var autoCompleteString = "";
+
+            for(var i = 0; i < fittingCommands.length; i++){
+              autoCompleteString += fittingCommands[i] + " ";
+            }
+
+            logCommand(consoleInput.value);
+            printOnConsole(autoCompleteString.trim());
+         }
+
+    }
+
+  }
+
+}
+
 //Handles Keyboard events
 function onKeyPress(e){
     switch(e.keyCode){
       case 13: //If Enter is pressed
       onEnterPress();
+      break;
+      case 9: //If Tab is pressed
+      e.preventDefault();
+      autoComplete();
       break;
       default:
 
@@ -114,4 +153,4 @@ function onKeyPress(e){
 }
 
 //Add Eventlistener for KeyboardInput
-document.addEventListener("keypress", onKeyPress);
+document.addEventListener("keydown", onKeyPress);
