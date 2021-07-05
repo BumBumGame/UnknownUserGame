@@ -22,9 +22,16 @@ function logCommand(commandToLog){
 }
 
 //Prints normal Text to the console
-function printOnConsole(output){
+//@param output String of what is outputted
+//@param optionalPreID (optional) String of an ID that gets assigned to the pre-Element
+function printOnConsole(output, optionalPreID = ""){
    var textToPrint = document.createTextNode(output);
    var rawOutputObject = document.createElement("pre");
+
+   //if PreClass is given
+   if(optionalPreID.length > 0){
+     rawOutputObject.setAttribute("id", optionalPreID);
+   }
 
    rawOutputObject.append(textToPrint);
    consoleLog.append(rawOutputObject)
@@ -120,6 +127,7 @@ function autoComplete(){
 
             logCommand(consoleInput.value);
             printOnConsole(autoCompleteString.trim());
+            printOnConsole(""); //Print an empty line
          }
 
     }
