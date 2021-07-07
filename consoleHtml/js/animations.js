@@ -1,4 +1,4 @@
-class animationQueue{
+class AnimationQueue{
 animationObjectArray;
 animationDelayArray;
 currentRunningAnimationIndex;
@@ -90,24 +90,32 @@ get length(){
 }
 
 
-class animation{
+class Animation{
 animationPlayTime;
 animationStepTime;
 animationRunning;
 
   constructor(animationPlayTime, animationStepTime){
+     //Set playtime
      this.animationPlayTime = animationPlayTime;
+     //Set StepTime
      this.animationStepTime = animationStepTime;
+     //Init Animation as not running
      this.animationRunning = false;
   }
 
 }
 
+/*------------------------------------------Define Animation Classes
+    - Every Animation Class must have following Methods: start(), animationStep(), stop(), reset(), deleteDomElement()
+    - Every Animation Class must extend Animation Base class
+*/
+
 //Displays Text loading animation in Console according to parameters
 //@param playtime Time after the animation stops (gets paused) (playtime = 0 --> indefinite)
 //@param maxDotCount Anzahl der max anzuhängenden Punkte (def:3)
 //@param steptime Zeit zwischen jedem Schritt (=Geschwindigkeit)
-class textLoadingAnimation extends animation{
+class ConsoleTextLoadingAnimation extends Animation{
 maxDotCount;
 animationObject;
 animationText;
@@ -121,7 +129,7 @@ animationIDString;
        this.currentAnimationDotCount = 0;
        this.animationObject = null;
        //Generate Random Id String
-       this.animationIDString = "textLoadAnimation" + ((Math.random().toFixed(3)) * 1000);
+       this.animationIDString = "ConsoleTextLoadAnimation" + ((Math.random().toFixed(4)) * 10000);
          }
 
 animationStep(){
@@ -149,12 +157,12 @@ start(){
    }
      this.animationRunning = true;
 
-     //Call Steo to enable loop
+     //Call Step to enable loop with stepDelay
+     var prevThis = this;
+     setTimeout(function () { this.animationStep(); }, this.animationStepTime);
      this.animationStep();
 
      //Setup Stop Timer if animation is timed
-    var prevThis = this;
-
      if(this.animationPlayTime > 0){
        setTimeout(function () { prevThis.stop();}, this.animationPlayTime);
      }
@@ -174,6 +182,89 @@ reset(){
 }
 
 deleteDomElement(){
+  //Reset Animation
+  this.reset();
+
+  this.animationObject.remove();
+  this.animationObject = null;
+}
+
+}
+
+class ConsoleTextTypingAnimation extends Animation{
+animationText;
+currentAnimationCharIndex;
+animationObject;
+animationIDString;
+
+constructor(playtime, animationText){
+      //Calculate Animation step Time
+      var animationStepTime = playtime/animationText.length;
+     //Call Animation Constructor
+     super(playtime, animationStepTime);
+     //Animations text stellen
+     this.animationText = animationText;
+     //Set startIndex to 0
+     this.currentAnimationCharIndex = 0;
+     //Generate id String
+     this.animationIDString = "ConsoleTextTypingAnimation" + ((Math.random().toFixed(4)) * 10000);
+}
+
+start(){
+  //If Animation is not running
+ if(this.animationRunning == false){
+
+  //Create Animation Object if it doesnt exist yet
+   if(this.animationObject == null){
+    printOnConsole("", this.animationIDString);
+    this.animationObject = document.getElementById(this.animationIDString);
+  }
+
+  //Set running Status
+  this.animationRunning = true;
+
+  //Start first step
+  this.animationStep();
+
+ }
+
+}
+
+animationStep(playtime, animationObject){
+    //Add Letter to AnimationObject
+    this.animationObject.textContent += this.animationText.charAt(this.currentAnimationCharIndex);
+    //Count up AnimationCharIndex
+    this.currentAnimationCharIndex++;
+    //Check if Animation is done or Animation got stopped
+    if(this.currentAnimationCharIndex > this.animationText.length || !this.animationRunning){
+      //Stop animation
+      this.stop();
+    }else{
+      var prevThis = this;
+      //Set Timout for next Execution
+      setTimeout(function () { prevThis.animationStep(); }, this.animationStepTime);
+    }
+
+}
+
+stop(){
+  //If Animation is running
+  if(this.animationRunning == true){
+    this.animationRunning = false;
+  }
+
+}
+
+reset(){
+  this.animationObject.textContent = "";
+  this.currentAnimationCharIndex = 0;
+  this.animationRunning = false;
+}
+
+deleteDomElement(){
+  //Reset Animation
+  this.reset();
+  
   this.animationObject.remove();
   this.animationObject = null;
 }
@@ -181,9 +272,10 @@ deleteDomElement(){
 }
 
 //Testing
-var testAnimation = new textLoadingAnimation(5000, 350, 4, "loading");
-var testAnimation2 = new textLoadingAnimation(5000, 350, 4, "loading2");
-var que = new animationQueue();
+var testAnimation = new ConsoleTextLoadingAnimation(5000, 350, 4, "loading");
+var testAnimation2 = new ConsoleTextLoadingAnimation(5000, 350, 4, "loading2");
+var testAnimation3 = new ConsoleTextTypingAnimation(200, "loading3");
+var que = new AnimationQueue();
 
 que.addAnimation(testAnimation);
 que.addAnimation(testAnimation2);
