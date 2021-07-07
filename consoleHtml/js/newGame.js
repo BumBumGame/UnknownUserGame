@@ -5,9 +5,7 @@ function startNewGame(){
 
 //Starts different animations with right timing for Console loading
 function consoleLoadingAnimation(){
-
-
-
+   
 }
 
 

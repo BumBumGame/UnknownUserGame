@@ -1,4 +1,77 @@
 class animationQueue{
+animationObjectArray;
+animationDelayArray;
+currentRunningAnimationIndex;
+queCurrentlyRunning;
+
+constructor(){
+  this.animationObjectArray = [];
+  this.animationDelayArray = [];
+  this.currentRunningAnimationIndex = 0;
+  this.queCurrentlyRunning = false;
+}
+
+addAnimation(animation, startDelay){
+  this.animationObjectArray.push(animation);
+  this.animationDelayArray.push(startDelay);
+}
+
+//Starts first animation in cue
+start(){
+  //Start first Animation
+  this.animationObjectArray[this.currentRunningAnimationIndex].start();
+  this.queCurrentlyRunning = true;
+
+  var prevThis = this;
+
+  if(this.animationObjectArray[this.currentRunningAnimationIndex].animationPlayTime > 0){
+    setTimeout(function () { prevThis.next();}, this.animationObjectArray[this.currentRunningAnimationIndex].animationPlayTime);
+  }
+
+  }
+
+stop(){
+ this.queCurrentlyRunning = false;
+ this.animationObjectArray[this.currentRunningAnimationIndex].stop();
+}
+
+next(){
+  //Stop running animation
+  this.animationObjectArray[this.currentRunningAnimationIndex].stop();
+  //if delay is not 0 then wait
+  var prevThis = this;
+
+  setTimeout(function () {
+     //Add +1 to currentAnimationindex
+     prevThis.currentRunningAnimationIndex++;
+     if(prevThis.length <= prevThis.currentRunningAnimationIndex){
+       this.queCurrentlyRunning = false;
+       return;
+     }
+
+     //Start next Animation
+     prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].start();
+
+     //Set next animation Start if animationPlaytime is limited
+     if(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime > 0 && prevThis.queCurrentlyRunning){
+       setTimeout(function () { prevThis.next();}, prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime);
+     }
+
+  }, this.animationDelayArray[this.currentRunningAnimationIndex]);
+
+}
+
+reset(){
+
+}
+
+resetAnimations(){
+
+}
+
+get length(){
+  return this.animationObjectArray.length;
+}
 
 }
 
@@ -65,8 +138,10 @@ start(){
      this.animationStep();
 
      //Setup Stop Timer if animation is timed
+    var prevThis = this;
+
      if(this.animationPlayTime > 0){
-       setTimeout(this.stop(), this.animationPlayTime);
+       setTimeout(function () { prevThis.stop();}, this.animationPlayTime);
      }
 
   }
@@ -79,3 +154,11 @@ stop(){
 }
 
 }
+
+//Testing
+var testAnimation = new textLoadingAnimation(5000, 350, 4, "loading");
+var testAnimation2 = new textLoadingAnimation(5000, 350, 4, "loading2");
+var que = new animationQueue();
+
+que.addAnimation(testAnimation);
+que.addAnimation(testAnimation2);
