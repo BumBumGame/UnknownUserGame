@@ -61,11 +61,25 @@ next(){
 
 }
 
-reset(){
+resetAnimations(){
+  //Stop current Run
+  this.stop();
+
+  //Call Reseters of every single Animation Object
+  for(var i = 0; i < this.length; i++){
+     this.animationObjectArray[i].reset();
+  }
+
+  //Reset queAnimationIndex
+  this.currentRunningAnimationIndex = 0;
 
 }
 
-resetAnimations(){
+deleteAnimationsDomElements(){
+ //Call all delete Functions of Elements in Array
+ for(var i = 0; i < this.length; i++){
+   this.animationObjectArray[i].deleteDomElement();
+ }
 
 }
 
@@ -113,15 +127,16 @@ animationIDString;
 animationStep(){
   //Check if Dots are above maximum
   if(this.currentAnimationDotCount >= this.maxDotCount){
-    this.animationObject.textContent = this.animationText;
-    this.currentAnimationDotCount = 0;
+    this.reset();
   }
 
   this.animationObject.textContent += ".";
   this.currentAnimationDotCount++;
 
+  var prevThis = this;
+
   if(this.animationRunning == true){
-     setTimeout(this.animationStep.bind(this), this.animationStepTime);
+    setTimeout(function () { prevThis.animationStep();}, this.animationStepTime);
   }
 }
 
@@ -151,6 +166,16 @@ stop(){
   if(this.animationRunning == true){
     this.animationRunning = false;
   }
+}
+
+reset(){
+  this.animationObject.textContent = this.animationText;
+  this.currentAnimationDotCount = 0;
+}
+
+deleteDomElement(){
+  this.animationObject.remove();
+  this.animationObject = null;
 }
 
 }
