@@ -90,12 +90,30 @@ get length(){
 }
 
 
+//-----------------------------------
+//Animation Base class which has to be inherited from
 class Animation{
 animationPlayTime;
 animationStepTime;
 animationRunning;
 
   constructor(animationPlayTime, animationStepTime){
+     //This class is not allowed to be initialized alone
+     if (this.constructor === Animation) {
+            throw new TypeError('Abstract class "Widget" cannot be instantiated directly.');
+        }
+     //Check if all nedded Methods are implemented
+     if(this.start === undefined){
+            throw new TypeError("Method start() needs to be implemented!");
+     }else if(this.stop === undefined){
+            throw new TypeError("Method stop() needs to be implemented!");
+     }else if(this.reset === undefined){
+            throw new TypeError("Method reset() needs to be implemented!");
+     }else if(this.animationStep === undefined){
+            throw new TypeError("Method animaitonStep() needs to be implemented!");
+     }else if(this.deleteDomElement === undefined){
+            throw new TypeError("Method deleteDomElement() needs to be implemented!");
+     }
      //Set playtime
      this.animationPlayTime = animationPlayTime;
      //Set StepTime
@@ -112,9 +130,10 @@ animationRunning;
 */
 
 //Displays Text loading animation in Console according to parameters
-//@param playtime Time after the animation stops (gets paused) (playtime = 0 --> indefinite)
-//@param maxDotCount Anzahl der max anzuhängenden Punkte (def:3)
-//@param steptime Zeit zwischen jedem Schritt (=Geschwindigkeit)
+//@param playtime (Integer in ms) Time after the animation stops (gets paused) (playtime = 0 --> indefinite)
+//@param maxDotCount (Integer) Number of dots that will be displayed (def:3)
+//@param steptime (Integer in ms) Time between each step (=speed)
+//@param animationText (String) Text that is displayed by the Animation
 class ConsoleTextLoadingAnimation extends Animation{
 maxDotCount;
 animationObject;
@@ -136,10 +155,11 @@ animationStep(){
   //Check if Dots are above maximum
   if(this.currentAnimationDotCount >= this.maxDotCount){
     this.reset();
-  }
+  }else{
 
   this.animationObject.textContent += ".";
   this.currentAnimationDotCount++;
+}
 
   var prevThis = this;
 
@@ -159,8 +179,8 @@ start(){
 
      //Call Step to enable loop with stepDelay
      var prevThis = this;
-     setTimeout(function () { this.animationStep(); }, this.animationStepTime);
-     this.animationStep();
+
+     setTimeout(function () { prevThis.animationStep(); }, this.animationStepTime);
 
      //Setup Stop Timer if animation is timed
      if(this.animationPlayTime > 0){
@@ -191,6 +211,9 @@ deleteDomElement(){
 
 }
 
+//Displays Text loading animation in Console according to parameters
+//@param playtime (Integer in ms) Time after the animation stops (gets paused) (playtime = 0 --> indefinite)
+//@param animationText (String) Text to be printed
 class ConsoleTextTypingAnimation extends Animation{
 animationText;
 currentAnimationCharIndex;
@@ -230,7 +253,7 @@ start(){
 
 }
 
-animationStep(playtime, animationObject){
+animationStep(){
     //Add Letter to AnimationObject
     this.animationObject.textContent += this.animationText.charAt(this.currentAnimationCharIndex);
     //Count up AnimationCharIndex
@@ -264,10 +287,141 @@ reset(){
 deleteDomElement(){
   //Reset Animation
   this.reset();
-  
+
   this.animationObject.remove();
   this.animationObject = null;
 }
+
+get currentAnimationObject(){
+  return this.animationObject;
+}
+
+}
+
+
+//Displays Text loading animation with Typing animation
+//@param playtime (Integer in ms) Time after the animation stops (gets paused) (playtime = 0 --> indefinite)
+//@param steptime (Integer in ms) Time between each step (=speed)
+//@param animationText (String) Text to be printed
+//@param onlyDotsAfterStart (Boolean) Set if onlyDots will be animated after first text print or Text will be printed new everytime as well
+//@param typingTextPlayTime Time of the typing Animation on start
+class ConsoleTextLoadingAnimationTyping extends Animation{
+animationObject;
+animationText;
+maxDotCount;
+currentAnimationDotCount;
+typingAnimationObject;
+onlyConstantDotAnimation;
+
+constructor(playtime, steptime, animationText, maxDotCount, onlyDotsAfterStart, typingTextPlayTime){
+      //Call Animation Constructor
+      super(playtime, steptime);
+      //Save animationtext
+      this.animationText = animationText;
+      //Set maxDotCount
+      this.maxDotCount = maxDotCount;
+      //Save onlyDotsAfterStart (Boolean)
+      this.onlyConstantDotAnimation = onlyDotsAfterStart;
+      //Create typingAnimation
+      this.typingAnimationObject = new ConsoleTextTypingAnimation(typingTextPlayTime, animationText);
+      //Set animationObject to null
+      this.animationObject = null;
+      //Set Start dot COunt to 0
+      this.currentAnimationDotCount = 0;
+}
+
+start(){
+      //Check if Animation is not running
+      if(this.animationRunning == false){
+         //Check if Animation Object Exists and create One if nessecary
+         if(this.animationObject == null){
+            //Start Typing animmation to create Animation object
+            this.typingAnimationObject.start();
+            //Get AnimationObject
+            this.animationObject = this.typingAnimationObject.currentAnimationObject;
+         }
+
+         //Set animation on running;
+         this.animationRunning = true;
+
+        //Start next step after Typing animation is finished
+        var prevThis = this;
+
+        setTimeout(function () { prevThis.animationStep(); }, this.typingAnimationObject.animationPlayTime);
+        //If playtime is set then set timout on stop
+        if(this.animationPlayTime > 0){
+        setTimeout(function () { prevThis.stop(); }, this.animationPlayTime);
+       }
+  }
+}
+
+stop(){
+     //Check if Animation is running
+     if(this.animationRunning == true){
+        this.animationRunning = false;
+        //Stop Typing animation;
+        this.typingAnimationObject.stop();
+     }
+}
+
+animationStep(){
+      //Check if Object does still exists
+      if(this.animationObject == null){
+         //leave function
+         return;
+      }
+
+     //Start Typing animation if no text is in Element
+     if(this.animationObject.textContent.length  == 0){
+        //Start Typing function
+        this.typingAnimationObject.start();
+     }
+
+     //Only Start normal loading animation if typing is done
+     if(this.typingAnimationObject.animationRunning == false){
+       //Check if animation needs to be reset after hitting the limit
+       if(this.currentAnimationDotCount >= this.maxDotCount){
+           this.reset();
+       }else{
+       //Add point to Animation and add  to counter
+        this.currentAnimationDotCount++;
+        this.animationObject.textContent += ".";
+      }
+
+     }
+
+     //Start next step if no stopped
+     var prevThis = this;
+
+      if(this.animationRunning == true){
+         setTimeout(function () {prevThis.animationStep(); }, this.animationStepTime);
+      }
+
+}
+
+reset(){
+    //Check if Text needs to be reset
+    if(this.onlyConstantDotAnimation == false){
+      //Reset typing Animation
+      this.typingAnimationObject.reset();
+    }else{
+      //Only reset Dots
+      this.animationObject.textContent = this.animationText;
+    }
+    //Reset Dot counter
+    this.currentAnimationDotCount = 0;
+}
+
+deleteDomElement(){
+  //Stop Animation
+  this.stop();
+  //Reset Animation
+  this.reset();
+  //Call Delete of Typing animation
+  this.typingAnimationObject.deleteDomElement();
+  this.animationObject = null;
+}
+
 
 }
 
@@ -275,6 +429,7 @@ deleteDomElement(){
 var testAnimation = new ConsoleTextLoadingAnimation(5000, 350, 4, "loading");
 var testAnimation2 = new ConsoleTextLoadingAnimation(5000, 350, 4, "loading2");
 var testAnimation3 = new ConsoleTextTypingAnimation(200, "loading3");
+var combinedAnimation = new ConsoleTextLoadingAnimationTyping(0, 350, "CombinedLoading", 5, true, 500);
 var que = new AnimationQueue();
 
 que.addAnimation(testAnimation);
