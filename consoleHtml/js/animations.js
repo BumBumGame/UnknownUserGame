@@ -12,6 +12,13 @@ constructor(){
 }
 
 addAnimation(animation, startDelay){
+  //Check if parent class of animation is Animation
+  if(Object.getPrototypeOf(animation.constructor) !== Animation){
+      throw new TypeError("The AnimationObject needs to inherit from class Animation!");
+  }
+  //Check if object structure is given because its needed by the Que
+  animation.checkSubClassStructure();
+  //Add properties to local Arrays
   this.animationObjectArray.push(animation);
   this.animationDelayArray.push(startDelay);
 }
@@ -61,7 +68,7 @@ next(){
 
 }
 
-resetAnimations(){
+reset(){
   //Stop current Run
   this.stop();
 
@@ -76,6 +83,8 @@ resetAnimations(){
 }
 
 deleteAnimationsDomElements(){
+  //Reset Qeue
+  this.reset();
  //Call all delete Functions of Elements in Array
  for(var i = 0; i < this.length; i++){
    this.animationObjectArray[i].deleteDomElement();
@@ -100,20 +109,10 @@ animationRunning;
   constructor(animationPlayTime, animationStepTime){
      //This class is not allowed to be initialized alone
      if (this.constructor === Animation) {
-            throw new TypeError('Abstract class "Widget" cannot be instantiated directly.');
+            throw new TypeError('Abstract class "Animation" cannot be instantiated directly.');
         }
-     //Check if all nedded Methods are implemented
-     if(this.start === undefined){
-            throw new TypeError("Method start() needs to be implemented!");
-     }else if(this.stop === undefined){
-            throw new TypeError("Method stop() needs to be implemented!");
-     }else if(this.reset === undefined){
-            throw new TypeError("Method reset() needs to be implemented!");
-     }else if(this.animationStep === undefined){
-            throw new TypeError("Method animaitonStep() needs to be implemented!");
-     }else if(this.deleteDomElement === undefined){
-            throw new TypeError("Method deleteDomElement() needs to be implemented!");
-     }
+     //Check class Structure
+     this.checkSubClassStructure();
      //Set playtime
      this.animationPlayTime = animationPlayTime;
      //Set StepTime
@@ -121,6 +120,21 @@ animationRunning;
      //Init Animation as not running
      this.animationRunning = false;
   }
+
+checkSubClassStructure(){
+  //Check if all nedded Methods are implemented
+  if(this.start === undefined){
+         throw new TypeError("Method start() needs to be implemented!");
+  }else if(this.stop === undefined){
+         throw new TypeError("Method stop() needs to be implemented!");
+  }else if(this.reset === undefined){
+         throw new TypeError("Method reset() needs to be implemented!");
+  }else if(this.animationStep === undefined){
+         throw new TypeError("Method animaitonStep() needs to be implemented!");
+  }else if(this.deleteDomElement === undefined){
+         throw new TypeError("Method deleteDomElement() needs to be implemented!");
+  }
+}
 
 }
 
