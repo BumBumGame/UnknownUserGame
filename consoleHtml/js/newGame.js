@@ -3,12 +3,10 @@ function startNewGame(){
    consoleLoadingAnimation();
 }
 
-//Starts different animations with right timing for Console loading
+//loading Animation Method
 function consoleLoadingAnimation(){
-   
+  
 }
-
-
 
 function printConsoleCopyright(){
   printOnConsole("\u00A9 2015 BumBumGame Corp.");

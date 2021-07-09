@@ -1,26 +1,93 @@
 class AnimationQueue{
-animationObjectArray;
-animationDelayArray;
-currentRunningAnimationIndex;
-queCurrentlyRunning;
+animationObjectArray; //Array of Animation Objects
+animationDelayArray; // Array with delays for when each animation should start playing
+currentRunningAnimationIndex; //Current run index
+queCurrentlyRunning; //Boolean if Cue is currently running --> False means paused
+queTotalRuntime; //Array of total automated runtimes with each index is one after one pause
+queUnlimetedRuntimeAnimations; //Array that holds the animationObjectArrayIndex of Elemetns with unlimeted animation time;
 
 constructor(){
   this.animationObjectArray = [];
   this.animationDelayArray = [];
+  this.queTotalRuntime = [0];
+  this.queUnlimetedRuntimeAnimations = [];
   this.currentRunningAnimationIndex = 0;
   this.queCurrentlyRunning = false;
 }
 
-addAnimation(animation, startDelay){
+addAnimation(animation, startDelay = 0){
   //Check if parent class of animation is Animation
   if(Object.getPrototypeOf(animation.constructor) !== Animation){
       throw new TypeError("The AnimationObject needs to inherit from class Animation!");
   }
   //Check if object structure is given because its needed by the Que
   animation.checkSubClassStructure();
+
+  //Check if animation time is limited
+  if(animation.animationPlayTime > 0){
+    //Add animationPLaytime and startDelay to total runtime
+    this.queTotalRuntime[this.queTotalRuntime.length - 1] += animation.animationPlayTime;
+    this.queTotalRuntime[this.queTotalRuntime.length - 1] += startDelay;
+  }else{
+    //If animation runs unlimeted set new array index
+    this.queTotalRuntime.push(0);
+    //Add startDelay
+    this.queTotalRuntime[this.queTotalRuntime.length - 1] += startDelay;
+    //Save Element in special Array
+    this.queUnlimetedRuntimeAnimations.push(this.animationObjectArray.length);
+  }
   //Add properties to local Arrays
   this.animationObjectArray.push(animation);
   this.animationDelayArray.push(startDelay);
+}
+
+removeAnimmation(animationQueueIndex){
+  var unlimetedRuntimeIndex = 0;
+  //stop Queue if running
+  this.stop();
+  //Check if animation is an indefinite Animation
+  if(this.animationObjectArray[animationQueueIndex].animationPlayTime == 0){
+     //Remove object From animationObject Array
+     this.animationObjectArray.splice(animationQueueIndex, 1);
+     //get Index in queUnlimetedRuntime
+     var unlimetedRuntimeIndex = this.queUnlimetedRuntimeAnimations.indexOf(animationQueueIndex);
+     //Decreade every Index after this
+     for(var i = unlimetedRuntimeIndex; i < this.queUnlimetedRuntimeAnimations.lenght; i++){
+       this.queUnlimetedRuntimeAnimations[i]--;
+     }
+     //Add totaltime After Pause to previos
+     this.queTotalRuntime[unlimetedRuntimeIndex - 1] += this.queTotalRuntime[unlimetedRuntimeIndex];
+     //Delete Total Que time
+     this.queTotalRuntime.splice(unlimetedRuntimeIndex, 1);
+     //Fit unlimeteRuntimeIndex
+     unlimeteRuntimeIndex--;
+  }else{
+    //Get Animationplaytime
+    var animationPlayTime = this.animationObjectArray[animationQueueIndex].animationPlayTime;
+    //Get unlimeteRuntimeIndex from witch everything has to shiftet by one
+    for(var i = 0; i < this.queUnlimetedRuntimeAnimations.lenght; i++){
+       //Check when index is smaller than in queUnlimetedRuntimeAnimations
+       if(this.queUnlimetedRuntimeAnimations[i] > animationQueueIndex){
+          //Save index
+          unlimetedRuntimeIndex = i;
+          break;
+       }
+    }
+    //Shift unlimeteRuntimeIndex
+    for(var i = unlimetedRuntimeIndex; i < this.queUnlimetedRuntimeAnimations.length; i++){
+      this.queUnlimetedRuntimeAnimations[i]--;
+    }
+
+
+  }
+  //Substract time from Totaltime
+  this.queTotalRuntime[unlimetedRuntimeIndex] -= this.animationObjectArray[animationQueueIndex].animationPlayTime;
+  this.queTotalRuntime[unlimetedRuntimeIndex] -= this.animationDelayArray[animationQueueIndex];
+  //Remove Element from animationArray
+  this.animationObjectArray.splice(animationQueueIndex, 1);
+  //Remove Element from delay Array:
+  this.animationDelayArray.splice(animationQueueIndex, 1);
+
 }
 
 //Starts first animation in cue
@@ -61,7 +128,11 @@ next(){
 
      //Set next animation Start if animationPlaytime is limited
      if(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime > 0 && prevThis.queCurrentlyRunning){
+       //Time next execution
        setTimeout(function () { prevThis.next();}, prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime);
+     }else{
+       //Pause cue
+       this.queCurrentlyRunning = false;
      }
 
   }, this.animationDelayArray[this.currentRunningAnimationIndex]);
@@ -446,9 +517,11 @@ deleteDomElement(){
 //Testing
 var testAnimation = new ConsoleTextLoadingAnimation(5000, 350, 4, "loading");
 var testAnimation2 = new ConsoleTextLoadingAnimation(5000, 350, 4, "loading2");
-var testAnimation3 = new ConsoleTextTypingAnimation(200, "loading3");
+var testAnimation3 = new ConsoleTextTypingAnimation(2000, "loading3");
 var combinedAnimation = new ConsoleTextLoadingAnimationTyping(0, 350, "CombinedLoading", 5, false, 2000);
 var que = new AnimationQueue();
 
-que.addAnimation(testAnimation);
-que.addAnimation(testAnimation2);
+que.addAnimation(testAnimation, 2000);
+que.addAnimation(testAnimation2, 5000);
+que.addAnimation(testAnimation3, 3000);
+que.addAnimation(combinedAnimation, 6000);
