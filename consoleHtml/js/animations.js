@@ -339,6 +339,9 @@ start(){
             this.typingAnimationObject.start();
             //Get AnimationObject
             this.animationObject = this.typingAnimationObject.currentAnimationObject;
+           //Check if animation is stopped at typing
+         }else if(this.animationObject.textContent.length > 0 && this.typingAnimationObject.animationText.length >= this.typingAnimationObject.currentAnimationCharIndex) {
+            this.typingAnimationObject.start();
          }
 
          //Set animation on running;
@@ -347,7 +350,7 @@ start(){
         //Start next step after Typing animation is finished
         var prevThis = this;
 
-        setTimeout(function () { prevThis.animationStep(); }, this.typingAnimationObject.animationPlayTime);
+        setTimeout(function () { prevThis.animationStep(); }, this.animationStepTime);
         //If playtime is set then set timout on stop
         if(this.animationPlayTime > 0){
         setTimeout(function () { prevThis.stop(); }, this.animationPlayTime);
@@ -365,6 +368,8 @@ stop(){
 }
 
 animationStep(){
+  //Check if animation is running and step can be performed
+  if(this.animationRunning == true){
       //Check if Object does still exists
       if(this.animationObject == null){
          //leave function
@@ -393,9 +398,8 @@ animationStep(){
      //Start next step if no stopped
      var prevThis = this;
 
-      if(this.animationRunning == true){
          setTimeout(function () {prevThis.animationStep(); }, this.animationStepTime);
-      }
+    }
 
 }
 
@@ -429,7 +433,7 @@ deleteDomElement(){
 var testAnimation = new ConsoleTextLoadingAnimation(5000, 350, 4, "loading");
 var testAnimation2 = new ConsoleTextLoadingAnimation(5000, 350, 4, "loading2");
 var testAnimation3 = new ConsoleTextTypingAnimation(200, "loading3");
-var combinedAnimation = new ConsoleTextLoadingAnimationTyping(0, 350, "CombinedLoading", 5, true, 500);
+var combinedAnimation = new ConsoleTextLoadingAnimationTyping(0, 350, "CombinedLoading", 5, false, 2000);
 var que = new AnimationQueue();
 
 que.addAnimation(testAnimation);
