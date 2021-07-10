@@ -47,31 +47,35 @@ removeAnimmation(animationQueueIndex){
   this.stop();
   //Check if animation is an indefinite Animation
   if(this.animationObjectArray[animationQueueIndex].animationPlayTime == 0){
-     //Remove object From animationObject Array
-     this.animationObjectArray.splice(animationQueueIndex, 1);
      //get Index in queUnlimetedRuntime
-     var unlimetedRuntimeIndex = this.queUnlimetedRuntimeAnimations.indexOf(animationQueueIndex);
+     unlimetedRuntimeIndex = this.queUnlimetedRuntimeAnimations.indexOf(animationQueueIndex);
      //Decreade every Index after this
-     for(var i = unlimetedRuntimeIndex; i < this.queUnlimetedRuntimeAnimations.lenght; i++){
+     for(var i = unlimetedRuntimeIndex; i < this.queUnlimetedRuntimeAnimations.length; i++){
        this.queUnlimetedRuntimeAnimations[i]--;
      }
      //Add totaltime After Pause to previos
-     this.queTotalRuntime[unlimetedRuntimeIndex - 1] += this.queTotalRuntime[unlimetedRuntimeIndex];
+     this.queTotalRuntime[unlimetedRuntimeIndex] += this.queTotalRuntime[unlimetedRuntimeIndex + 1];
      //Delete Total Que time
-     this.queTotalRuntime.splice(unlimetedRuntimeIndex, 1);
-     //Fit unlimeteRuntimeIndex
-     unlimeteRuntimeIndex--;
+     this.queTotalRuntime.splice(unlimetedRuntimeIndex + 1, 1);
+     //Delete UnLimitedRuntime From Array
+     this.queUnlimetedRuntimeAnimations.splice(unlimetedRuntimeIndex, 1);
   }else{
     //Get Animationplaytime
     var animationPlayTime = this.animationObjectArray[animationQueueIndex].animationPlayTime;
     //Get unlimeteRuntimeIndex from witch everything has to shiftet by one
-    for(var i = 0; i < this.queUnlimetedRuntimeAnimations.lenght; i++){
+    for(var i = 0; i < this.queUnlimetedRuntimeAnimations.length; i++){
        //Check when index is smaller than in queUnlimetedRuntimeAnimations
        if(this.queUnlimetedRuntimeAnimations[i] > animationQueueIndex){
           //Save index
           unlimetedRuntimeIndex = i;
           break;
        }
+
+     //If it its after the last element
+     if(i == this.queUnlimetedRuntimeAnimations.length - 1){
+        unlimetedRuntimeIndex = this.queUnlimetedRuntimeAnimations.length;
+     }
+
     }
     //Shift unlimeteRuntimeIndex
     for(var i = unlimetedRuntimeIndex; i < this.queUnlimetedRuntimeAnimations.length; i++){
@@ -518,6 +522,9 @@ deleteDomElement(){
 var testAnimation = new ConsoleTextLoadingAnimation(5000, 350, 4, "loading");
 var testAnimation2 = new ConsoleTextLoadingAnimation(5000, 350, 4, "loading2");
 var testAnimation3 = new ConsoleTextTypingAnimation(2000, "loading3");
+var testAnimation4 = new ConsoleTextTypingAnimation(1000, "Loading4");
+var testAnimation5 = new ConsoleTextLoadingAnimation(7000, 150, 4, "loading5");
+var testAnimation6 = new ConsoleTextLoadingAnimation(0, 200, 7, "loading6");
 var combinedAnimation = new ConsoleTextLoadingAnimationTyping(0, 350, "CombinedLoading", 5, false, 2000);
 var que = new AnimationQueue();
 
@@ -525,3 +532,6 @@ que.addAnimation(testAnimation, 2000);
 que.addAnimation(testAnimation2, 5000);
 que.addAnimation(testAnimation3, 3000);
 que.addAnimation(combinedAnimation, 6000);
+que.addAnimation(testAnimation4, 2000);
+que.addAnimation(testAnimation6);
+que.addAnimation(testAnimation5);
