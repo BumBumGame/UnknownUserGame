@@ -96,6 +96,8 @@ removeAnimmation(animationQueueIndex){
 
 //Starts first animation in cue
 start(){
+   //Start only when there are Elements in the Cue
+   if(this.length > 0){
   //Start first Animation
   this.animationObjectArray[this.currentRunningAnimationIndex].start();
   this.queCurrentlyRunning = true;
@@ -106,6 +108,7 @@ start(){
     setTimeout(function () { prevThis.next();}, this.animationObjectArray[this.currentRunningAnimationIndex].animationPlayTime);
   }
 
+}
   }
 
 stop(){
@@ -114,16 +117,19 @@ stop(){
 }
 
 next(){
+  var currentDate = Date.now();
+  console.log("1: 0");
   //Stop running animation
   this.animationObjectArray[this.currentRunningAnimationIndex].stop();
   //if delay is not 0 then wait
   var prevThis = this;
 
   setTimeout(function () {
+    console.log("2:" + (Date.now() - currentDate));
      //Add +1 to currentAnimationindex
      prevThis.currentRunningAnimationIndex++;
      if(prevThis.length <= prevThis.currentRunningAnimationIndex){
-       this.queCurrentlyRunning = false;
+       prevThis.queCurrentlyRunning = false;
        return;
      }
 
@@ -133,13 +139,13 @@ next(){
      //Set next animation Start if animationPlaytime is limited
      if(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime > 0 && prevThis.queCurrentlyRunning){
        //Time next execution
-       setTimeout(function () { prevThis.next();}, prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime);
+       setTimeout(function () {console.log(Date.now() - currentDate);console.log("here"); prevThis.next();}, prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime);
      }else{
        //Pause cue
-       this.queCurrentlyRunning = false;
+       prevThis.queCurrentlyRunning = false;
      }
 
-  }, this.animationDelayArray[this.currentRunningAnimationIndex]);
+  }, this.animationDelayArray[this.currentRunningAnimationIndex + 1]);
 
 }
 
@@ -348,7 +354,7 @@ animationStep(){
     //Count up AnimationCharIndex
     this.currentAnimationCharIndex++;
     //Check if Animation is done or Animation got stopped
-    if(this.currentAnimationCharIndex > this.animationText.length || !this.animationRunning){
+    if(this.currentAnimationCharIndex >= this.animationText.length || !this.animationRunning){
       //Stop animation
       this.stop();
     }else{
@@ -517,21 +523,3 @@ deleteDomElement(){
 
 
 }
-
-//Testing
-var testAnimation = new ConsoleTextLoadingAnimation(5000, 350, 4, "loading");
-var testAnimation2 = new ConsoleTextLoadingAnimation(5000, 350, 4, "loading2");
-var testAnimation3 = new ConsoleTextTypingAnimation(2000, "loading3");
-var testAnimation4 = new ConsoleTextTypingAnimation(1000, "Loading4");
-var testAnimation5 = new ConsoleTextLoadingAnimation(7000, 150, 4, "loading5");
-var testAnimation6 = new ConsoleTextLoadingAnimation(0, 200, 7, "loading6");
-var combinedAnimation = new ConsoleTextLoadingAnimationTyping(0, 350, "CombinedLoading", 5, false, 2000);
-var que = new AnimationQueue();
-
-que.addAnimation(testAnimation, 2000);
-que.addAnimation(testAnimation2, 5000);
-que.addAnimation(testAnimation3, 3000);
-que.addAnimation(combinedAnimation, 6000);
-que.addAnimation(testAnimation4, 2000);
-que.addAnimation(testAnimation6);
-que.addAnimation(testAnimation5);
