@@ -320,6 +320,9 @@ stop(){
 }
 
 reset(){
+  //Stop Animation
+  this.stop();
+  //Reset Attributes
   this.animationObject.textContent = this.animationText;
   this.currentAnimationDotCount = 0;
   this.currentStep = 0;
@@ -344,9 +347,13 @@ currentAnimationCharIndex;
 animationObject;
 animationIDString;
 
+animationMilliseconds;
+
+testtime;
+
 constructor(playtime, animationText){
       //Calculate Animation step Time
-      var animationStepTime = Math.floor((playtime/animationText.length));
+      var animationStepTime = playtime/animationText.length;
      //Call Animation Constructor
      super(playtime, animationStepTime);
      //Animations text stellen
@@ -369,7 +376,10 @@ start(){
   //Set running Status
   this.animationRunning = true;
 
+  //Save Current Milliseconds
+  this.animationMilliseconds = performance.now();
   //Start first step
+  this.testtime = performance.now();
   this.animationStep();
 
  }
@@ -377,18 +387,28 @@ start(){
 }
 
 animationStep(){
-    //Add Letter to AnimationObject
-    this.animationObject.textContent += this.animationText.charAt(this.currentAnimationCharIndex);
-    //Count up AnimationCharIndex
-    this.currentAnimationCharIndex++;
-    //Check if Animation is done or Animation got stopped
-    if(this.currentAnimationCharIndex >= this.animationText.length || !this.animationRunning){
-      //Stop animation
-      this.stop();
-    }else{
+   //Get millis since last execution
+   var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
+   //Check if Step can be performed
+   if(millisSinceLastExecution >= this.animationStepTime){
+      //Execute Step
+      //Add Letter to AnimationObject
+      this.animationObject.textContent += this.animationText.charAt(this.currentAnimationCharIndex);
+      //Count up AnimationCharIndex
+      this.currentAnimationCharIndex++;
+      //Check if Animation is done or Animation got stopped
+      if(this.currentAnimationCharIndex >= this.animationText.length || !this.animationRunning){
+        //Stop animation
+        this.stop();
+        return;
+      }
+      this.animationMilliseconds = performance.now();
+   }
+
       var prevThis = this;
-      //Set Timout for next Execution
-      setTimeout(function () { prevThis.animationStep(); }, this.animationStepTime);
+      //Start next execution check if animation is running
+      if(this.animationRunning == true){
+      setTimeout(function () { prevThis.animationStep(); }, 0);
     }
 
 }
@@ -396,6 +416,8 @@ animationStep(){
 stop(){
   //If Animation is running
   if(this.animationRunning == true){
+    console.log(performance.now() - this.testtime);
+    alert(performance.now());
     this.animationRunning = false;
   }
 
