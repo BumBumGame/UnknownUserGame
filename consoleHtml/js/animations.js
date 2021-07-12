@@ -117,35 +117,37 @@ stop(){
 }
 
 next(){
-  var currentDate = Date.now();
-  console.log("1: 0");
-  //Stop running animation
-  this.animationObjectArray[this.currentRunningAnimationIndex].stop();
-  //if delay is not 0 then wait
-  var prevThis = this;
+    var prevThis = this;
+  //Check if Current Running Animation is done
+  if(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationRunning == false){
+    //Start next animation
+      //Wait the delay before Starting
 
-  setTimeout(function () {
-    console.log("2:" + (Date.now() - currentDate));
-     //Add +1 to currentAnimationindex
-     prevThis.currentRunningAnimationIndex++;
-     if(prevThis.length <= prevThis.currentRunningAnimationIndex){
-       prevThis.queCurrentlyRunning = false;
-       return;
-     }
+      setTimeout(function () {
+        //Count up Animatimation Index
+        prevThis.currentRunningAnimationIndex++;
+        //Check if Que is done
+        if(prevThis.length <= prevThis.currentRunningAnimationIndex){
+          //Disable Que
+          prevThis.queCurrentlyRunning = false;
+          return;
+        }
+        //Start next Animation
+        prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].start();
 
-     //Start next Animation
-     prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].start();
+        //Set next AnimationStart Check
+        if(!(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime > 0 && prevThis.queCurrentlyRunning)){
+          //Time next execution
+          setTimeout(function () { prevThis.next(); }, 100);
+        }else{
+          //Pause cue
+          prevThis.queCurrentlyRunning = false;
+        }
 
-     //Set next animation Start if animationPlaytime is limited
-     if(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime > 0 && prevThis.queCurrentlyRunning){
-       //Time next execution
-       setTimeout(function () {console.log(Date.now() - currentDate);console.log("here"); prevThis.next();}, prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime);
-     }else{
-       //Pause cue
-       prevThis.queCurrentlyRunning = false;
-     }
-
-  }, this.animationDelayArray[this.currentRunningAnimationIndex + 1]);
+        }, prevThis.animationDelayArray[prevThis.currentRunningAnimationIndex + 1]);
+  }else{
+    setTimeout(function () { prevThis.next(); }, 100);
+  }
 
 }
 
@@ -317,7 +319,7 @@ animationIDString;
 
 constructor(playtime, animationText){
       //Calculate Animation step Time
-      var animationStepTime = playtime/animationText.length;
+      var animationStepTime = Math.floor((playtime/animationText.length));
      //Call Animation Constructor
      super(playtime, animationStepTime);
      //Animations text stellen
@@ -331,7 +333,6 @@ constructor(playtime, animationText){
 start(){
   //If Animation is not running
  if(this.animationRunning == false){
-
   //Create Animation Object if it doesnt exist yet
    if(this.animationObject == null){
     printOnConsole("", this.animationIDString);

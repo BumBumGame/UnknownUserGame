@@ -17,7 +17,6 @@ function consoleLoadingAnimation(){
   loadingAnimationQue.addAnimation(failSafePartiallyCompleteAnimation, 300);
   //Start animationQue
   loadingAnimationQue.start();
-  console.log(loadingAnimationQue);
 }
 
 function printConsoleCopyright(){
