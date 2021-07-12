@@ -239,9 +239,17 @@ animationObject;
 animationText;
 currentAnimationDotCount;
 animationIDString;
+animationMilliseconds;
+
+totalStepCount;
+currentStep;
 
     constructor(playtime, steptime, maxDotCount, animationText){
        super(playtime, steptime);
+       //Calculate Total Step count
+       this.totalStepCount = Math.floor(playtime/steptime);
+       //Set currentStep to 0
+       this.currentStep = 0;
        this.maxDotCount = maxDotCount;
        this.animationText = animationText;
        this.currentAnimationDotCount = 0;
@@ -251,19 +259,38 @@ animationIDString;
          }
 
 animationStep(){
+  var millisSinceLastExecution = Date.now() - this.animationMilliseconds;
+
+  //Check if next Step can be Executed
+  if(millisSinceLastExecution >= this.animationStepTime){
+
+    //If animaiton has performed all steps: exit
+    if(this.currentStep >= this.totalStepCount){
+      this.stop();
+      return;
+    }else{
+      this.currentStep++;
+    }
+
   //Check if Dots are above maximum
   if(this.currentAnimationDotCount >= this.maxDotCount){
-    this.reset();
+     this.animationObject.textContent = this.animationText;
+     this.currentAnimationDotCount = 0;
   }else{
 
   this.animationObject.textContent += ".";
   this.currentAnimationDotCount++;
+  }
+
+   this.animationMilliseconds = Date.now();
+
 }
 
   var prevThis = this;
 
   if(this.animationRunning == true){
-    setTimeout(function () { prevThis.animationStep();}, this.animationStepTime);
+    //Set async restart of function
+    setTimeout(function () { prevThis.animationStep();}, 0);
   }
 }
 
@@ -279,12 +306,9 @@ start(){
      //Call Step to enable loop with stepDelay
      var prevThis = this;
 
-     setTimeout(function () { prevThis.animationStep(); }, this.animationStepTime);
-
-     //Setup Stop Timer if animation is timed
-     if(this.animationPlayTime > 0){
-       setTimeout(function () { prevThis.stop();}, this.animationPlayTime);
-     }
+     //Set current time
+     this.animationMilliseconds = Date.now();
+     setTimeout(function () { prevThis.animationStep(); }, 0);
 
   }
 }
@@ -298,6 +322,7 @@ stop(){
 reset(){
   this.animationObject.textContent = this.animationText;
   this.currentAnimationDotCount = 0;
+  this.currentStep = 0;
 }
 
 deleteDomElement(){
