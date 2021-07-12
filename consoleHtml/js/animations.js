@@ -417,7 +417,6 @@ stop(){
   //If Animation is running
   if(this.animationRunning == true){
     console.log(performance.now() - this.testtime);
-    alert(performance.now());
     this.animationRunning = false;
   }
 
