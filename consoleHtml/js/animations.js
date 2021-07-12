@@ -96,17 +96,19 @@ removeAnimmation(animationQueueIndex){
 
 //Starts first animation in cue
 start(){
+  var prevThis = this;
    //Start only when there are Elements in the Cue
    if(this.length > 0){
-  //Start first Animation
-  this.animationObjectArray[this.currentRunningAnimationIndex].start();
-  this.queCurrentlyRunning = true;
+  //Start first Animation with delay
+  setTimeout(function () {
+  prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].start();
+  prevThis.queCurrentlyRunning = true;
 
-  var prevThis = this;
-
-  if(this.animationObjectArray[this.currentRunningAnimationIndex].animationPlayTime > 0){
-    setTimeout(function () { prevThis.next();}, this.animationObjectArray[this.currentRunningAnimationIndex].animationPlayTime);
+  if(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime > 0){
+    setTimeout(function () { prevThis.next();}, 100);
   }
+
+  }, this.animationDelayArray[this.currentRunningAnimationIndex]);
 
 }
   }

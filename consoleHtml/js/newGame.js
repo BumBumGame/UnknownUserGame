@@ -7,14 +7,14 @@ function startNewGame(){
 function consoleLoadingAnimation(){
   //Define ques and animations
   var loadingAnimationQue = new AnimationQueue();
-  var failSafeStartAnimation = new ConsoleTextLoadingAnimationTyping(5000, 300, "Starting Failsafe", 5, true, 1000);
+  var failSafeStartAnimation = new ConsoleTextLoadingAnimationTyping(4000, 230, "Starting Failsafe", 4, true, 500);
   //Completion Text animation
   var partiallyCompleteFailsafeText = "Failsafe partially completed.";
-  var failSafePartiallyCompleteAnimation = new ConsoleTextTypingAnimation(1000, partiallyCompleteFailsafeText);
+  var failSafePartiallyCompleteAnimation = new ConsoleTextTypingAnimation(100, partiallyCompleteFailsafeText);
 
   //Add Animations to que
-  loadingAnimationQue.addAnimation(failSafeStartAnimation);
-  loadingAnimationQue.addAnimation(failSafePartiallyCompleteAnimation, 300);
+  loadingAnimationQue.addAnimation(failSafeStartAnimation, 2000);
+  loadingAnimationQue.addAnimation(failSafePartiallyCompleteAnimation, 500);
   //Start animationQue
   loadingAnimationQue.start();
 }
