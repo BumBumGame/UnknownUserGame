@@ -569,14 +569,14 @@ animationStep(){
 reset(){
     //Check if Text needs to be reset
     if(this.onlyConstantDotAnimation == false){
+      //Reset loading animation
+      this.loadingAnimationObject.reset();
       //Reset typing Animation
       this.typingAnimationObject.reset();
     }else{
       //Only reset Dots
-      this.animationObject.textContent = this.animationText;
+      this.loadingAnimationObject.reset();
     }
-    //Reset Dot counter
-    this.currentAnimationDotCount = 0;
 }
 
 deleteDomElement(){
@@ -586,6 +586,7 @@ deleteDomElement(){
   this.reset();
   //Call Delete of Typing animation
   this.typingAnimationObject.deleteDomElement();
+  this.loadingAnimationObject.deleteDomElement():
   this.animationObject = null;
 }
 
