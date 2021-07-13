@@ -2,19 +2,27 @@ function startNewGame(){
    disableCommandInput()
    consoleLoadingAnimation();
 }
-
+var loadingAnimationQue = new AnimationQueue();
 //loading Animation Method
 function consoleLoadingAnimation(){
+  var typingAnimationSpeed = 100;
   //Define ques and animations
-  var loadingAnimationQue = new AnimationQueue();
-  var failSafeStartAnimation = new ConsoleTextLoadingAnimationTyping(4000, 230, "Starting Failsafe", 4, true, 500);
+  //var loadingAnimationQue = new AnimationQueue();
+  var failSafeStartAnimation = new ConsoleTextLoadingAnimationTyping(4000, 230, "Starting Failsafe", 4, true, typingAnimationSpeed);
   //Completion Text animation
-  var partiallyCompleteFailsafeText = "Failsafe partially completed.";
-  var failSafePartiallyCompleteAnimation = new ConsoleTextTypingAnimation(100, partiallyCompleteFailsafeText);
+  var partiallyCompleteFailsafeText = "Failsafe started.";
+  var failSafePartiallyCompleteAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, partiallyCompleteFailsafeText);
+  //Found BackupFile Animation
+  var foundBackupFileText = "Found 1 Backupfile";
+  var foundBackupFileAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, foundBackupFileText);
+  //Checking file signature Animation
+  var checkingSignatureAnimation = new ConsoleTextLoadingAnimationTyping(4000, 230, "Checking File signature", 4, true, typingAnimationSpeed);
 
   //Add Animations to que
   loadingAnimationQue.addAnimation(failSafeStartAnimation, 2000);
-  loadingAnimationQue.addAnimation(failSafePartiallyCompleteAnimation, 500);
+  loadingAnimationQue.addAnimation(failSafePartiallyCompleteAnimation);
+  loadingAnimationQue.addAnimation(foundBackupFileAnimation, 500);
+  loadingAnimationQue.addAnimation(checkingSignatureAnimation, 150);
   //Start animationQue
   loadingAnimationQue.start();
 }

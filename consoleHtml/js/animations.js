@@ -121,7 +121,7 @@ stop(){
 next(){
     var prevThis = this;
   //Check if Current Running Animation is done
-  if(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationRunning == false){
+  if(this.animationObjectArray[this.currentRunningAnimationIndex].animationRunning == false){
     //Start next animation
       //Wait the delay before Starting
 
@@ -138,7 +138,7 @@ next(){
         prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].start();
 
         //Set next AnimationStart Check
-        if(!(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime > 0 && prevThis.queCurrentlyRunning)){
+        if(!(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime > 0) && prevThis.queCurrentlyRunning){
           //Time next execution
           setTimeout(function () { prevThis.next(); }, 100);
         }else{
@@ -586,7 +586,7 @@ deleteDomElement(){
   this.reset();
   //Call Delete of Typing animation
   this.typingAnimationObject.deleteDomElement();
-  this.loadingAnimationObject.deleteDomElement():
+  this.loadingAnimationObject.deleteDomElement();
   this.animationObject = null;
 }
 
