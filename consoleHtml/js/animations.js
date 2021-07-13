@@ -259,7 +259,7 @@ currentStep;
          }
 
 animationStep(){
-  var millisSinceLastExecution = Date.now() - this.animationMilliseconds;
+  var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
 
   //Check if next Step can be Executed
   if(millisSinceLastExecution >= this.animationStepTime){
@@ -282,7 +282,7 @@ animationStep(){
   this.currentAnimationDotCount++;
   }
 
-   this.animationMilliseconds = Date.now();
+   this.animationMilliseconds = performance.now();
 
 }
 
@@ -307,7 +307,7 @@ start(){
      var prevThis = this;
 
      //Set current time
-     this.animationMilliseconds = Date.now();
+     this.animationMilliseconds = performance.now();
      setTimeout(function () { prevThis.animationStep(); }, 0);
 
   }
@@ -349,7 +349,6 @@ animationIDString;
 
 animationMilliseconds;
 
-testtime;
 
 constructor(playtime, animationText){
       //Calculate Animation step Time
@@ -379,7 +378,6 @@ start(){
   //Save Current Milliseconds
   this.animationMilliseconds = performance.now();
   //Start first step
-  this.testtime = performance.now();
   this.animationStep();
 
  }
@@ -416,7 +414,6 @@ animationStep(){
 stop(){
   //If Animation is running
   if(this.animationRunning == true){
-    console.log(performance.now() - this.testtime);
     this.animationRunning = false;
   }
 
@@ -452,10 +449,11 @@ get currentAnimationObject(){
 class ConsoleTextLoadingAnimationTyping extends Animation{
 animationObject;
 animationText;
-maxDotCount;
-currentAnimationDotCount;
 typingAnimationObject;
+loadingAnimationObject;
 onlyConstantDotAnimation;
+
+animationMilliseconds;
 
 constructor(playtime, steptime, animationText, maxDotCount, onlyDotsAfterStart, typingTextPlayTime){
       //Call Animation Constructor
@@ -468,10 +466,10 @@ constructor(playtime, steptime, animationText, maxDotCount, onlyDotsAfterStart, 
       this.onlyConstantDotAnimation = onlyDotsAfterStart;
       //Create typingAnimation
       this.typingAnimationObject = new ConsoleTextTypingAnimation(typingTextPlayTime, animationText);
+      //Create LoadingAnimaitonObject
+      this.loadingAnimationObject = new ConsoleTextLoadingAnimation(playtime, steptime, maxDotCount, animationText);
       //Set animationObject to null
       this.animationObject = null;
-      //Set Start dot COunt to 0
-      this.currentAnimationDotCount = 0;
 }
 
 start(){
@@ -483,6 +481,8 @@ start(){
             this.typingAnimationObject.start();
             //Get AnimationObject
             this.animationObject = this.typingAnimationObject.currentAnimationObject;
+            //Set ConsoleTextLoadingAnimaiton animationObject to the same as the others
+            this.loadingAnimationObject.animationObject = this.animationObject;
            //Check if animation is stopped at typing
          }else if(this.animationObject.textContent.length > 0 && this.typingAnimationObject.animationText.length >= this.typingAnimationObject.currentAnimationCharIndex) {
             this.typingAnimationObject.start();
@@ -493,8 +493,9 @@ start(){
 
         //Start next step after Typing animation is finished
         var prevThis = this;
-
-        setTimeout(function () { prevThis.animationStep(); }, this.animationStepTime);
+        //Set millis
+        this.animationMilliseconds = performance.now();
+        setTimeout(function () { prevThis.animationStep(); }, 0);
         //If playtime is set then set timout on stop
         if(this.animationPlayTime > 0){
         setTimeout(function () { prevThis.stop(); }, this.animationPlayTime);
@@ -508,15 +509,22 @@ stop(){
         this.animationRunning = false;
         //Stop Typing animation;
         this.typingAnimationObject.stop();
+        //Stop Loading animation
+        this.loadingAnimationObject.stop();
      }
 }
 
 animationStep(){
-  //Check if animation is running and step can be performed
-  if(this.animationRunning == true){
+  //Get current Milliseconds
+  var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
+  //Check if Step can be performed
+     if(millisSinceLastExecution >= this.animationStepTime){
+
+
       //Check if Object does still exists
       if(this.animationObject == null){
-         //leave function
+         //leave function and Stop animation
+         this.stop
          return;
       }
 
@@ -527,22 +535,33 @@ animationStep(){
      }
 
      //Only Start normal loading animation if typing is done
-     if(this.typingAnimationObject.animationRunning == false){
-       //Check if animation needs to be reset after hitting the limit
-       if(this.currentAnimationDotCount >= this.maxDotCount){
-           this.reset();
-       }else{
-       //Add point to Animation and add  to counter
-        this.currentAnimationDotCount++;
-        this.animationObject.textContent += ".";
-      }
+     if(!this.typingAnimationObject.animationRunning){
+        //Check if loading Animation is running
+        if(!this.loadingAnimationObject.animationRunning){
+           //Start loading animation
+           this.loadingAnimationObject.start();
+        }else{
+           //Check if Animation needs to be reset after Hitting max points
+           if(!this.onlyConstantDotAnimation){
+               //Check if all dots are displayed
+                if(this.loadingAnimationObject.currentAnimationDotCount >= this.loadingAnimationObject.maxDotCount){
+                  //Reset Loading Animation
+                  this.loadingAnimationObject.reset();
+                  //Reset Typing animation
+                  this.typingAnimationObject.reset();
+                }
+           }
+        }
 
      }
+   }
 
-     //Start next step if no stopped
-     var prevThis = this;
 
-         setTimeout(function () {prevThis.animationStep(); }, this.animationStepTime);
+      var prevThis = this;
+
+    //If Animation is running rerun this function
+    if(this.animationRunning){
+        setTimeout(function () { prevThis.animationStep(); }, 0)
     }
 
 }
