@@ -123,8 +123,8 @@ next(){
   //Check if Current Running Animation is done
   if(this.animationObjectArray[this.currentRunningAnimationIndex].animationRunning == false){
     //Start next animation
-      //Wait the delay before Starting
 
+      //Wait the delay before Starting
       setTimeout(function () {
         //Count up Animatimation Index
         prevThis.currentRunningAnimationIndex++;
@@ -594,5 +594,94 @@ deleteDomElement(){
   this.animationObject = null;
 }
 
+
+}
+
+class ConsoleLinePrint extends Animation{
+textLineArray;
+currentLine;
+animationObjects;
+animationIDString;
+
+animationMilliseconds;
+
+  constructor(playtime, lines){
+    //Calculate Steptime
+     var steptime = playtime/lines.length;
+     //Call aniamtion construtor
+     super(playtime, steptime);
+     //save array in Attribute
+     this.textLineArray = lines;
+     //Set standard for currentLine
+     this.currentLine = 0;
+     //Generate Random ID
+     this.animationIDString = "ConsoleLinePrint" + ((Math.random().toFixed(4)) * 10000);
+  }
+
+  start(){
+     //Only Start if animation is not running
+     if(!this.animationRunning){
+        //Check if Animation is at last step
+        if(!(this.currentLine >= textLineArray.length)){
+           //Start step
+           var prevThis = this;
+           //Set animation Millis
+           this.animationMilliseconds = performance.now();
+           //Start animationStep
+           setTimeout(function () { prevThis.animationStep(); }, 0);
+           //Set Animation to running
+           this.animationRunning = true;
+        }
+
+     }
+
+  }
+
+  stop(){
+   if(this.animationRunning){
+     this.animationRunning = false;
+   }
+  }
+
+  animationStep(){
+    //Calculate millis since last execution
+    var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
+    //Check if Next execution can be made
+      if(millisSinceLastExecution >= this.animationStepTime){
+        var lineObject = printOnConsole(this.textLineArray[this.currentLine], this.animationIDString);
+        //Add to Object Array
+        this.animationObjects.push(lineObject);
+        //Goto next line
+        this.currentLine++;
+        //set last execution time
+        this.animationMilliseconds = performance.now();
+        //Check if currentLine is over existing lines
+        if(this.currentLine >= this.textLineArray.length){
+          this.stop();
+          return;
+        }
+      }
+
+      //Start next step
+      if(this.animationRunning){
+        var prevThis = this;
+
+       setTimeout(function () { prevThis.animationStep();}, 0);
+      }
+
+  }
+
+  reset(){
+   //Stop animation
+   this.stop();
+   //Delete Dom elements
+   
+   //Reset currentLine
+   this.currentLine = 0;
+  }
+
+  deleteDomElement(){
+
+  }
 
 }
