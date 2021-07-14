@@ -17,12 +17,16 @@ function consoleLoadingAnimation(){
   var foundBackupFileAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, foundBackupFileText);
   //Checking file signature Animation
   var checkingSignatureAnimation = new ConsoleTextLoadingAnimationTyping(4000, 230, "Checking File signature", 4, true, typingAnimationSpeed);
+  //File signature invalid Error Animation
+  var signatureInvalidText = "File signaure invalid! It is not recommended to run this file!";
+  var signatureInvalidAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, signatureInvalidText);
 
   //Add Animations to que
   loadingAnimationQue.addAnimation(failSafeStartAnimation, 2000);
   loadingAnimationQue.addAnimation(failSafePartiallyCompleteAnimation);
   loadingAnimationQue.addAnimation(foundBackupFileAnimation, 500);
   loadingAnimationQue.addAnimation(checkingSignatureAnimation, 150);
+  loadingAnimationQue.addAnimation(signatureInvalidAnimation);
   //Start animationQue
   loadingAnimationQue.start();
 }
