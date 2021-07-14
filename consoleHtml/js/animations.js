@@ -138,11 +138,12 @@ next(){
         prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].start();
 
         //Set next AnimationStart Check
-        if(!(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime > 0) && prevThis.queCurrentlyRunning){
+        if(!(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationplaytime > 0) && prevThis.queCurrentlyRunning){
           //Time next execution
           setTimeout(function () { prevThis.next(); }, 100);
         }else{
           //Pause cue
+          console.log(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime);
           prevThis.queCurrentlyRunning = false;
         }
 
@@ -221,6 +222,9 @@ checkSubClassStructure(){
   }
 }
 
+get animaitonplatime(){
+  return this.animationPlayTime;
+}
 }
 
 /*------------------------------------------Define Animation Classes
