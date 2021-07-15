@@ -113,7 +113,7 @@ function onEnterPress(){
 
 function autoComplete(){
   //If Console input is active
-  if(document.activeElement == consoleInput && consoleInput.value.length != 0){
+  if(document.activeElement == consoleInput && consoleInput.value.length != 0 ){
     var fittingCommands = localCommands.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
 
     if(fittingCommands.length != 0){
