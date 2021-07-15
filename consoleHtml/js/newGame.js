@@ -69,8 +69,6 @@ function initConsoleConfirmInput(){
   enableCommandInput();
 }
 
-startNewGame();
-
 function confirmFirst(){
 
 }

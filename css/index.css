@@ -14,6 +14,8 @@ body{
 	background-size: cover;
 	box-shadow: 0px 0px 5px #01DF01;
 	overflow: hidden;
+	animation: glitch 2s infinite;
+	animation-play-state: paused;
 }
 
 #gameLogin img{
@@ -51,7 +53,7 @@ body{
 	margin-top: 2%;
 	margin-bottom: 2%;
 	padding-left: 0%;
-	padding-right: 0%;		
+	padding-right: 0%;
 	padding-top: 1%;
 	padding-bottom: 1%;
 	font-size: 1.35em;
@@ -154,7 +156,7 @@ body{
 	width: 46%;
 	margin-left: 25%;
 	margin-right: 25%;
-	margin-top: 2%;	
+	margin-top: 2%;
 	padding: 2%;
 }
 
@@ -172,4 +174,61 @@ body{
 	margin-right: 7%;
 	margin-left: 53%;
 	width: 40%;
+}
+
+/*Glitch Effect*/
+@keyframes glitch {
+  0% {
+    transform: none;
+    opacity: 1;
+  }
+  7% {
+    transform: skew(-0.5deg, -0.9deg);
+    opacity: 0.75;
+  }
+  10% {
+    transform: none;
+    opacity: 1;
+  }
+  27% {
+    transform: none;
+    opacity: 1;
+  }
+  30% {
+    transform: skew(0.8deg, -0.1deg);
+    opacity: 0.75;
+  }
+  35% {
+    transform: none;
+    opacity: 1;
+  }
+  52% {
+    transform: none;
+    opacity: 1;
+  }
+  55% {
+    transform: skew(-1deg, 0.2deg);
+    opacity: 0.75;
+  }
+  50% {
+    transform: none;
+    opacity: 1;
+  }
+  72% {
+    transform: none;
+    opacity: 1;
+  }
+  75% {
+    transform: skew(0.4deg, 1deg);
+    opacity: 0.75;
+  }
+  80% {
+    transform: none;
+    opacity: 1;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
 }
