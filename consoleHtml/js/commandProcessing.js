@@ -1,4 +1,4 @@
-//Klass that holds all Local Command defintitions----------------------------------------------------------------------
+//Class that holds all Local Command defintitions----------------------------------------------------------------------
 class localCommandDefinition{
 localCommandStartAlias;
 localCommandDescriptions;
@@ -15,6 +15,19 @@ addCommand(commandStartAlias, commandDescritption, commandFunction){
   this.localCommandStartAlias.push(commandStartAlias.trim().toLowerCase());
   this.localCommandDescriptions.push(commandDescritption.trim());
   this.localCommandFunction.push(commandFunction);
+}
+
+//Removes a Command
+removeCommand(commandIndex){
+  //Remove Element if found
+  if(commandIndex != -1){
+    localCommandStartAlias.splice(1, commandIndex);
+    localCommandDescriptions.splice(1, commandIndex);
+    localCommandFunction.splice(1, commandIndex);
+  }else{
+    throw "Error: Command not found in Defintition!"
+  }
+
 }
 
 //Function that returns the Index of a Specific Command based on its Alias. Returns -1 of no Command is found

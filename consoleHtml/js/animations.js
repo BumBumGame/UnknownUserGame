@@ -96,13 +96,14 @@ removeAnimmation(animationQueueIndex){
 
 //Starts first animation in cue
 start(){
+  //Set status to running
+  this.queCurrentlyRunning = true;
   var prevThis = this;
    //Start only when there are Elements in the Cue
    if(this.length > 0){
   //Start first Animation with delay
   setTimeout(function () {
   prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].start();
-  prevThis.queCurrentlyRunning = true;
 
   if(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime > 0){
     setTimeout(function () { prevThis.next();}, 100);
@@ -601,7 +602,7 @@ class ConsoleLinePrint extends Animation{
 textLineArray;
 currentLine;
 animationObjects;
-animationIDString;
+animationClassString;
 
 animationMilliseconds;
 
@@ -615,14 +616,16 @@ animationMilliseconds;
      //Set standard for currentLine
      this.currentLine = 0;
      //Generate Random ID
-     this.animationIDString = "ConsoleLinePrint" + ((Math.random().toFixed(4)) * 10000);
+     this.animationClassString = "ConsoleLinePrint" + ((Math.random().toFixed(4)) * 10000);
+     //init array
+     this.animationObjects = [];
   }
 
   start(){
      //Only Start if animation is not running
      if(!this.animationRunning){
         //Check if Animation is at last step
-        if(!(this.currentLine >= textLineArray.length)){
+        if(!(this.currentLine >= this.textLineArray.length)){
            //Start step
            var prevThis = this;
            //Set animation Millis
@@ -675,12 +678,19 @@ animationMilliseconds;
    //Stop animation
    this.stop();
    //Delete Dom elements
-   
+   this.deleteDomElement();
    //Reset currentLine
    this.currentLine = 0;
   }
 
   deleteDomElement(){
+   //Delete all Dom elements
+   for(var i =  1; i < this.textLineArray.length; i++){
+     this.animationObjects.remove();
+   }
+
+   //Set references to null
+   this.animationObjects = [];
 
   }
 

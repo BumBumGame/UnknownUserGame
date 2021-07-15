@@ -98,6 +98,8 @@ function onCommandInput(){
      //Re-enable Input and clear input
      consoleInput.value = "";
      enableCommandInput();
+     //scroll Intoview
+     commandLine.scrollIntoView();
    }
 }
 
@@ -111,7 +113,7 @@ function onEnterPress(){
 
 function autoComplete(){
   //If Console input is active
-  if(document.activeElement == consoleInput){
+  if(document.activeElement == consoleInput && consoleInput.value.length != 0){
     var fittingCommands = localCommands.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
 
     if(fittingCommands.length != 0){
@@ -145,6 +147,7 @@ function onKeyPress(e){
       case 9: //If Tab is pressed
       e.preventDefault();
       autoComplete();
+      commandLine.scrollIntoView();
       break;
       default:
 
@@ -153,6 +156,7 @@ function onKeyPress(e){
         e.preventDefault();
         consoleInput.value += e.key;
         consoleInput.focus();
+        commandLine.scrollIntoView();
       }
       break;
     }
