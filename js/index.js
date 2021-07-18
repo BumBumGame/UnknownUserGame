@@ -14,11 +14,14 @@ var goToPasswordForgotButton = document.getElementById("goToPasswordForgotButton
 var goBackFromForgotButton = document.getElementById("goBackToLoginFromForgotButton");
 
 //Current UrlParameters
-const urlParameters = new URLSearchParams(window.location.search);
+var urlParameters = new URLSearchParams(window.location.search);
 
 var closeTabButton = document.getElementById("closeTabButton");
 
 var animationTiming = 900; //in ms (transition time + 100ms)
+
+//Current loaded Slide
+var currentSlide;
 
 //Switches From Main Page To Loginpage with an Animation
 function transitionFromMainPageToGameLogin(){
@@ -90,17 +93,80 @@ function setStartPage(){
 				 break;
 
 				 case "NewGame":
-         loadPageOnSiteLoad(newLoadingPage);
+         loadPageOnSiteLoad(newGameLoadingPage);
 				 break;
 			}
 
+			currentSlide = urlParameters.get("startPage");
+
+	}else{
+		currentSlide = "MainPage";
 	}
 
+}
+
+//Function to transition to a page after an url change
+function onUrlChange(e){
+	//Prevent default behaviour
+	e.preventDefault();
+	//Get new Url Parameters
+	urlParameters = new URLSearchParams(window.location.search);
+	//Check if get Parameter exists and extract Data
+	var urlPageParameter;
+
+	if(urlParameters.has("startPage")){
+    urlPageParameter = urlParameters.get("startPage");
+	}else{
+		//Set to home
+		urlPageParameter = "MainPage";
+	}
+
+	//transition to url Slide from CurretnSlide
+	 //Only if they are not the same
+	  if(currentSlide == urlPageParameter){
+			 return;
+		}
+   //Get Slide Objects
+		var fromPage = getObjectFromPageParameter(currentSlide);
+		var toPage = getObjectFromPageParameter(urlPageParameter);
+
+   //Update currentSlide
+	 currentSlide = urlPageParameter;
+	 //Transition from to
+   transitionFromTo(fromPage, toPage);
+}
+
+//Function to get an object according to url Parameter
+function getObjectFromPageParameter(pageParameter){
+   switch(pageParameter){
+		 case "login":
+ 		return loginForm;
+ 		break;
+
+ 		case "forgotPass":
+ 		return forgotPasswordForm;
+ 		break;
+
+ 		case "NewGame":
+    return newGameLoadingPage;
+ 		break;
+
+		case "MainPage":
+		return mainPageButtons;
+		break;
+
+		default:
+		return null;
+		break;
+	 }
 }
 
 function setPageParameter(pageParameter){
 	 urlParameters.set("startPage" , pageParameter);
    var newUrl = location.protocol + "//" + location.host + location.pathname + "?" + urlParameters.toString();
+
+	 //Set currentSlide
+	 currentSlide = pageParameter;
 
 	 history.pushState({}, "", newUrl);
 }
@@ -112,6 +178,9 @@ goBackFromNewGameButton.addEventListener("click", transitionFromNewGamePageToMai
 goToPasswordForgotButton.addEventListener("click", transitionFromGameLoginToPasswordForgot);
 goBackFromForgotButton.addEventListener("click", transitionFromPasswordForgotToGameLogin);
 closeTabButton.addEventListener("click", closeTab);
+
+//Add event Listener for url Change
+window.addEventListener("popstate", onUrlChange);
 
 //Set startPage on loading
 setStartPage();
