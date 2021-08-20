@@ -16,6 +16,8 @@ body{
 	background-image: url("../img/glitchEffect.gif");
 	background-size: cover;
 	box-shadow: 0px 0px 5px #01DF01;
+	animation: mainLoginBoxGlitch 2s infinite;
+	animation-play-state: running;
 	overflow: visible;
 	position: relative;
 }
