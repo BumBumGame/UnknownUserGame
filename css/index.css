@@ -17,8 +17,6 @@ body{
 	background-size: cover;
 	box-shadow: 0px 0px 5px #01DF01;
 	overflow: visible;
-	animation: glitch 2s infinite;
-	animation-play-state: paused;
 	position: relative;
 }
 
