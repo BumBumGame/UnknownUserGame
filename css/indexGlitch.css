@@ -11,12 +11,193 @@
   animation-play-state: running;
 }
 
+#cancelButtonGlitchBox:before{
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  top: 0%;
+  left: 0%;
+  border-radius: 10px;
+  padding: 0%;
+  animation: loginBackgroundGlitch 2s infinite;
+  animation-play-state: running;
+  animation-direction: reverse;
+  pointer-events: none;
+}
+
+#gameLogin{
+  animation: mainLoginBoxGlitch 2s infinite;
+  animation-play-state: running;
+}
+
+#cancelText{
+  animation: skewGlitchAnimation 2s infinite;
+}
+
 .disableGlitch:before{
    animation: none !important;
+   display:none;
 }
 
 .disableGlitch{
   animation: none !important;
+}
+
+@keyframes skewGlitchAnimation {
+  0% {
+transform: scale(+1.4, +1.6) skew(+9.8deg,-6.6deg);
+}
+2% {
+transform: scale(+1.7, -2.4) skew(+1.9deg,-7.2deg);
+}
+4% {
+transform: scale(-2.3, -2.0) skew(+7.8deg,+5.8deg);
+}
+6% {
+transform: scale(+2.4, +1.1) skew(+9.7deg,+7.6deg);
+}
+8% {
+transform: scale(+1.7, +1.6) skew(-1.4deg,-6.0deg);
+}
+10% {
+transform: scale(-1.3, +1.9) skew(-3.5deg,+11.8deg);
+}
+12% {
+transform: scale(+1.3, +2.4) skew(-4.5deg,-2.3deg);
+}
+14% {
+transform: scale(+1.4, -1.6) skew(+6.1deg,-5.5deg);
+}
+16% {
+transform: scale(+2.0, -1.3) skew(+11.3deg,-6.7deg);
+}
+18% {
+transform: scale(+2.4, +2.2) skew(+9.6deg,-8.3deg);
+}
+20% {
+transform: scale(+1.0, +1.6) skew(+6.9deg,-7.2deg);
+}
+22% {
+transform: scale(-2.0, +1.2) skew(-5.3deg,+9.7deg);
+}
+24% {
+transform: scale(+2.0, -1.9) skew(-7.1deg,+1.9deg);
+}
+27% {
+transform: scale(+1.2, -1.6) skew(+11.1deg,-9.7deg);
+}
+29% {
+transform: scale(+2.4, -1.1) skew(-4.7deg,-5.5deg);
+}
+31% {
+transform: scale(-1.5, +2.1) skew(+5.4deg,-6.8deg);
+}
+33% {
+transform: scale(-2.1, -2.3) skew(-3.4deg,-3.0deg);
+}
+35% {
+transform: scale(-1.3, -2.0) skew(-9.6deg,+6.4deg);
+}
+37% {
+transform: scale(-2.3, -1.3) skew(-5.4deg,+7.8deg);
+}
+39% {
+transform: scale(-1.3, +1.0) skew(-9.3deg,+5.8deg);
+}
+41% {
+transform: scale(-1.5, -2.4) skew(-3.7deg,-4.9deg);
+}
+43% {
+transform: scale(+1.2, -2.0) skew(-0.1deg,+0.8deg);
+}
+45% {
+transform: scale(-1.5, -2.4) skew(-11.4deg,+11.3deg);
+}
+47% {
+transform: scale(-1.1, +1.9) skew(-5.9deg,-5.3deg);
+}
+49% {
+transform: scale(+2.4, +1.7) skew(+1.7deg,+6.9deg);
+}
+51% {
+transform: scale(+1.2, -1.1) skew(-5.2deg,-10.8deg);
+}
+53% {
+transform: scale(+1.2, -1.7) skew(-8.1deg,-5.9deg);
+}
+55% {
+transform: scale(+1.1, -1.9) skew(-5.9deg,+10.3deg);
+}
+57% {
+transform: scale(-1.7, -1.8) skew(+0.3deg,+6.1deg);
+}
+59% {
+transform: scale(-2.5, -1.0) skew(-2.7deg,+11.2deg);
+}
+61% {
+transform: scale(+1.0, +2.0) skew(-10.7deg,-1.3deg);
+}
+63% {
+transform: scale(+1.1, +1.1) skew(-6.8deg,+9.9deg);
+}
+65% {
+transform: scale(-2.1, -1.2) skew(+11.5deg,-9.2deg);
+}
+67% {
+transform: scale(-2.2, -1.5) skew(+11.2deg,+0.0deg);
+}
+69% {
+transform: scale(+2.2, -1.9) skew(+6.5deg,-7.9deg);
+}
+71% {
+transform: scale(-1.9, +1.1) skew(+11.2deg,+3.4deg);
+}
+73% {
+transform: scale(-2.0, +2.3) skew(+10.2deg,-0.2deg);
+}
+76% {
+transform: scale(-1.5, +1.7) skew(+3.4deg,-4.4deg);
+}
+78% {
+transform: scale(+1.6, -1.2) skew(+9.2deg,+1.3deg);
+}
+80% {
+transform: scale(+1.8, -1.3) skew(-8.6deg,-7.3deg);
+}
+82% {
+transform: scale(-1.7, +2.1) skew(-4.1deg,+7.8deg);
+}
+84% {
+transform: scale(-2.4, -1.3) skew(+2.1deg,-4.8deg);
+}
+86% {
+transform: scale(+2.1, -1.6) skew(-7.0deg,-6.3deg);
+}
+88% {
+transform: scale(-1.7, +1.4) skew(-11.2deg,+6.9deg);
+}
+90% {
+transform: scale(-2.3, -2.4) skew(+4.7deg,-5.1deg);
+}
+92% {
+transform: scale(-2.1, +2.0) skew(+6.6deg,+10.9deg);
+}
+94% {
+transform: scale(-2.4, +2.2) skew(+5.4deg,-8.2deg);
+}
+96% {
+transform: scale(+2.3, -1.7) skew(+5.0deg,+7.3deg);
+}
+98% {
+transform: scale(+1.4, -1.2) skew(-3.4deg,+5.8deg);
+}
+100% {
+transform: scale(+1.3, +2.1) skew(+5.1deg,+10.1deg);
+}
+
+
 }
 
 @keyframes mainLoginBoxGlitch {
