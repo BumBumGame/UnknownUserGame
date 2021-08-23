@@ -79,6 +79,7 @@ function setStartPage(){
 
 				 case "NewGame":
          loadPageOnSiteLoad(newGameLoadingPage);
+				 startGlitchTimer();
 				 break;
 			}
 
@@ -114,6 +115,15 @@ function onUrlChange(e){
    //Get Slide Objects
 		var fromPage = getObjectFromPageParameter(currentSlide);
 		var toPage = getObjectFromPageParameter(urlPageParameter);
+
+		//Check for timer setting
+		if(fromPage === newGameLoadingPage){
+      abortGlitch();
+		}
+
+		if(toPage === newGameLoadingPage){
+			startGlitchTimer();
+		}
 
    //Update currentSlide
 	 currentSlide = urlPageParameter;
