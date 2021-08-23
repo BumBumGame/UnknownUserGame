@@ -56,7 +56,8 @@ function setAnimationInterval(elementID, intervalTime, turnOffTimeout){
 
 
 function startIntvervalAnimations(){
-    setAnimationInterval("cancelText", 4000, 200);
+    setAnimationInterval("cancelText", 1000, 300);
+    setAnimationInterval("TitleIcon", 2200, 200);
 }
 
 function getGlitchObjects(){
@@ -65,6 +66,8 @@ function getGlitchObjects(){
   glitchObjectArray.push([document.getElementById("gameLogin"), false]); //Main Login
   glitchObjectArray.push([document.getElementById("cancelButtonGlitchBox"), false]);//Glitch around cancel Button box
   glitchObjectArray.push([document.getElementById("cancelText"), true]);//cancelButton text glitch
+  glitchObjectArray.push([document.getElementById("TitleIcon"), true]);//Hacker icon glitch
+  glitchObjectArray.push([document.getElementById("loadingGlitchText"), false])//Loading text glitch
 
   return glitchObjectArray
 }
