@@ -56,6 +56,10 @@
   animation: none !important;
 }
 
+@keyframes disableDisplayAnimation {
+
+}
+
 @keyframes skewGlitchAnimation {
   0% {
 transform: scale(+1.4, +1.6) skew(+9.8deg,-6.6deg);

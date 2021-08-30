@@ -1,5 +1,5 @@
 var glitchTimer;
-const disableGlitchTimerDebug = false;
+const disableGlitchTimerDebug = true;
 
 function startGlitchTimer(){
   if(!disableGlitchTimerDebug){
@@ -18,6 +18,10 @@ function startGlitching(){
   enableGlitchEffect();
   //Set timeout for disablen The option to go back
   setTimeout(disableGoingBackButtons, 5000);
+}
+
+function  removeDisplayAnimation(){
+
 }
 
 function disableGoingBackButtons(){
