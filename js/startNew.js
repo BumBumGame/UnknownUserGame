@@ -3,7 +3,7 @@ const disableGlitchTimerDebug = false;
 
 function startGlitchTimer(){
   if(!disableGlitchTimerDebug){
-  glitchTimer = setTimeout(enableGlitchEffect, 8000);
+  glitchTimer = setTimeout(startGlitching, 8000);
  }
 }
 
@@ -12,6 +12,18 @@ function abortGlitch(){
   disableGlitchEffect();
   clearTimeout(glitchTimer);
   }
+}
+
+function startGlitching(){
+  enableGlitchEffect();
+  //Set timeout for disablen The option to go back
+  setTimeout(disableGoingBackButtons, 5000);
+}
+
+function disableGoingBackButtons(){
+  goBackFromNewGameButton.removeEventListener("click", abortGlitch);
+  goBackFromNewGameButton.removeEventListener("click", transitionFromNewGamePageToMainPage);
+  window.removeEventListener("popstate", onUrlChange);
 }
 
 goToNewGameButton.addEventListener("click", startGlitchTimer);
