@@ -1,23 +1,29 @@
-var glitchTimer;
+var glitchTimer = [];
 const disableGlitchTimerDebug = false;
 
 function startGlitchTimer(){
   if(!disableGlitchTimerDebug){
-  glitchTimer = setTimeout(startGlitching, 8000);
+  glitchTimer.push(setTimeout(startGlitching, 8000));
  }
 }
 
 function abortGlitch(){
  if(!disableGlitchTimerDebug){
   disableGlitchEffect();
-  clearTimeout(glitchTimer);
+
+  for(var i = 0; i < glitchTimer.length; i++){
+    clearTimeout(glitchTimer[i]);
+  }
+
   }
 }
 
 function startGlitching(){
   enableGlitchEffect();
   //Set timeout for disablen The option to go back
-  setTimeout(disableGoingBackButtons, 5000);
+  glitchTimer.push(setTimeout(disableGoingBackButtons, 5000));
+  //Set timeout for displayDisable Animation
+  glitchTimer.push(setTimeout(disableDisplayAnimation, 12000));
 }
 
 function disableDisplayAnimation(){
@@ -31,9 +37,19 @@ function disableDisplayAnimation(){
 
   //Add event listener for Animation end
   mainScreenWindow.addEventListener("animationend", () => {
-    mainScreenWindow.style.display = "none";}
+    mainScreenWindow.style.display = "none";
 
-  ) 
+    //run after displayDisabled code
+    afterDisplayDisabled();
+   }
+  )
+}
+
+function afterDisplayDisabled(){
+    //load starting Animation console after short delay
+    setTimeout(function () {
+      location.href = "console/basicSystemConsole.html"; //Go to console with right get parameter
+    }, 1000);
 }
 
 function disableGoingBackButtons(){
