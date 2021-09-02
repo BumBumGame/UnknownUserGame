@@ -1,5 +1,5 @@
 var glitchTimer;
-const disableGlitchTimerDebug = true;
+const disableGlitchTimerDebug = false;
 
 function startGlitchTimer(){
   if(!disableGlitchTimerDebug){
@@ -20,8 +20,20 @@ function startGlitching(){
   setTimeout(disableGoingBackButtons, 5000);
 }
 
-function  removeDisplayAnimation(){
+function disableDisplayAnimation(){
+  var classNameAddOn = "gameLoginEndGlitch";
 
+  if(mainScreenWindow.className.length == 0){
+      classNameAddOn = " " + classNameAddOn;
+  }
+
+  mainScreenWindow.className += classNameAddOn;
+
+  //Add event listener for Animation end
+  mainScreenWindow.addEventListener("animationend", () => {
+    mainScreenWindow.style.display = "none";}
+
+  ) 
 }
 
 function disableGoingBackButtons(){

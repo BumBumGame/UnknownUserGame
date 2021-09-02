@@ -32,6 +32,10 @@
   animation-play-state: running;
 }
 
+.gameLoginEndGlitch{
+  animation: disableDisplayAnimation 1s , mainLoginBoxGlitch 2s infinite !important;
+}
+
 #cancelText{
   animation: skewGlitchAnimation 1s infinite;
   animation-play-state: running;
@@ -57,7 +61,27 @@
 }
 
 @keyframes disableDisplayAnimation {
-
+   0%{
+     transform: scale(1,1);
+   }
+   10%{
+     transform: scale(1,1) skew(-2deg, 6deg);
+   }
+   18%{
+     transform: scale(1,1) skew(5deg, -4deg);
+   }
+   26%{
+     transform: scale(1, 1) skew(-3deg, 8deg);
+   }
+   38%{
+     transform: scale(0.2, 1) skew(2deg, 5deg);
+   }
+   60%{
+     transform: scale(0,0) skew(0, 0);
+   }
+   100%{
+     transform: scale(0,0) skew(0, 0);
+   }
 }
 
 @keyframes skewGlitchAnimation {

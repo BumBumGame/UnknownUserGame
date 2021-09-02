@@ -7,7 +7,11 @@ function disableGlitchEffect(){
 
    //Disable all Objects
    for(var i = 0; i < glitchObjectArray.length; i++){
+
+      if(!glitchObjectArray[i][0].className.includes("disableGlitch")){
      glitchObjectArray[i][0].className += " disableGlitch";
+      }
+
    }
 }
 
@@ -69,5 +73,5 @@ function getGlitchObjects(){
   glitchObjectArray.push([document.getElementById("TitleIcon"), true]);//Hacker icon glitch
   glitchObjectArray.push([document.getElementById("loadingGlitchText"), false])//Loading text glitch
 
-  return glitchObjectArray
+  return glitchObjectArray;
 }
