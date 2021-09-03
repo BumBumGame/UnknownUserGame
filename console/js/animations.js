@@ -226,6 +226,11 @@ checkSubClassStructure(){
 get animaitonplatime(){
   return this.animationPlayTime;
 }
+
+get animationRunningStatus(){
+  return this.animationRunning;
+}
+
 }
 
 /*------------------------------------------Define Animation Classes

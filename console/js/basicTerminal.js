@@ -76,6 +76,21 @@ function addCommandLineInputSpacing(){
   consoleLog.append(newLineObject);
 }
 
+//Integer for determening how many commands are executet before commandline is not reactivated (-1 = infinty)
+var commandsTillDeactivation = -1;
+
+//Set commandsTillDeactivation
+function setCommandsTillInputDeactivation(commandCount){
+  if(commandCount > 0){
+    commandsTillDeactivation = commandCount;
+  }
+}
+
+function clearCommandsTillInputDeactivation(){
+  commandsTillDeactivation = -1;
+}
+
+
 //Executed whenever Enter is pressed and Input is active
 function onCommandInput(){
    var inputCommand = consoleInput.value;
@@ -97,7 +112,16 @@ function onCommandInput(){
      addCommandLineInputSpacing();
      //Re-enable Input and clear input
      consoleInput.value = "";
-     enableCommandInput();
+
+     if(commandsTillDeactivation == 1){
+       commandsTillDeactivation = -1;
+     }else{
+       enableCommandInput();
+     }
+
+     if(commandsTillDeactivation > 0){
+      commandsTillDeactivation--;
+     }
      //scroll Intoview
      commandLine.scrollIntoView();
    }
@@ -134,7 +158,7 @@ function autoComplete(){
             consoleInput.value = fittingCommands[0];
             //Execute Command if in Auto Exec Mode
             if(autoCompleteAutoExec){
-               onEnterPress();
+               onCommandInput();
             }
          }else{
             var autoCompleteString = "";
@@ -171,7 +195,7 @@ function autoExecution(){
   if(fittingCommands.length == 1){
     //Check if command is fully put in
     if(consoleInput.value.trim().length == fittingCommands[0].length){
-      onEnterPress();
+      onCommandInput();
     }
 
   }

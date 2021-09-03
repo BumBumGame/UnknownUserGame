@@ -29,7 +29,7 @@ function consoleLoadingAnimation(){
   //Create Emoty line
   var emptyLineAnimation = new ConsoleLinePrint(0, [""]);
   //Found BackupFile Animation
-  var foundBackupFileText = "Found 1 Backupfile";
+  var foundBackupFileText = "Found 1 Backupfile.";
   var foundBackupFileAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, foundBackupFileText);
   //Checking file signature Animation
   var checkingSignatureAnimation = new ConsoleTextLoadingAnimationTyping(4000, 230, "Checking File signature", 4, true, typingAnimationSpeed);
@@ -77,8 +77,21 @@ function initConsoleConfirmInput(){
 }
 
 function confirmFirst(command){
-  //clear console and start loading file animation
-  alert("confirmed");
+  setCommandsTillInputDeactivation(1);
+  //start resseting console animation
+  var resetingAnimation = new ConsoleTextLoadingAnimationTyping(1500, 200, "Rebooting", 3, true, 100);
+
+  resetingAnimation.start();
+
+  var rebootingAnimationInterval = setInterval(
+    function() {
+      if(!resetingAnimation.animationRunningStatus){
+          clearInterval(rebootingAnimationInterval);
+          //clear console
+          clearCommandLog();
+      }
+
+    }, 50);
 }
 
 function declineConfirm(command){
