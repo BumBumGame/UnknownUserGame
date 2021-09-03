@@ -31,7 +31,7 @@ public function createAndCheckBasicDatabaseStructure(){
     );
 
     for($i = 0; $i < count($sqlStatements); $i++){
-       $db->query($sqlStatements[$i]);
+       $this->dbKeyObject->query($sqlStatements[$i]);
     }
 }
 

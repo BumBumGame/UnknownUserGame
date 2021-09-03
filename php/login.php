@@ -26,9 +26,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         exit();
       }
 
-       //generate Incoming Password hash
-			 $inputPasswordHash = password_hash($inputPassword, PASSWORD_DEFAULT);
-
        //Connect to Database with Database Object
        $database = new db();
 
@@ -37,7 +34,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
          echo "Error: Benutzername nicht gefunden!";
          exit();
        }
-       
+
 			 //Extract Password from Database
        $userID = $database->getUserIdForUserName($userName);
        $serverPasswordHash = $database->getPasswordForUserID($userID);
