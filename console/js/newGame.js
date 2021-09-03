@@ -5,6 +5,11 @@ function startNewGame(){
    var cueCheckInterval = setInterval(function () {
       if(!loadingQue.queCurrentlyRunning){
        //Init Console Input
+
+       //Print a few break
+       consoleLog.append(document.createElement("br"));
+       //-----
+
        initConsoleConfirmInput();
        clearInterval(cueCheckInterval);
       }
@@ -36,7 +41,7 @@ function consoleLoadingAnimation(){
   //Third EmptyLine
   var thirdEmptyLine = new ConsoleLinePrint(0, [""]);
   //Load this file? Question
-  var loadFileQuestionText = "Do you want to load this file anyway? (YES/NO)";
+  var loadFileQuestionText = "Do you want to load this file anyway? (Y/N)";
   var loadFileQuestionAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, loadFileQuestionText);
 
   //Add Animations to que
@@ -64,15 +69,21 @@ function printConsoleCopyright(){
 }
 
 function initConsoleConfirmInput(){
-  localCommands.addCommand("YES", "Confirm the Question", confirmFirst);
-  localCommands.addCommand("NO", "Decline the Question", declineConfirm);
+  localCommands.addCommand("Y", "Confirm the Question", confirmFirst);
+  localCommands.addCommand("N", "Decline the Question", declineConfirm);
+
+  setInputToAutoExecution();
   enableCommandInput();
 }
 
-function confirmFirst(){
-
+function confirmFirst(command){
+  //clear console and start loading file animation
+  alert("confirmed");
 }
 
-function declineConfirm(){
-
+function declineConfirm(command){
+  //starting canceling animation and returning back to Main menu
+  alert("denied");
 }
+
+startNewGame();

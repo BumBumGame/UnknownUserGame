@@ -111,6 +111,18 @@ function onEnterPress(){
    }
 }
 
+//Boolean for determening instant execution on sure autocomplete
+var autoCompleteAutoExec = false;
+
+//Method to set autocomplete to Auto exec
+function setAutoCompleteToAutoExec(){
+  autoCompleteAutoExec = true;
+}
+
+function setAutoCompleteToManualExec(){
+  autoCompleteAutoExec = false;
+}
+
 function autoComplete(){
   //If Console input is active
   if(document.activeElement == consoleInput && consoleInput.value.length != 0 ){
@@ -120,6 +132,10 @@ function autoComplete(){
 
          if(fittingCommands.length == 1){
             consoleInput.value = fittingCommands[0];
+            //Execute Command if in Auto Exec Mode
+            if(autoCompleteAutoExec){
+               onEnterPress();
+            }
          }else{
             var autoCompleteString = "";
 
@@ -132,6 +148,30 @@ function autoComplete(){
             printOnConsole(""); //Print an empty line
          }
 
+    }
+
+  }
+
+}
+
+//Set Auto execution when Full Command is inputted
+function setInputToAutoExecution(){
+  //Set eventListener on input change
+  consoleInput.addEventListener("input", autoExecution);
+}
+
+function disableInputAutoExectution(){
+  consoleInput.removeEventListener("input", autoExecution);
+}
+
+function autoExecution(){
+  var fittingCommands = localCommands.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
+
+  //Only if there is one clear option for a command
+  if(fittingCommands.length == 1){
+    //Check if command is fully put in
+    if(consoleInput.value.trim().length == fittingCommands[0].length){
+      onEnterPress();
     }
 
   }
