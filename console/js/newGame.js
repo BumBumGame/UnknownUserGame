@@ -73,16 +73,18 @@ function initConsoleConfirmInput(){
   localCommands.addCommand("N", "Decline the Question", declineConfirm);
 
   setInputToAutoExecution();
+  setCommandsTillInputDeactivation(1);
   enableCommandInput();
 }
 
 function confirmFirst(command){
-  setCommandsTillInputDeactivation(1);
   //start resseting console animation
-  var resetingAnimation = new ConsoleTextLoadingAnimationTyping(1500, 200, "Rebooting", 3, true, 100);
+  var resetingAnimation = new ConsoleTextLoadingAnimationTyping(1100, 200, "Rebooting", 3, true, 100);
 
+  //Start reseting Animation
   resetingAnimation.start();
 
+ //Wait till animation is finished
   var rebootingAnimationInterval = setInterval(
     function() {
       if(!resetingAnimation.animationRunningStatus){
@@ -91,12 +93,32 @@ function confirmFirst(command){
           clearCommandLog();
       }
 
-    }, 50);
+    }, 10);
 }
 
 function declineConfirm(command){
   //starting canceling animation and returning back to Main menu
-  alert("denied");
+  var cancelingAnimation = new ConsoleTextLoadingAnimationTyping(1100, 200, "Canceling Request", 3, true, 100);
+
+  //Start cancelling Animation
+  cancelingAnimation.start();
+
+  //Wait till animation is finished
+  var cancelingInterval = setInterval(
+    function () {
+
+        if(!cancelingAnimation.animationRunningStatus){
+          clearInterval(cancelingInterval);
+          //clear Console
+          clearCommandLog();
+          //Go back to start page with slight timeout
+          setTimeout(function () {
+            location.href = "../index.html?startPage=MainPage";
+          }, 1000);
+        }
+
+    }, 10);
+
 }
 
 startNewGame();
