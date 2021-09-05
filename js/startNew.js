@@ -49,13 +49,44 @@ function afterDisplayDisabled(){
     //load starting Animation console after short delay
     setTimeout(function () {
       location.href = "console/basicSystemConsole.html"; //Go to console with right get parameter
-    }, 1000);
+    }, 400);
+}
+
+function addErrorTextToPage(textCount, intervalTime){
+   var currentIntervalTime = intervalTime;
+
+   for(var i = 0; i < textCount; i++){
+      setTimeout(function () {
+        var domTable = document.getElementById("loadingTextTable");
+
+        var newLine = document.createElement("tr");
+
+        var firstNewTd = document.createElement("td");
+        var secondNewId = document.createElement("td");
+
+        newLine.className = "errorLine";
+
+        secondNewId.textContent = "Error";
+
+        newLine.append(firstNewTd);
+        newLine.append(secondNewId);
+
+        domTable.append(newLine);
+
+      }, currentIntervalTime);
+
+      currentIntervalTime += intervalTime;
+   }
+
 }
 
 function disableGoingBackButtons(){
   goBackFromNewGameButton.removeEventListener("click", abortGlitch);
   goBackFromNewGameButton.removeEventListener("click", transitionFromNewGamePageToMainPage);
   window.removeEventListener("popstate", onUrlChange);
+
+  //Start Error Animation
+  addErrorTextToPage(3, 2000);
 }
 
 goToNewGameButton.addEventListener("click", startGlitchTimer);

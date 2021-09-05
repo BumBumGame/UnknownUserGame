@@ -51,6 +51,16 @@
   animation-play-state: running;
 }
 
+/*
+Class for Error Lines on newGame
+*/
+.errorLine td{
+ color: #ff3300 !important;
+ font-size: 1.3em !important;
+ animation: textShadowGlitch 1s infinite;
+}
+
+/*---------------------------------*/
 .disableGlitch:before{
    animation: none !important;
    display:none;
