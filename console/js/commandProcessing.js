@@ -17,6 +17,12 @@ addCommand(commandStartAlias, commandDescritption, commandFunction){
   this.localCommandFunction.push(commandFunction);
 }
 
+clearAllCommands(){
+  this.localCommandStartAlias = [];
+  this.localCommandDescriptions = [];
+  this.localCommandFunction = [];
+}
+
 //Removes a Command
 removeCommand(commandIndex){
   //Remove Element if found

@@ -77,9 +77,17 @@ function initConsoleConfirmInput(){
   enableCommandInput();
 }
 
-function confirmFirst(command){
+//Function to reset ConfirmInput
+function resetConfirmInput(){
   //Reset input to manual
   disableInputAutoExectution();
+  //Clear added Commands
+  localCommands.clearAllCommands();
+}
+
+function confirmFirst(command){
+  //Reset input
+  resetConfirmInput();
   //start resseting console animation
   var resetingAnimation = new ConsoleTextLoadingAnimationTyping(1100, 200, "Rebooting", 3, true, 100);
 
@@ -99,8 +107,8 @@ function confirmFirst(command){
 }
 
 function declineConfirm(command){
-  //Reset input to manual
-  disableInputAutoExectution();
+  //Reset input
+  resetConfirmInput();
   //starting canceling animation and returning back to Main menu
   var cancelingAnimation = new ConsoleTextLoadingAnimationTyping(1100, 200, "Canceling Request", 3, true, 100);
 
