@@ -76,6 +76,21 @@ function addCommandLineInputSpacing(){
   consoleLog.append(newLineObject);
 }
 
+//Integer for determening how many commands are executet before commandline is not reactivated (-1 = infinty)
+var commandsTillDeactivation = -1;
+
+//Set commandsTillDeactivation
+function setCommandsTillInputDeactivation(commandCount){
+  if(commandCount > 0){
+    commandsTillDeactivation = commandCount;
+  }
+}
+
+function clearCommandsTillInputDeactivation(){
+  commandsTillDeactivation = -1;
+}
+
+
 //Executed whenever Enter is pressed and Input is active
 function onCommandInput(){
    var inputCommand = consoleInput.value;
@@ -97,7 +112,16 @@ function onCommandInput(){
      addCommandLineInputSpacing();
      //Re-enable Input and clear input
      consoleInput.value = "";
-     enableCommandInput();
+
+     if(commandsTillDeactivation == 1){
+       commandsTillDeactivation = -1;
+     }else{
+       enableCommandInput();
+     }
+
+     if(commandsTillDeactivation > 0){
+      commandsTillDeactivation--;
+     }
      //scroll Intoview
      commandLine.scrollIntoView();
    }
@@ -111,6 +135,18 @@ function onEnterPress(){
    }
 }
 
+//Boolean for determening instant execution on sure autocomplete
+var autoCompleteAutoExec = false;
+
+//Method to set autocomplete to Auto exec
+function setAutoCompleteToAutoExec(){
+  autoCompleteAutoExec = true;
+}
+
+function setAutoCompleteToManualExec(){
+  autoCompleteAutoExec = false;
+}
+
 function autoComplete(){
   //If Console input is active
   if(document.activeElement == consoleInput && consoleInput.value.length != 0 ){
@@ -120,6 +156,10 @@ function autoComplete(){
 
          if(fittingCommands.length == 1){
             consoleInput.value = fittingCommands[0];
+            //Execute Command if in Auto Exec Mode
+            if(autoCompleteAutoExec){
+               onCommandInput();
+            }
          }else{
             var autoCompleteString = "";
 
@@ -132,6 +172,30 @@ function autoComplete(){
             printOnConsole(""); //Print an empty line
          }
 
+    }
+
+  }
+
+}
+
+//Set Auto execution when Full Command is inputted
+function setInputToAutoExecution(){
+  //Set eventListener on input change
+  consoleInput.addEventListener("input", autoExecution);
+}
+
+function disableInputAutoExectution(){
+  consoleInput.removeEventListener("input", autoExecution);
+}
+
+function autoExecution(){
+  var fittingCommands = localCommands.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
+
+  //Only if there is one clear option for a command
+  if(fittingCommands.length == 1){
+    //Check if command is fully put in
+    if(consoleInput.value.trim().length == fittingCommands[0].length){
+      onCommandInput();
     }
 
   }

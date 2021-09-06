@@ -25,7 +25,7 @@ removeCommand(commandIndex){
     localCommandDescriptions.splice(1, commandIndex);
     localCommandFunction.splice(1, commandIndex);
   }else{
-    throw "Error: Command not found in Defintition!"
+    throw "Error: Command not found in Defintition!";
   }
 
 }
