@@ -60,6 +60,14 @@ function consoleLoadingAnimation(){
   return loadingAnimationQue;
 }
 
+function getLoadingFileAnimationQue(){
+   var standardTypingAnimaitonSpeed = 100;
+   //AnimationQue
+   var loadingFileAnimationQue = new AnimationQueue();
+   //Loading Animation
+   
+}
+
 function printConsoleCopyright(){
   printOnConsole("\u00A9 2015 BumBumGame Corp.");
   printOnConsole("Alle Rechte vorbehalten");
