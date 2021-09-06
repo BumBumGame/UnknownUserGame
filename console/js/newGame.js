@@ -78,6 +78,8 @@ function initConsoleConfirmInput(){
 }
 
 function confirmFirst(command){
+  //Reset input to manual
+  disableInputAutoExectution();
   //start resseting console animation
   var resetingAnimation = new ConsoleTextLoadingAnimationTyping(1100, 200, "Rebooting", 3, true, 100);
 
@@ -97,6 +99,8 @@ function confirmFirst(command){
 }
 
 function declineConfirm(command){
+  //Reset input to manual
+  disableInputAutoExectution();
   //starting canceling animation and returning back to Main menu
   var cancelingAnimation = new ConsoleTextLoadingAnimationTyping(1100, 200, "Canceling Request", 3, true, 100);
 
