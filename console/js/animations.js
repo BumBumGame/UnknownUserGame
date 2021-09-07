@@ -223,7 +223,7 @@ checkSubClassStructure(){
   }
 }
 
-get animaitonplatime(){
+get animationplatime(){
   return this.animationPlayTime;
 }
 
