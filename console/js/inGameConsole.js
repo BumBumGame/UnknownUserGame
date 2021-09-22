@@ -96,16 +96,25 @@ for(var i = 0; i < responseToLog.length; i++){
   this.consoleLog.append(newDiv);
 }
 
+//Clears all text in command input
+clearCommandInput(){
+  this.consoleInput.value = "";
+}
+
 //Hides InputCommandLine
 disableCommandInput(){
+ this.clearCommandInput();
  this.commandLine.style.display = "none";
+ this.removeActiveEventListenerForConsole();
  this.consoleInput.disabled = true;
 }
 
 //Shows InputCommandLine of Console
 enableCommandInput(){
+  this.clearCommandInput();
   this.commandLine.removeAttribute("style");
   this.consoleInput.removeAttribute("disabled");
+  this.addActiveEventListenerForConsole();
   this.consoleInput.focus();
 }
 
