@@ -1,4 +1,4 @@
-class inGameConsole{
+class InGameConsole{
 //Console log Object
 consoleLog;
 //Console input Object
@@ -9,9 +9,10 @@ commandLine;
 commandsTillDeactivation;
 //autoCompleteAutoExec Setting (Boolean)
 autoCompleteAutoExec;
+//commandDefinition Object
+commandDefinition;
 
-
-constructor(consoleLogObject, consoleInputObject, commandLineObject){
+constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefinition){
   //Set console Log Object
   this.consoleLog = consoleLogObject;
   //Set Console Input Object
@@ -22,6 +23,21 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject){
   this.commandsTillDeactivation = -1;
   //Set defeault for autoCompleteAutoExec Setting
   this.autoCompleteAutoExec = false;
+  //Set commandDefinition Object
+  this.commandDefinition = commandDefinition;
+
+  //Set event listener
+  //Add Eventlistener for KeyboardInput
+  this.addActiveEventListenerForConsole();
+}
+
+//Getter for Objects
+get consoleLogObject(){
+  return this.consoleLog;
+}
+
+get consoleInput(){
+  return this.consoleInput;
 }
 
 //Clears complete CommandBlock of Console
@@ -123,7 +139,7 @@ onCommandInput(){
      //Put Command in Log
      this.logCommand(inputCommand);
      //process Command
-     var commandProcessing = new commandProcessor(inputCommand);
+     var commandProcessing = new CommandProcessor(inputCommand, this.commandDefinition);
      commandProcessing.processCommand();
      //Print out Answer to Command if exists
      if(commandProcessing.commandResponse != null){
@@ -146,6 +162,7 @@ onCommandInput(){
      //scroll Intoview
      this.commandLine.scrollIntoView();
    }
+ }
 
 //Handles press of Enter Key
 onEnterPress(){
@@ -169,7 +186,7 @@ setAutoCompleteToManualExec(){
 autoComplete(){
   //If Console input is active
   if(document.activeElement === this.consoleInput && this.consoleInput.value.length != 0 ){
-    var fittingCommands = localCommands.getCommandsStartingWith(this.consoleInput.value.trim().toLowerCase());
+    var fittingCommands = this.commandDefinition.getCommandsStartingWith(this.consoleInput.value.trim().toLowerCase());
 
     if(fittingCommands.length != 0){
 
@@ -190,25 +207,24 @@ autoComplete(){
             this.printOnConsole(autoCompleteString.trim());
             this.printOnConsole(""); //Print an empty line
          }
-
-    }
-
-  }
+       }
+     }
+   }
 
 //Method that sets input of console to Auto execution
 setInputToAutoExecution(){
   //Set eventListener on input change
-  this.consoleInput.addEventListener("input", this.autoExecution);
+  this.consoleInput.addEventListener("input", this.autoExecution.bind(this));
 }
 
 //Methids that disables Auto Execution for consoleInput
 disableInputAutoExectution(){
-  this.consoleInput.removeEventListener("input", autoExecution);
+  this.consoleInput.removeEventListener("input", this.autoExecution.bind(this));
 }
 
 //Method for autoExecution
 autoExecution(){
-  var fittingCommands = localCommands.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
+  var fittingCommands = this.commandDefinition.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
 
   //Only if there is one clear option for a command
   if(fittingCommands.length == 1){
@@ -222,7 +238,7 @@ autoExecution(){
 }
 
 //Handles Keyboard events
-function onKeyPress(e){
+onKeyPress(e){
     switch(e.keyCode){
       case 13: //If Enter is pressed
       this.onEnterPress();
@@ -240,6 +256,8 @@ function onKeyPress(e){
         this.consoleInput.value += e.key;
         this.consoleInput.focus();
         this.commandLine.scrollIntoView();
+        //Fire input event
+        this.consoleInput.dispatchEvent(new Event('input', { bubbles: true }));
       }
       break;
     }
@@ -249,11 +267,11 @@ function onKeyPress(e){
 
 addActiveEventListenerForConsole(){
   //Add Eventlistener for KeyboardInput
-  document.addEventListener("keydown", this.onKeyPress);
+  document.addEventListener("keydown", this.onKeyPress.bind(this));
 }
 
 removeActiveEventListenerForConsole(){
-  document.removeEventListener("keydown", this.onKeyPress);
+  document.removeEventListener("keydown", this.onKeyPress.bind(this));
 }
 
 }

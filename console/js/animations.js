@@ -192,8 +192,10 @@ class Animation{
 animationPlayTime;
 animationStepTime;
 animationRunning;
+//Console Object to be animated to
+consoleObject;
 
-  constructor(animationPlayTime, animationStepTime){
+  constructor(animationPlayTime, animationStepTime, consoleObject){
      //This class is not allowed to be initialized alone
      if (this.constructor === Animation) {
             throw new TypeError('Abstract class "Animation" cannot be instantiated directly.');
@@ -204,6 +206,8 @@ animationRunning;
      this.animationPlayTime = animationPlayTime;
      //Set StepTime
      this.animationStepTime = animationStepTime;
+     //Save reference to Console Object
+     this.consoleObject = consoleObject;
      //Init Animation as not running
      this.animationRunning = false;
   }
@@ -243,6 +247,7 @@ get animationRunningStatus(){
 //@param maxDotCount (Integer) Number of dots that will be displayed (def:3)
 //@param steptime (Integer in ms) Time between each step (=speed)
 //@param animationText (String) Text that is displayed by the Animation
+//@param consoleObject (Object: InGameConsole) Console animation will be aplied to
 class ConsoleTextLoadingAnimation extends Animation{
 maxDotCount;
 animationObject;
@@ -254,8 +259,8 @@ animationMilliseconds;
 totalStepCount;
 currentStep;
 
-    constructor(playtime, steptime, maxDotCount, animationText){
-       super(playtime, steptime);
+    constructor(playtime, steptime, maxDotCount, animationText, consoleObject){
+       super(playtime, steptime, consoleObject);
        //Calculate Total Step count
        this.totalStepCount = Math.floor(playtime/steptime);
        //Set currentStep to 0
@@ -308,7 +313,7 @@ start(){
   if(this.animationRunning == false){
     //Create New Element if not exists
     if(this.animationObject == null){
-     printOnConsole(this.animationText, this.animationIDString);
+     this.consoleObject.printOnConsole(this.animationText, this.animationIDString);
      this.animationObject = document.getElementById(this.animationIDString);
    }
      this.animationRunning = true;
@@ -349,8 +354,9 @@ deleteDomElement(){
 }
 
 //Displays Text loading animation in Console according to parameters
-//@param playtime (Integer in ms) Time after the animation stops (gets paused) (playtime = 0 --> indefinite)
+//@param playtime (Integer in ms) Time after the animation stops (gets paused) (playtime = 0 --> infinite)
 //@param animationText (String) Text to be printed
+//@param consoleObject (Object: InGameConsole) Console animation will be aplied to
 class ConsoleTextTypingAnimation extends Animation{
 animationText;
 currentAnimationCharIndex;
@@ -360,11 +366,11 @@ animationIDString;
 animationMilliseconds;
 
 
-constructor(playtime, animationText){
+constructor(playtime, animationText, consoleObject){
       //Calculate Animation step Time
       var animationStepTime = playtime/animationText.length;
      //Call Animation Constructor
-     super(playtime, animationStepTime);
+     super(playtime, animationStepTime, consoleObject);
      //Animations text stellen
      this.animationText = animationText;
      //Set startIndex to 0
@@ -378,7 +384,7 @@ start(){
  if(this.animationRunning == false){
   //Create Animation Object if it doesnt exist yet
    if(this.animationObject == null){
-    printOnConsole("", this.animationIDString);
+    this.consoleObject.printOnConsole("", this.animationIDString);
     this.animationObject = document.getElementById(this.animationIDString);
   }
 
@@ -456,6 +462,7 @@ get currentAnimationObject(){
 //@param animationText (String) Text to be printed
 //@param onlyDotsAfterStart (Boolean) Set if onlyDots will be animated after first text print or Text will be printed new everytime as well
 //@param typingTextPlayTime Time of the typing Animation on start
+//@param consoleObject (Object: InGameConsole) Console animation will be aplied to
 class ConsoleTextLoadingAnimationTyping extends Animation{
 animationObject;
 animationText;
@@ -465,9 +472,9 @@ onlyConstantDotAnimation;
 
 animationMilliseconds;
 
-constructor(playtime, steptime, animationText, maxDotCount, onlyDotsAfterStart, typingTextPlayTime){
+constructor(playtime, steptime, animationText, maxDotCount, onlyDotsAfterStart, typingTextPlayTime, consoleObject){
       //Call Animation Constructor
-      super(playtime, steptime);
+      super(playtime, steptime, consoleObject);
       //Save animationtext
       this.animationText = animationText;
       //Set maxDotCount
@@ -475,9 +482,9 @@ constructor(playtime, steptime, animationText, maxDotCount, onlyDotsAfterStart, 
       //Save onlyDotsAfterStart (Boolean)
       this.onlyConstantDotAnimation = onlyDotsAfterStart;
       //Create typingAnimation
-      this.typingAnimationObject = new ConsoleTextTypingAnimation(typingTextPlayTime, animationText);
+      this.typingAnimationObject = new ConsoleTextTypingAnimation(typingTextPlayTime, animationText, consoleObject);
       //Create LoadingAnimaitonObject
-      this.loadingAnimationObject = new ConsoleTextLoadingAnimation(playtime, steptime, maxDotCount, animationText);
+      this.loadingAnimationObject = new ConsoleTextLoadingAnimation(playtime, steptime, maxDotCount, animationText, consoleObject);
       //Set animationObject to null
       this.animationObject = null;
 }
@@ -603,6 +610,10 @@ deleteDomElement(){
 
 }
 
+//Prints different lines on the console without individual line animations
+//@param playtime (Integer in ms) Time after the animation stops (gets paused)
+//@param lines (String Array) Contains all lines to be printed as Strings
+//@param consoleObject (Object: InGameConsole) Console animation will be aplied to
 class ConsoleLinePrint extends Animation{
 textLineArray;
 currentLine;
@@ -611,11 +622,11 @@ animationClassString;
 
 animationMilliseconds;
 
-  constructor(playtime, lines){
+  constructor(playtime, lines, consoleObject){
     //Calculate Steptime
      var steptime = playtime/lines.length;
      //Call aniamtion construtor
-     super(playtime, steptime);
+     super(playtime, steptime, consoleObject);
      //save array in Attribute
      this.textLineArray = lines;
      //Set standard for currentLine
@@ -656,7 +667,7 @@ animationMilliseconds;
     var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
     //Check if Next execution can be made
       if(millisSinceLastExecution >= this.animationStepTime){
-        var lineObject = printOnConsole(this.textLineArray[this.currentLine], this.animationIDString);
+        var lineObject = this.consoleObject.printOnConsole(this.textLineArray[this.currentLine], this.animationIDString);
         //Add to Object Array
         this.animationObjects.push(lineObject);
         //Goto next line

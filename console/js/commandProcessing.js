@@ -1,5 +1,5 @@
-//Class that holds all Local Command defintitions----------------------------------------------------------------------
-class localCommandDefinition{
+//Class that holds all Command defintitions for a console----------------------------------------------------------------------
+class CommandDefinition{
 localCommandStartAlias;
 localCommandDescriptions;
 localCommandFunction;
@@ -105,29 +105,29 @@ return commandResponse;
 
 //-------------------------------------------------
 //Create Global Command Definition Object
-var localCommands = new localCommandDefinition();
+const localCommands = new CommandDefinition();
 //-------------------------------------------------
 
 //Class that is used to process Commands-------------------------------------------------------------------------------------------
-class commandProcessor{
-//Object that contains all Command definitions
-localCommandDefinition;
-
+class CommandProcessor{
 //Current command Answer variable
 currentCommandAnswer;
-
 //current Command
 currentCommand;
+//Current CommandDefinition
+commandDefinition;
 
-constructor(command){
+constructor(command, commandDefinition){
   //Save Command to Datafield
  this.currentCommand = command.toLowerCase().trim();
  //Standard init CommandAnswer
  this.currentCommandAnswer = null;
+ //Set commandDefinition Reference
+ this.commandDefinition = commandDefinition;
 }
 
 processCommand(){
-  var currentCommandResponse = localCommands.executeCommandFunction(this.currentCommand);
+  var currentCommandResponse = this.commandDefinition.executeCommandFunction(this.currentCommand);
   //Check if Command exists local
   if(currentCommandResponse != null) {
     //If he does exist

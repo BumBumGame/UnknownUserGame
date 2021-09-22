@@ -1,5 +1,5 @@
 function startNewGame(){
-   disableCommandInput()
+   mainConsoleObject.disableCommandInput()
    var loadingQue = consoleLoadingAnimation();
 
    var cueCheckInterval = setInterval(function () {
@@ -7,7 +7,7 @@ function startNewGame(){
        //Init Console Input
 
        //Print a few break
-       consoleLog.append(document.createElement("br"));
+       mainConsoleObject.consoleLogObject.append(document.createElement("br"));
        //-----
 
        initConsoleConfirmInput();
@@ -22,27 +22,27 @@ function consoleLoadingAnimation(){
   //Define ques and animations
   var loadingAnimationQue = new AnimationQueue();
   //var loadingAnimationQue = new AnimationQueue();
-  var failSafeStartAnimation = new ConsoleTextLoadingAnimationTyping(4000, 230, "Starting Failsafe", 4, true, typingAnimationSpeed);
+  var failSafeStartAnimation = new ConsoleTextLoadingAnimationTyping(4000, 230, "Starting Failsafe", 4, true, typingAnimationSpeed, mainConsoleObject);
   //Completion Text animation
   var partiallyCompleteFailsafeText = "Failsafe started.";
-  var failSafePartiallyCompleteAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, partiallyCompleteFailsafeText);
+  var failSafePartiallyCompleteAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, partiallyCompleteFailsafeText, mainConsoleObject);
   //Create Emoty line
-  var emptyLineAnimation = new ConsoleLinePrint(0, [""]);
+  var emptyLineAnimation = new ConsoleLinePrint(0, [""], mainConsoleObject);
   //Found BackupFile Animation
   var foundBackupFileText = "Found 1 Backupfile.";
-  var foundBackupFileAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, foundBackupFileText);
+  var foundBackupFileAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, foundBackupFileText, mainConsoleObject);
   //Checking file signature Animation
-  var checkingSignatureAnimation = new ConsoleTextLoadingAnimationTyping(4000, 230, "Checking File signature", 4, true, typingAnimationSpeed);
+  var checkingSignatureAnimation = new ConsoleTextLoadingAnimationTyping(4000, 230, "Checking File signature", 4, true, typingAnimationSpeed, mainConsoleObject);
   //Second Empty lien animaiton
-  var secondEmptyLine = new ConsoleLinePrint(0, [""]);
+  var secondEmptyLine = new ConsoleLinePrint(0, [""], mainConsoleObject);
   //File signature invalid Error Animation
   var signatureInvalidText = "Warning: File signaure invalid! It is not recommended to run this file!";
-  var signatureInvalidAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, signatureInvalidText);
+  var signatureInvalidAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, signatureInvalidText, mainConsoleObject);
   //Third EmptyLine
-  var thirdEmptyLine = new ConsoleLinePrint(0, [""]);
+  var thirdEmptyLine = new ConsoleLinePrint(0, [""], mainConsoleObject);
   //Load this file? Question
   var loadFileQuestionText = "Do you want to load this file anyway? (Y/N)";
-  var loadFileQuestionAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, loadFileQuestionText);
+  var loadFileQuestionAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, loadFileQuestionText, mainConsoleObject);
 
   //Add Animations to que
   loadingAnimationQue.addAnimation(failSafeStartAnimation, 2000);
@@ -65,7 +65,7 @@ function getLoadingFileAnimationQue(){
    //AnimationQue
    var loadingFileAnimationQue = new AnimationQueue();
    //Loading Animation
-   
+
 }
 
 function printConsoleCopyright(){
@@ -80,15 +80,15 @@ function initConsoleConfirmInput(){
   localCommands.addCommand("Y", "Confirm the Question", confirmFirst);
   localCommands.addCommand("N", "Decline the Question", declineConfirm);
 
-  setInputToAutoExecution();
-  setCommandsTillInputDeactivation(1);
-  enableCommandInput();
+  mainConsoleObject.setInputToAutoExecution();
+  mainConsoleObject.setCommandsTillInputDeactivation(1);
+  mainConsoleObject.enableCommandInput();
 }
 
 //Function to reset ConfirmInput
 function resetConfirmInput(){
   //Reset input to manual
-  disableInputAutoExectution();
+  mainConsoleObject.disableInputAutoExectution();
   //Clear added Commands
   localCommands.clearAllCommands();
 }
@@ -97,7 +97,7 @@ function confirmFirst(command){
   //Reset input
   resetConfirmInput();
   //start resseting console animation
-  var resetingAnimation = new ConsoleTextLoadingAnimationTyping(1100, 200, "Rebooting", 3, true, 100);
+  var resetingAnimation = new ConsoleTextLoadingAnimationTyping(1100, 200, "Rebooting", 3, true, 100, mainConsoleObject);
 
   //Start reseting Animation
   resetingAnimation.start();
@@ -108,7 +108,7 @@ function confirmFirst(command){
       if(!resetingAnimation.animationRunningStatus){
           clearInterval(rebootingAnimationInterval);
           //clear console
-          clearCommandLog();
+          mainConsoleObject.clearCommandLog();
       }
 
     }, 10);
@@ -118,7 +118,7 @@ function declineConfirm(command){
   //Reset input
   resetConfirmInput();
   //starting canceling animation and returning back to Main menu
-  var cancelingAnimation = new ConsoleTextLoadingAnimationTyping(1100, 200, "Canceling Request", 3, true, 100);
+  var cancelingAnimation = new ConsoleTextLoadingAnimationTyping(1100, 200, "Canceling Request", 3, true, 100, mainConsoleObject);
 
   //Start cancelling Animation
   cancelingAnimation.start();
@@ -130,7 +130,7 @@ function declineConfirm(command){
         if(!cancelingAnimation.animationRunningStatus){
           clearInterval(cancelingInterval);
           //clear Console
-          clearCommandLog();
+          mainConsoleObject.clearCommandLog();
           //Go back to start page with slight timeout
           setTimeout(function () {
             location.href = "../index.html?startPage=MainPage";
