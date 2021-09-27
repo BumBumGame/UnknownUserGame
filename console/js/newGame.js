@@ -147,8 +147,8 @@ function createLoadFileAnimationQue(){
 
 function loadFileAnimation(){
     //Create animation Que
-    var animation = new ProgressBarLoadingAnimation(5000, 0, 100, 50, '=', " ", true, true, 1, "Test", mainConsoleObject);
-    animation.start();
+
 }
 mainConsoleObject.disableCommandInput();
-loadFileAnimation();
+var animation = new ProgressBarLoadingAnimation(5000, 0, 100, 50, '=', " ", true, true, 1, "Test", mainConsoleObject);
+animation.start();

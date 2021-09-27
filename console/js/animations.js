@@ -815,7 +815,7 @@ animationMilliseconds;
       }
     }
 
-    start(){
+    start(initStep = false){
       if(!this.animationRunning){
 
         //Create starting Object if none exists
@@ -826,7 +826,9 @@ animationMilliseconds;
         }
 
         //Setting running status to running
+        if(!initStep){
         this.animationRunning = true;
+        }
 
         //Setting current millis
         this.animationMilliseconds = performance.now();
@@ -835,11 +837,13 @@ animationMilliseconds;
 
         setTimeout(prevThis.animationStep.bind(this), this.animationStepTime);
 
+        if(!initStep){
         let loadingSpinIntervalTime = 100;
         setTimeout(function() {
           prevThis.spinningAnimationStep(loadingSpinIntervalTime);
         }, loadingSpinIntervalTime);
       }
+     }
     }
 
     animationStep(){
@@ -970,11 +974,25 @@ animationMilliseconds;
     }
 
     reset(){
-      //TODO
+      //Stop animation
+      this.stop();
+      //Reset values
+      this.currentPercentage = this.startPercentage;
+      this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.startPercentage/100));
+      //Run first animation step by starting and then stopping
+      this.animationStep(true);
+      //Remove loading spinning animation
+      this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, '');
     }
 
     deleteDomElement(){
-      //TODO
+      //Reset animation
+      this.reset();
+      //delete DOM element
+      if(this.animationObject != null){
+        this.animationObject.remove();
+        this.animationObject = null;
+      }
     }
 
 }
