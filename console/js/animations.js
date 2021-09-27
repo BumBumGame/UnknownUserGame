@@ -887,7 +887,9 @@ animationMilliseconds;
           newGeneratedString += " ";
 
           //Print spinning loading animation char
+          if(this.currentPercentage != this.startPercentage){
           newGeneratedString += this.spinningAnimationStatus;
+          }
 
           //Print new string
           this.animationObject.textContent = newGeneratedString;
@@ -980,7 +982,7 @@ animationMilliseconds;
       this.currentPercentage = this.startPercentage;
       this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.startPercentage/100));
       //Run first animation step by starting and then stopping
-      this.animationStep(true);
+      this.start(true);
       //Remove loading spinning animation
       this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, '');
     }
