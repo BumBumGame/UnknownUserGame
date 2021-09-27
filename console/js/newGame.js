@@ -60,14 +60,6 @@ function consoleLoadingAnimation(){
   return loadingAnimationQue;
 }
 
-function getLoadingFileAnimationQue(){
-   var standardTypingAnimaitonSpeed = 100;
-   //AnimationQue
-   var loadingFileAnimationQue = new AnimationQueue();
-   //Loading Animation
-
-}
-
 function printConsoleCopyright(){
   printOnConsole("\u00A9 2015 BumBumGame Corp.");
   printOnConsole("Alle Rechte vorbehalten");
@@ -78,7 +70,7 @@ function printConsoleCopyright(){
 
 function initConsoleConfirmInput(){
   localCommands.addCommand("Y", "Confirm the Question", confirmFirst);
-  localCommands.addCommand("N", "Decline the Question", declineConfirm);
+  localCommands.addCommand("N", "Decline the Question", declineConfirmFirst);
 
   mainConsoleObject.setInputToAutoExecution();
   mainConsoleObject.setCommandsTillInputDeactivation(1);
@@ -114,7 +106,7 @@ function confirmFirst(command){
     }, 10);
 }
 
-function declineConfirm(command){
+function declineConfirmFirst(command){
   //Reset input
   resetConfirmInput();
   //starting canceling animation and returning back to Main menu
@@ -134,11 +126,29 @@ function declineConfirm(command){
           //Go back to start page with slight timeout
           setTimeout(function () {
             location.href = "../index.html?startPage=MainPage";
-          }, 1000);
+          }, 800);
         }
 
     }, 10);
 
 }
 
-startNewGame();
+function createLoadFileAnimationQue(){
+  //init que
+  var typingAnimationSpeed = 100;
+  //Define ques and animations
+  var loadingAnimationQue = new AnimationQueue();
+  //add animations
+
+
+  //Return animation que
+  return loadingAnimationQue;
+}
+
+function loadFileAnimation(){
+    //Create animation Que
+    var animation = new ProgressBarLoadingAnimation(5000, 0, 100, 50, '=', " ", true, true, 1, "Test", mainConsoleObject);
+    animation.start();
+}
+mainConsoleObject.disableCommandInput();
+loadFileAnimation();
