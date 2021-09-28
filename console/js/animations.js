@@ -831,28 +831,36 @@ animationMilliseconds;
         }
 
         //Setting current millis
+        if(!initStep){
         this.animationMilliseconds = performance.now();
+      }
 
         let prevThis = this;
-
-        setTimeout(prevThis.animationStep.bind(this), this.animationStepTime);
 
         if(!initStep){
         let loadingSpinIntervalTime = 100;
         setTimeout(function() {
+          prevThis.animationStep(true);
           prevThis.spinningAnimationStep(loadingSpinIntervalTime);
         }, loadingSpinIntervalTime);
       }
+
+        if(!initStep){
+        setTimeout(prevThis.animationStep.bind(this), 2);
+        }else{
+        this.animationStep(true);
+        }
+
      }
     }
 
-    animationStep(){
+    animationStep(directJump = false){
       //Calculate millis since last execution
       var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
 
 
         //Check if next step can be performed
-        if(millisSinceLastExecution >= this.animationStepTime){
+        if(millisSinceLastExecution >= this.animationStepTime || directJump){
           //Perform next step
           let newGeneratedString = "";
 
@@ -907,6 +915,9 @@ animationMilliseconds;
               //Remove the character
               this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, '');
             }
+          }else{
+            //Remove the character
+              this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, '');
           }
 
           }
@@ -969,9 +980,33 @@ animationMilliseconds;
 
     }
 
-    stop(){
+    //Method for jumping forward by a specific amount
+    //@param amount (Integer) jumpvalue (in percent)
+    jumpForward(amount){
+      let maximumJumpAmount = this.endPercentage - this.currentPercentage;
+      if(amount <= maximumJumpAmount){
+        //Add on top of percentage
+        this.currentPercentage += amount;
+        //Calculate new progressbar
+        this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.currentPercentage/100));
+        this.animationStep(true);
+        //Substract one of currentPercentage due to shift
+        this.currentPercentage--;
+      }else{
+        console.log("Error: amount bigger than max Possible amount");
+      }
+    }
+
+    stop(pauseMessage = ""){
       if(this.animationRunning){
+        //set status to paused
         this.animationRunning = false;
+        //Set loadingAnimation to pauseMessage (if pauseMessage exists)
+         if(pauseMessage.length > 0){
+          this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, "[" + pauseMessage +"]");
+        }else{
+          this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, "");
+        }
       }
     }
 
@@ -983,6 +1018,9 @@ animationMilliseconds;
       this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.startPercentage/100));
       //Run first animation step by starting and then stopping
       this.start(true);
+      //Reset currentPercentage again and progressbar again (because step changes it)
+      this.currentPercentage = this.startPercentage;
+      this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.startPercentage/100));
       //Remove loading spinning animation
       this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, '');
     }
