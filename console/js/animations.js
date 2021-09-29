@@ -713,7 +713,7 @@ animationMilliseconds;
 }
 
 //A progessbar loading animation
-//Example: loading [======       ] 37% /
+//Example: loading # [======       ] 37% /
 //@param playtime (Integer in ms) Time after the animation stops (gets paused) - Controls animation speed
 //@param startPercent (int) Percentage at wich the loading animation starts (0-99)
 //@param stopPerecent (int) Percentage at wich the loading animation stops (1-100)
@@ -721,7 +721,8 @@ animationMilliseconds;
 //@param loadingBarFullCharacter (char) character that will be used inside the loading bar for full bars
 //@param loadingBarEmptyCharacter (char) character that will be used inside the loading bar for empty bars
 //@param showPercentage (boolean) shows and animates percentage value
-//@param setloadingSpinToDone (boolean) replaces the loading the loading spin with a done character(false: removes it)
+//@param spinningAnimationStatus (String) text that is printed at 100% completion(length = 0: removes it) Example: loading # [==========] 100% [completedText]
+//@param loadingSpinErrorStatus (String) text that is printed at an endPercentage before 100% (length = 0: remvoves it) Example: loading # [======       ] 50% [errorText]
 //@param percentageIncrement (int) increment of how big the steps are
 //@param animationText (String) text that is shown in front of the Animation
 //@param consoleObject (Object: InGameConsole) Console animation will be aplied to
@@ -732,6 +733,8 @@ animationText;
 startPercentage;
 //endPercentage
 endPercentage;
+//nextPercentage (inits with startPercentage)
+nextPercentage;
 //currentPercentage (inits with startPercentage)
 currentPercentage;
 //Show percentage boolean
@@ -750,8 +753,10 @@ currentProgressBarTile;
 animationIDString;
 //Animation Object
 animationObject;
-//setloadingSpinToDone setting
-setloadingSpinToDone
+//text that is printed at 100% completion (can be length 0)
+loadingSpinDoneStatus;
+////text that is printed at an end percentage below 100% completion (can be length 0)
+loadingSpinErrorStatus;
 
 //current spinning loading animation status
 spinningAnimationStatus;
@@ -759,7 +764,7 @@ spinningAnimationStatus;
 //Milliseconds since last execution
 animationMilliseconds;
 
-    constructor(playtime, startPercent, stopPercent, loadingBarWidth, loadingBarFullCharacter, loadingBarEmptyCharacter, showPercentage, setloadingSpinToDone, percentageIncrement, animationText, consoleObject){
+    constructor(playtime, startPercent, stopPercent, loadingBarWidth, loadingBarFullCharacter, loadingBarEmptyCharacter, showPercentage, loadingSpinDoneStatus, loadingSpinErrorStatus, percentageIncrement, animationText, consoleObject){
         //Calculate step time
         let stepCount = (stopPercent - startPercent)/percentageIncrement;
         let steptime = Math.floor(playtime/stepCount);
@@ -786,6 +791,7 @@ animationMilliseconds;
         this.endPercentage = Math.floor(stopPercent);
       }
       //init current Percentage
+        this.nextPercentage = this.startPercentage;
         this.currentPercentage = this.startPercentage;
 
         //Save loading bar Width
@@ -796,8 +802,10 @@ animationMilliseconds;
         this.loadingBarEmptyCharacter = loadingBarEmptyCharacter.charAt(0);
         //save showPercentage
         this.showPercentage = showPercentage;
-        //save setloadingSpinToDone
-        this.setloadingSpinToDone = setloadingSpinToDone;
+        //save loadingSpinDoneStatus
+        this.loadingSpinDoneStatus = loadingSpinDoneStatus;
+        //savve loadingSpinErrorStatus
+        this.loadingSpinErrorStatus = loadingSpinErrorStatus;
         //Save percentage increment
         this.percentageIncrement = percentageIncrement;
         //Generate random classString
@@ -888,14 +896,14 @@ animationMilliseconds;
 
           //Display percentage if activated
           if(this.showPercentage){
-            newGeneratedString += this.currentPercentage + "%";
+            newGeneratedString += this.nextPercentage + "%";
           }
 
           //Print space
           newGeneratedString += " ";
 
           //Print spinning loading animation char
-          if(this.currentPercentage != this.startPercentage){
+          if(this.nextPercentage != this.startPercentage){
           newGeneratedString += this.spinningAnimationStatus;
           }
 
@@ -903,40 +911,35 @@ animationMilliseconds;
           this.animationObject.textContent = newGeneratedString;
 
           //Check if animation is done
-          if(this.currentPercentage >= this.endPercentage){
-            //Stop animation
-            this.stop();
+          if(this.nextPercentage >= this.endPercentage){
             //set loading Spin to done or remove it (only if 100% complete)
           if(this.endPercentage == 100){
-            if(this.setloadingSpinToDone){
-              //replace it with done character
-                this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, '[Erfolgreich]');
-            }else{
-              //Remove the character
-              this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, '');
-            }
+              //Stop animation with done Status
+              this.stop(this.loadingSpinDoneStatus);
           }else{
             //Remove the character
-              this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, '');
+            this.stop(this.loadingSpinErrorStatus);
           }
 
           }
 
+          //Save currentPercentage
+          this.currentPercentage = this.nextPercentage;
           //claculate next step
-          this.currentPercentage += this.percentageIncrement;
+          this.nextPercentage += this.percentageIncrement;
 
-          //Check if currentPercentage has hit  or over
+          //Check if nextPercentage has hit  or over
         if(this.showPercentage){
-          if(this.currentPercentage >= this.endPercentage){
+          if(this.nextPercentage >= this.endPercentage){
             //Set percentage to end
-            this.currentPercentage = this.endPercentage;
+            this.nextPercentage = this.endPercentage;
           }
         }
 
           //Calculate bar
           if(this.loadingBarWidth > 0){
             //Calculate next progress bar tile
-            this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.currentPercentage/100));
+            this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.nextPercentage/100));
           }
 
           //Save latest millis
@@ -983,15 +986,30 @@ animationMilliseconds;
     //Method for jumping forward by a specific amount
     //@param amount (Integer) jumpvalue (in percent)
     jumpForward(amount){
-      let maximumJumpAmount = this.endPercentage - this.currentPercentage;
+      let maximumJumpAmount = this.endPercentage - this.nextPercentage;
       if(amount <= maximumJumpAmount){
         //Add on top of percentage
-        this.currentPercentage += amount;
+        this.nextPercentage += amount;
         //Calculate new progressbar
-        this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.currentPercentage/100));
+        this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.nextPercentage/100));
         this.animationStep(true);
-        //Substract one of currentPercentage due to shift
-        this.currentPercentage--;
+        //Substract one of nextPercentage due to shift
+        this.nextPercentage--;
+      }else{
+        console.log("Error: amount bigger than max Possible amount");
+      }
+    }
+
+    //Method for jumping backwards by a specific amount
+    //@param amount (Integer) jumpvalue (in percent)
+    jumpBackwards(amount){
+      let maximumJumpAmount = this.nextPercentage - this.startPercentage;
+      if(amount <= maximumJumpAmount){
+        //Add on top of percentage
+        this.nextPercentage = this.currentPercentage - amount;
+        //Calculate new progressbar
+        this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.nextPercentage/100));
+        this.animationStep(true);
       }else{
         console.log("Error: amount bigger than max Possible amount");
       }
@@ -1014,12 +1032,12 @@ animationMilliseconds;
       //Stop animation
       this.stop();
       //Reset values
-      this.currentPercentage = this.startPercentage;
+      this.nextPercentage = this.startPercentage;
       this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.startPercentage/100));
       //Run first animation step by starting and then stopping
       this.start(true);
-      //Reset currentPercentage again and progressbar again (because step changes it)
-      this.currentPercentage = this.startPercentage;
+      //Reset nextPercentage again and progressbar again (because step changes it)
+      this.nextPercentage = this.startPercentage;
       this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.startPercentage/100));
       //Remove loading spinning animation
       this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, '');
