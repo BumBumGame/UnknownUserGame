@@ -149,6 +149,4 @@ function loadFileAnimation(){
     //Create animation Que
 
 }
-mainConsoleObject.disableCommandInput();
-var animation = new ProgressBarLoadingAnimation(5000, 0, 100, 50, '=', " ", true, true, 1, "Test", mainConsoleObject);
-animation.start();
+window.addEventListener("load", startNewGame);
