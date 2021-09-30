@@ -848,7 +848,6 @@ animationMilliseconds;
         if(!initStep){
         let loadingSpinIntervalTime = 100;
         setTimeout(function() {
-          prevThis.animationStep(true);
           prevThis.spinningAnimationStep(loadingSpinIntervalTime);
         }, loadingSpinIntervalTime);
       }
@@ -981,6 +980,21 @@ animationMilliseconds;
          }, interval);
       }
 
+    }
+
+    printCurrentFrame(){
+      //Save previos values
+      let prevCurrentProgressBarTile = this.currentProgressBarTile;
+      let prevNextPercentage = this.nextPercentage;
+      let prevCurrentPercentage = this.currentPercentage;
+
+      //run 1 init step
+      this.start(true);
+
+      //Set old values
+      this.currentProgressBarTile = prevCurrentProgressBarTile;
+      this.nextPercentage = prevNextPercentage;
+      this.currentPercentage = prevNextPercentage;
     }
 
     //Method for jumping forward by a specific amount
