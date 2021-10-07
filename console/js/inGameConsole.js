@@ -260,7 +260,7 @@ onKeyPress(e){
       default:
 
     if(document.activeElement != this.consoleInput){
-      if(e.key.match(".*")){
+      if(e.key.match(".*") && e.key.length == 1){
         e.preventDefault();
         this.consoleInput.value += e.key;
         this.consoleInput.focus();
