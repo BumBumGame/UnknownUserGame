@@ -101,6 +101,8 @@ function confirmFirst(command){
           clearInterval(rebootingAnimationInterval);
           //clear console
           mainConsoleObject.clearCommandLog();
+          //Start loadingFile Animation (with 1 sec delay)
+          setTimeout(loadFileAnimation, 5);
       }
 
     }, 10);
@@ -135,11 +137,41 @@ function declineConfirmFirst(command){
 
 function createLoadFileAnimationQue(){
   //init que
-  var typingAnimationSpeed = 100;
+  var typingAnimationSpeed = 50;
   //Define ques and animations
   var loadingAnimationQue = new AnimationQueue();
-  //add animations
+  //create animations
 
+  //Loading file instruction
+  {
+  let loadingFileText = "Loading File:";
+  var loadingFileTextAnimation = new ConsoleTextTypingAnimation(typingAnimationSpeed, loadingFileText, mainConsoleObject);
+  }
+
+  //Create Emoty line
+  var emptyLineAnimation = new ConsoleLinePrint(0, [""], mainConsoleObject);
+
+  //File loadBar
+  {
+  let filename = "MT4.img";
+  var loadingImageFileAnimation = new ProgressBarLoadingAnimation(4000, 0, 100, 50, '=', ' ', true, "Successfull", "", 1, filename, mainConsoleObject)
+  }
+
+  //add Animation to Que
+  loadingAnimationQue.addAnimation(loadingFileTextAnimation, 2000);
+  loadingAnimationQue.addAnimation(emptyLineAnimation);
+  loadingAnimationQue.addAnimation(loadingImageFileAnimation, 500);
+
+  {
+  //Introtext (as Array)
+  let introTextArray = ["WTF"];
+
+  //transform intro textArray into animations
+   for(let i = 0; i < introTextArray.length; i++){
+     loadingAnimationQue.addAnimation(new ConsoleTextTypingAnimation(typingAnimationSpeed, introTextArray[i], mainConsoleObject));
+   }
+
+  }
 
   //Return animation que
   return loadingAnimationQue;
@@ -147,6 +179,7 @@ function createLoadFileAnimationQue(){
 
 function loadFileAnimation(){
     //Create animation Que
-
+    var loadFileAnimationQue = createLoadFileAnimationQue();
+    loadFileAnimationQue.start();
 }
-window.addEventListener("load", startNewGame);
+window.addEventListener("load", loadFileAnimation);
