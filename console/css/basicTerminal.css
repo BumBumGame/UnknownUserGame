@@ -5,10 +5,13 @@ body{
 
 #mainConsoleWindow{
    position: absolute;
-   margin: 0.5%;
+   margin-right: 0.5%;
+   margin-left: 0.5%;
+   margin-top: 0%;
+   margin-bottom: 0%;
    padding: 0.5%;
    width: 98%;
-   height: 95%;
+   height: 98%;
    font-size: 1.1em;
    overflow: auto;
 }
