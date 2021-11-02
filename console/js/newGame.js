@@ -174,14 +174,14 @@ function createLoadFileAnimationQue(){
                         "Projekt S.T.A.N Status: Inaktiv",
                         "Notfall Reset Codes gesendet.",
                         " ",
-                        "Irgendeine Taste drücken, um fortzufahren..."];
+                        "Drücken sie irgendeine Taste, um fortzufahren..."];
 
   //transform intro textArray into animations
    for(let i = 0; i < introTextArray.length; i++){
      if(i == 0){
-      loadingAnimationQue.addAnimation(new ConsoleTextTypingAnimation(introTextArray[i].length * 30, introTextArray[i], mainConsoleObject), 500);
+      loadingAnimationQue.addAnimation(new ConsoleTextTypingAnimation(introTextArray[i].length * 22, introTextArray[i], mainConsoleObject), 500);
     }else{
-     loadingAnimationQue.addAnimation(new ConsoleTextTypingAnimation(introTextArray[i].length * 30, introTextArray[i], mainConsoleObject), introTextArray[i-1].length * 50);
+     loadingAnimationQue.addAnimation(new ConsoleTextTypingAnimation(introTextArray[i].length * 22, introTextArray[i], mainConsoleObject), introTextArray[i-1].length * 26);
     }
    }
 
@@ -195,5 +195,27 @@ function loadFileAnimation(){
     //Create animation Que
     var loadFileAnimationQue = createLoadFileAnimationQue();
     loadFileAnimationQue.start();
+
+    var cueCheckInterval = setInterval(function () {
+       if(!loadFileAnimationQue.queCurrentlyRunning){
+
+        //Set an Eventlistener for any button
+        window.addEventListener("keydown", anyKeyPressedForThirdStage);
+
+        clearInterval(cueCheckInterval);
+       }
+     }, 50);
+
 }
-window.addEventListener("load", startNewGame);
+
+function anyKeyPressedForThirdStage(){
+  //Remove Event Listener
+  window.removeEventListener("keydown", anyKeyPressedForThirdStage);
+  //Clear console
+  mainConsoleObject.clearCommandLog();
+//TODO WRITE next step here
+}
+
+//window.addEventListener("load", startNewGame);
+mainConsoleObject.disableCommandInput();
+window.addEventListener("load", loadFileAnimation);
