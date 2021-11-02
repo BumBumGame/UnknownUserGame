@@ -137,7 +137,7 @@ function declineConfirmFirst(command){
 
 function createLoadFileAnimationQue(){
   //init que
-  var typingAnimationSpeed = 50;
+  var typingAnimationSpeed = 100;
   //Define ques and animations
   var loadingAnimationQue = new AnimationQueue();
   //create animations
@@ -149,7 +149,7 @@ function createLoadFileAnimationQue(){
   }
 
   //Create Emoty line
-  var emptyLineAnimation = new ConsoleLinePrint(0, [""], mainConsoleObject);
+  var emptyLineAnimation = new ConsoleLinePrint(1, [""], mainConsoleObject);
 
   //File loadBar
   {
@@ -164,11 +164,25 @@ function createLoadFileAnimationQue(){
 
   {
   //Introtext (as Array)
-  let introTextArray = ["WTF"];
+  let introTextArray = [" ", //Empty line has to have at least one character
+                        "[Server Log]",
+                        " ",
+                        "Verbindung zum Servernetzwerk verloren.",
+                        "Noch Funktionsfähige Verbindungsstationen: 3",
+                        "Code 451 aktiv.",
+                        "Alle physikalischen Zugänge wurden versiegelt.",
+                        "Projekt S.T.A.N Status: Inaktiv",
+                        "Notfall Reset Codes gesendet.",
+                        " ",
+                        "Irgendeine Taste drücken, um fortzufahren..."];
 
   //transform intro textArray into animations
    for(let i = 0; i < introTextArray.length; i++){
-     loadingAnimationQue.addAnimation(new ConsoleTextTypingAnimation(typingAnimationSpeed, introTextArray[i], mainConsoleObject));
+     if(i == 0){
+      loadingAnimationQue.addAnimation(new ConsoleTextTypingAnimation(introTextArray[i].length * 30, introTextArray[i], mainConsoleObject), 500);
+    }else{
+     loadingAnimationQue.addAnimation(new ConsoleTextTypingAnimation(introTextArray[i].length * 30, introTextArray[i], mainConsoleObject), introTextArray[i-1].length * 50);
+    }
    }
 
   }
@@ -182,4 +196,4 @@ function loadFileAnimation(){
     var loadFileAnimationQue = createLoadFileAnimationQue();
     loadFileAnimationQue.start();
 }
-window.addEventListener("load", loadFileAnimation);
+window.addEventListener("load", startNewGame);
