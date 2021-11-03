@@ -53,6 +53,10 @@ body{
   padding: 0%;
 }
 
+#commandLine div{
+  display: inline-block;
+}
+
 .serverResponse{
   width: 98%;
   margin-left: 2%;

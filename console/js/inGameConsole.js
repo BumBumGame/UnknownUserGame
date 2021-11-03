@@ -1,3 +1,8 @@
+//TODO Change username with php dynamicly later!!!!
+//Temporary constant
+const playerUsername = "BBG";
+const consoleInputChar = "$";
+//-------------------------------
 class InGameConsole{
 //Console log Object
 consoleLog;
@@ -11,8 +16,10 @@ commandsTillDeactivation;
 autoCompleteAutoExec;
 //commandDefinition Object
 commandDefinition;
+//currentpath
+currentPath;
 
-constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefinition){
+constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefinition, currentPath = "~"){
   //Set console Log Object
   this.consoleLog = consoleLogObject;
   //Set Console Input Object
@@ -25,6 +32,16 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
   this.autoCompleteAutoExec = false;
   //Set commandDefinition Object
   this.commandDefinition = commandDefinition;
+
+  //set currentpath to initialized
+  this.currentPath = currentPath;
+
+  //Set Path to init
+  this.setNewPath(currentPath);
+
+  //Adjust consoleInput width to console size and set eventListener
+  this.adjustInputCommandWidth();
+  window.addEventListener("resize", this.adjustInputCommandWidth.bind(this));
 
   //Set event listener
   //Add Eventlistener for KeyboardInput
@@ -48,7 +65,7 @@ clearCommandLog(){
 //Logs Command in Command log of Console
 //@param String commandToLog - Logs current command to this console
 logCommand(commandToLog){
- var newCommandToLog = document.createTextNode("> " + commandToLog);
+ var newCommandToLog = document.createTextNode(playerUsername +":"+ this.currentPath + consoleInputChar +" " + commandToLog);
  var newLineObject = document.createElement("br");
 
  this.consoleLog.append(newCommandToLog);
@@ -143,35 +160,42 @@ onCommandInput(){
 
    //Only do some when Command is inputted at all
    if(inputCommand.length != 0){
-     //Disable CommandInput while processing
-     this.disableCommandInput();
-     //Put Command in Log
-     this.logCommand(inputCommand);
-     //process Command
-     var commandProcessing = new CommandProcessor(inputCommand, this.commandDefinition);
-     commandProcessing.processCommand();
-     //Print out Answer to Command if exists
-     if(commandProcessing.commandResponse != null){
-       this.logServerResponse(commandProcessing.commandResponse);
-     }
-     //Add space for new Command input
-     this.addCommandLineInputSpacing();
-     //Re-enable Input and clear input
-     this.consoleInput.value = "";
-
-     if(this.commandsTillDeactivation == 1){
-       this.commandsTillDeactivation = -1;
-     }else{
-       this.enableCommandInput();
-     }
-
-     if(this.commandsTillDeactivation > 0){
-      this.commandsTillDeactivation--;
-     }
-     //scroll Intoview
-     this.commandLine.scrollIntoView();
+     //Execute the command
+     this.executeCommand(inputCommand);
+     //Clear CommandInput
+     this.clearCommandInput();
    }
  }
+
+//Executes an Command
+executeCommand(command){
+  //Disable CommandInput while processing
+  this.disableCommandInput();
+  //Put Command in Log
+  this.logCommand(command);
+  //process Command
+  var commandProcessing = new CommandProcessor(command, this.commandDefinition);
+  commandProcessing.processCommand();
+  //Print out Answer to Command if exists
+  if(commandProcessing.commandResponse != null){
+    this.logServerResponse(commandProcessing.commandResponse);
+  }
+  //Add space for new Command input
+  this.addCommandLineInputSpacing();
+
+ //Check if input needs to be disabled after this command
+  if(this.commandsTillDeactivation == 1){
+    this.commandsTillDeactivation = -1;
+  }else{
+    this.enableCommandInput();
+  }
+
+  if(this.commandsTillDeactivation > 0){
+   this.commandsTillDeactivation--;
+  }
+  //scroll Intoview
+  this.commandLine.scrollIntoView();
+}
 
 //Handles press of Enter Key
 onEnterPress(){
@@ -180,6 +204,11 @@ onEnterPress(){
       this.onCommandInput();
    }
   }
+
+//Method that sets new console path
+setNewPath(pathName){
+this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + pathName + consoleInputChar;
+}
 
 //Method to set autocomplete to Auto exec
 setAutoCompleteToAutoExec(){
@@ -244,6 +273,15 @@ autoExecution(){
 
   }
 
+}
+
+//Method that adjust the Width of the input command line according to how big the current path is
+adjustInputCommandWidth(){
+  let totalWidth = parseFloat(window.getComputedStyle(this.commandLine).width);
+  let pathWidth = parseFloat(window.getComputedStyle(this.commandLine.firstElementChild).width);
+  console.log(totalWidth);
+  console.log(pathWidth);
+  this.consoleInput.style.width = totalWidth - pathWidth - totalWidth*0.03 + "px";
 }
 
 //Handles Keyboard events
