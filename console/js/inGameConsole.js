@@ -3,6 +3,15 @@
 const playerUsername = "BBG";
 const consoleInputChar = "$";
 //-------------------------------
+
+/**
+* Class that can be attached to a console to give it functionality
+* @param {htmlObject} consoleLogObject Object that holds a reference to the Element where the console Commands shall be locked
+* @param {htmlObject} consoleInputObject Html input=text element that the commands are being put in
+* @param {htmlObject} commandLineObject htmlelement that surrounds the consoleInput and the PathDisplay next to it
+* @param {CommandDefinition} commandDefinition CommandDefinition object that holds the information about all the commands available in this console
+* @param {String} currentPath Path that the console will be initialized with
+*/
 class InGameConsole{
 //Console log Object
 consoleLog;
@@ -62,8 +71,10 @@ clearCommandLog(){
   this.consoleLog.textContent = "";
 }
 
-//Logs Command in Command log of Console
-//@param String commandToLog - Logs current command to this console
+/**
+* Logs Command in Command log of Console
+* @param {String} commandToLog Logs current command to this console
+*/
 logCommand(commandToLog){
  var newCommandToLog = document.createTextNode(playerUsername +":"+ this.currentPath + consoleInputChar +" " + commandToLog);
  var newLineObject = document.createElement("br");
@@ -72,9 +83,11 @@ logCommand(commandToLog){
  this.consoleLog.append(newLineObject);
 }
 
-//Prints normal Text to the console
-//@param output String of what is outputted
-//@param optionalPreID (optional) String of an ID that gets assigned to the pre-Element
+/**
+* Prints normal Text to the console
+* @param {String} output of what is outputted
+* @param {int} optionalPreID (optional) String of an ID that gets assigned to the pre-Element
+/*
 printOnConsole(output, optionalPreID = ""){
    var textToPrint = document.createTextNode(output);
    var rawOutputObject = document.createElement("pre");
@@ -88,9 +101,11 @@ printOnConsole(output, optionalPreID = ""){
    this.consoleLog.append(rawOutputObject);
 }
 
-//Logs ServerResponse in Command Log
-//@param responseToLog:Array with each line
-//@param additionalClass:String Adds an aditional class to the div object
+/**
+* Logs ServerResponse in Command Log
+* @param {String:Array} responseToLog with each line
+* @param {String} additionalClass Adds an aditional class to the div object
+*/
 logServerResponse(responseToLog, addionalClass = ""){
   var newDiv = document.createElement("div");
   newDiv.classList.add("serverResponse");
@@ -140,9 +155,10 @@ addCommandLineInputSpacing(){
   var newLineObject = document.createElement("br");
   this.consoleLog.append(newLineObject);
 }
-
-//Set count of allowed commands until input gets automaticly disabled
-//@param commandCount Int sets the count
+/**
+* Set count of allowed commands until input gets automaticly disabled
+* @param {int} commandCount sets the count
+*/
 setCommandsTillInputDeactivation(commandCount){
   if(commandCount > 0){
     this.commandsTillDeactivation = commandCount;
@@ -205,9 +221,31 @@ onEnterPress(){
    }
   }
 
-//Method that sets new console path
+/**
+* Method that sets new console path
+* @param {String} pathName New path that will be written in front of the console
+*/
 setNewPath(pathName){
+this.currentPath = pathName;
 this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + pathName + consoleInputChar;
+}
+
+//Method that resets to the current console path
+resetPath(){
+ this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + this.currentPath + consoleInputChar;
+}
+
+//Method that returns the current Path
+get getCurrentPath(){
+  return this.currentPath;
+}
+
+/**
+* Method that sets the path view to a specific programmm
+* @param {String} programName The name of the programm that will be running
+*/
+setToProgramm(programName){
+
 }
 
 //Method to set autocomplete to Auto exec
