@@ -20,7 +20,7 @@ function startNewGame(){
 function consoleLoadingAnimation(){
   var typingAnimationSpeed = 100;
   //Define ques and animations
-  var loadingAnimationQue = new AnimationQueue();
+  var loadingAnimationQue = new ConsoleAnimationQueue();
   //var loadingAnimationQue = new AnimationQueue();
   var failSafeStartAnimation = new ConsoleTextLoadingAnimationTyping(4000, 230, "Starting Failsafe", 4, true, typingAnimationSpeed, mainConsoleObject);
   //Completion Text animation
@@ -139,7 +139,7 @@ function createLoadFileAnimationQue(){
   //init que
   var typingAnimationSpeed = 100;
   //Define ques and animations
-  var loadingAnimationQue = new AnimationQueue();
+  var loadingAnimationQue = new ConsoleAnimationQueue();
   //create animations
 
   //Loading file instruction
@@ -181,7 +181,7 @@ function createLoadFileAnimationQue(){
      if(i == 0){
       loadingAnimationQue.addAnimation(new ConsoleTextTypingAnimation(introTextArray[i].length * 22, introTextArray[i], mainConsoleObject), 500);
     }else{
-     loadingAnimationQue.addAnimation(new ConsoleTextTypingAnimation(introTextArray[i].length * 22, introTextArray[i], mainConsoleObject), introTextArray[i-1].length * 26);
+      loadingAnimationQue.addAnimation(new ConsoleTextTypingAnimation(introTextArray[i].length * 22, introTextArray[i], mainConsoleObject), introTextArray[i-1].length * 26);
     }
    }
 

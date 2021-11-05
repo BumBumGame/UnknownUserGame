@@ -1,4 +1,7 @@
-class AnimationQueue{
+/**
+* Queue that contains different Animation and can play them after one and another
+*/
+class ConsoleAnimationQueue{
 animationObjectArray; //Array of Animation Objects
 animationDelayArray; // Array with delays for when each animation should start playing
 currentRunningAnimationIndex; //Current run index
@@ -188,7 +191,7 @@ get length(){
 
 //-----------------------------------
 //Animation Base class which has to be inherited from
-class Animation{
+class ConsoleAnimation{
 animationPlayTime;
 animationStepTime;
 animationRunning;
@@ -248,7 +251,7 @@ get animationRunningStatus(){
 //@param steptime (Integer in ms) Time between each step (=speed)
 //@param animationText (String) Text that is displayed by the Animation
 //@param consoleObject (Object: InGameConsole) Console animation will be aplied to
-class ConsoleTextLoadingAnimation extends Animation{
+class ConsoleTextLoadingAnimation extends ConsoleAnimation{
 maxDotCount;
 animationObject;
 animationText;
@@ -357,7 +360,7 @@ deleteDomElement(){
 //@param playtime (Integer in ms) Time after the animation stops (gets paused) (playtime = 0 --> infinite)
 //@param animationText (String) Text to be printed
 //@param consoleObject (Object: InGameConsole) Console animation will be aplied to
-class ConsoleTextTypingAnimation extends Animation{
+class ConsoleTextTypingAnimation extends ConsoleAnimation{
 animationText;
 currentAnimationCharIndex;
 animationObject;
@@ -463,7 +466,7 @@ get currentAnimationObject(){
 //@param onlyDotsAfterStart (Boolean) Set if onlyDots will be animated after first text print or Text will be printed new everytime as well
 //@param typingTextPlayTime Time of the typing Animation on start
 //@param consoleObject (Object: InGameConsole) Console animation will be aplied to
-class ConsoleTextLoadingAnimationTyping extends Animation{
+class ConsoleTextLoadingAnimationTyping extends ConsoleAnimation{
 animationObject;
 animationText;
 typingAnimationObject;
@@ -614,7 +617,7 @@ deleteDomElement(){
 //@param playtime (Integer in ms) Time after the animation stops (gets paused)
 //@param lines (String Array) Contains all lines to be printed as Strings
 //@param consoleObject (Object: InGameConsole) Console animation will be aplied to
-class ConsoleLinePrint extends Animation{
+class ConsoleLinePrint extends ConsoleAnimation{
 textLineArray;
 currentLine;
 animationObjects;
@@ -726,7 +729,7 @@ animationMilliseconds;
 //@param percentageIncrement (int) increment of how big the steps are
 //@param animationText (String) text that is shown in front of the Animation
 //@param consoleObject (Object: InGameConsole) Console animation will be aplied to
-class ProgressBarLoadingAnimation extends Animation{
+class ProgressBarLoadingAnimation extends ConsoleAnimation{
 //animation text
 animationText;
 //start percentage (saved for reset)
