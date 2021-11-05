@@ -18,6 +18,11 @@ constructor(){
   this.queCurrentlyRunning = false;
 }
 
+/**
+* Adds an Animation to the que
+* @param {ConsoleAnimation:Object} animation Reference to the Animation that shall be added
+* @param {int} startDelay default: 0; Delay which the que will wait until it starts the added Animation
+*/
 addAnimation(animation, startDelay = 0){
   //Check if parent class of animation is Animation
   if(Object.getPrototypeOf(animation.constructor) !== Animation){
@@ -44,6 +49,10 @@ addAnimation(animation, startDelay = 0){
   this.animationDelayArray.push(startDelay);
 }
 
+/**
+* Removes an Animation from the Que
+* @param {int} animationQueueIndex Index for the Animation that shall be deleted
+*/
 removeAnimmation(animationQueueIndex){
   var unlimetedRuntimeIndex = 0;
   //stop Queue if running
@@ -96,8 +105,9 @@ removeAnimmation(animationQueueIndex){
   this.animationDelayArray.splice(animationQueueIndex, 1);
 
 }
-
-//Starts first animation in cue
+/**
+*Starts first animation in cue or Resumes it when it was paused
+*/
 start(){
   //Set status to running
   this.queCurrentlyRunning = true;
@@ -117,11 +127,17 @@ start(){
 }
   }
 
+/**
+* stops the cue at the currentState
+*/
 stop(){
  this.queCurrentlyRunning = false;
  this.animationObjectArray[this.currentRunningAnimationIndex].stop();
 }
 
+/**
+Jump to next Animation
+*/
 next(){
     var prevThis = this;
   //Check if Current Running Animation is done
@@ -158,6 +174,9 @@ next(){
 
 }
 
+/**
+* Reset the complete Que (inkl. all animations inside it)
+*/
 reset(){
   //Stop current Run
   this.stop();
@@ -172,6 +191,9 @@ reset(){
 
 }
 
+/**
+Reset everything and delete all DomElements
+*/
 deleteAnimationsDomElements(){
   //Reset Qeue
   this.reset();
@@ -182,6 +204,10 @@ deleteAnimationsDomElements(){
 
 }
 
+/**
+* Returns the count of Animations inisde the cue
+* @return {int} Count of Animations inside Cue
+*/
 get length(){
   return this.animationObjectArray.length;
 }
@@ -190,7 +216,13 @@ get length(){
 
 
 //-----------------------------------
-//Animation Base class which has to be inherited from
+/**
+* Animation Base class which has to be inherited from
+* @abstract
+* @param {int} animationPLayTime Maximumplaytime of the Animation
+* @param {int} animationStepTime Time for each step
+* @param {InGameConsole:Object} consoleObject Reference to the object this animation will be attached to
+*/
 class ConsoleAnimation{
 animationPlayTime;
 animationStepTime;
