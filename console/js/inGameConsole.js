@@ -6,11 +6,6 @@ const consoleInputChar = "$";
 
 /**
 * Class that can be attached to a console to give it functionality
-* @param {htmlObject} consoleLogObject Object that holds a reference to the Element where the console Commands shall be locked
-* @param {htmlObject} consoleInputObject Html input=text element that the commands are being put in
-* @param {htmlObject} commandLineObject htmlelement that surrounds the consoleInput and the PathDisplay next to it
-* @param {CommandDefinition} commandDefinition CommandDefinition object that holds the information about all the commands available in this console
-* @param {String} currentPath Path that the console will be initialized with
 */
 class InGameConsole{
 //Console log Object
@@ -27,7 +22,17 @@ autoCompleteAutoExec;
 commandDefinition;
 //currentpath
 currentPath;
+//input status (if active or not)
+inputActive;
 
+/**
+* constructor for initialization of class
+* @param {htmlObject} consoleLogObject Object that holds a reference to the Element where the console Commands shall be locked
+* @param {htmlObject} consoleInputObject Html input=text element that the commands are being put in
+* @param {htmlObject} commandLineObject htmlelement that surrounds the consoleInput and the PathDisplay next to it
+* @param {CommandDefinition} commandDefinition CommandDefinition object that holds the information about all the commands available in this console
+* @param {String} currentPath Path that the console will be initialized with
+**/
 constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefinition, currentPath = "~"){
   //Set console Log Object
   this.consoleLog = consoleLogObject;
@@ -87,7 +92,7 @@ logCommand(commandToLog){
 * Prints normal Text to the console
 * @param {String} output of what is outputted
 * @param {int} optionalPreID (optional) String of an ID that gets assigned to the pre-Element
-/*
+**/
 printOnConsole(output, optionalPreID = ""){
    var textToPrint = document.createTextNode(output);
    var rawOutputObject = document.createElement("pre");

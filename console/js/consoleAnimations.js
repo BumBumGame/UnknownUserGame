@@ -25,8 +25,8 @@ constructor(){
 */
 addAnimation(animation, startDelay = 0){
   //Check if parent class of animation is Animation
-  if(Object.getPrototypeOf(animation.constructor) !== Animation){
-      throw new TypeError("The AnimationObject needs to inherit from class Animation!");
+  if(Object.getPrototypeOf(animation.constructor) !== ConsoleAnimation){
+      throw new TypeError("The ConsoleAnimationObject needs to inherit from class ConsoleAnimation!");
   }
   //Check if object structure is given because its needed by the Que
   animation.checkSubClassStructure();
