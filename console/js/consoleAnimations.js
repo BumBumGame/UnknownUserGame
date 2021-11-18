@@ -229,8 +229,8 @@ consoleObject;
 
   /**
   * class construtor
-  * @param {int} animationPLayTime Maximumplaytime of the Animation
-  * @param {int} animationStepTime Time for each step
+  * @param {Number} animationPlayTime Maximumplaytime of the Animation
+  * @param {Number} animationStepTime Time for each step
   * @param {InGameConsole:Object} consoleObject Reference to the object this animation will be attached to
   **/
   constructor(animationPlayTime, animationStepTime, consoleObject){
@@ -254,6 +254,9 @@ consoleObject;
      this.animationRunning = false;
   }
 
+/**
+* Method that checks if the extending class has all the nedded methods
+**/
 checkSubClassStructure(){
   //Check if all nedded Methods are implemented
   if(this.start === undefined){
@@ -269,10 +272,58 @@ checkSubClassStructure(){
   }
 }
 
+/**
+* Function that starts the animation
+* @abstract
+**/
+start(){
+  throw new TypeError("Method start() needs to be implemented by subclass!");
+}
+
+/**
+* Function that stops the animation
+* @abstract
+**/
+stop(){
+  throw new TypeError("Method stop() needs to be implemented by subclass!");
+}
+
+/**
+* Function that resets the animation
+* @abstract
+**/
+reset(){
+  throw new TypeError("Method reset() needs to be implemented by subclass!");
+}
+
+/**
+* Function that forces the animation to make one step
+* @abstract
+**/
+animationStep(){
+  throw new TypeError("Method animationStep needs to be implemented by subclass!");
+}
+
+/**
+* Function that delets the according dom-Elements of the animation (if existent)
+* @abstract
+**/
+deleteDomElement(){
+  throw new TypeError("Method deleteDomElement() needs to be implemented by subclass!");
+}
+
+/**
+* Returns animationPlaytime
+* @return {Number} animationPlaytime of the animation
+**/
 get animationplatime(){
   return this.animationPlayTime;
 }
 
+/**
+* Returns the currentAnimation Status
+* @return {Boolean} animationRunningStatus of the animation
+**/
 get animationRunningStatus(){
   return this.animationRunning;
 }
@@ -285,7 +336,8 @@ get animationRunningStatus(){
 */
 
 /**
- * Displays Text loading animation in Console according to parameters
+ * Displays Text loading animation in Console according to
+ * @extends ConsoleAnimation
 **/
 class ConsoleTextLoadingAnimation extends ConsoleAnimation{
 maxDotCount;
@@ -299,7 +351,7 @@ totalStepCount;
 currentStep;
 
     /**
-    * Construcotr
+    * Constructor
     * @param {Number} playtime (in ms) Time after the animation stops (gets paused) (playtime = 0 --> indefinite)
     * @param {Number} maxDotCount Number of dots that will be displayed (def:3)
     * @param {Number} steptime (in ms) Time between each step (=speed)
@@ -320,6 +372,9 @@ currentStep;
        this.animationIDString = "ConsoleTextLoadAnimation" + ((Math.random().toFixed(4)) * 10000);
          }
 
+/**
+* Animationstep
+**/
 animationStep(){
   var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
 
@@ -356,6 +411,8 @@ animationStep(){
   }
 }
 
+/**
+**/
 start(){
   if(this.animationRunning == false){
     //Create New Element if not exists
@@ -375,12 +432,16 @@ start(){
   }
 }
 
+/**
+**/
 stop(){
   if(this.animationRunning == true){
     this.animationRunning = false;
   }
 }
 
+/**
+**/
 reset(){
   //Stop Animation
   this.stop();
@@ -390,6 +451,8 @@ reset(){
   this.currentStep = 0;
 }
 
+/**
+**/
 deleteDomElement(){
   //Reset Animation
   this.reset();
@@ -430,6 +493,8 @@ constructor(playtime, animationText, consoleObject){
      this.animationIDString = "ConsoleTextTypingAnimation" + ((Math.random().toFixed(4)) * 10000);
 }
 
+/**
+**/
 start(){
   //If Animation is not running
  if(this.animationRunning == false){
@@ -451,6 +516,8 @@ start(){
 
 }
 
+/**
+**/
 animationStep(){
    //Get millis since last execution
    var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
@@ -478,6 +545,8 @@ animationStep(){
 
 }
 
+/**
+**/
 stop(){
   //If Animation is running
   if(this.animationRunning == true){
@@ -486,12 +555,16 @@ stop(){
 
 }
 
+/**
+**/
 reset(){
   this.animationObject.textContent = "";
   this.currentAnimationCharIndex = 0;
   this.animationRunning = false;
 }
 
+/**
+**/
 deleteDomElement(){
   //Reset Animation
   this.reset();
@@ -500,6 +573,9 @@ deleteDomElement(){
   this.animationObject = null;
 }
 
+/**
+* @return {Object:Dom-Element} Retruns the dom Element that is being animated
+**/
 get currentAnimationObject(){
   return this.animationObject;
 }
@@ -544,6 +620,8 @@ constructor(playtime, steptime, animationText, maxDotCount, onlyDotsAfterStart, 
       this.animationObject = null;
 }
 
+/**
+**/
 start(){
       //Check if Animation is not running
       if(this.animationRunning == false){
@@ -575,6 +653,8 @@ start(){
   }
 }
 
+/**
+**/
 stop(){
      //Check if Animation is running
      if(this.animationRunning == true){
@@ -586,6 +666,8 @@ stop(){
      }
 }
 
+/**
+**/
 animationStep(){
   //Get current Milliseconds
   var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
@@ -638,6 +720,8 @@ animationStep(){
 
 }
 
+/**
+**/
 reset(){
     //Check if Text needs to be reset
     if(this.onlyConstantDotAnimation == false){
@@ -651,6 +735,8 @@ reset(){
     }
 }
 
+/**
+**/
 deleteDomElement(){
   //Stop Animation
   this.stop();
@@ -696,6 +782,8 @@ animationMilliseconds;
      this.animationObjects = [];
   }
 
+  /**
+  **/
   start(){
      //Only Start if animation is not running
      if(!this.animationRunning){
@@ -715,12 +803,16 @@ animationMilliseconds;
 
   }
 
+  /**
+  **/
   stop(){
    if(this.animationRunning){
      this.animationRunning = false;
    }
   }
 
+  /**
+  **/
   animationStep(){
     //Calculate millis since last execution
     var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
@@ -749,6 +841,8 @@ animationMilliseconds;
 
   }
 
+  /**
+  **/
   reset(){
    //Stop animation
    this.stop();
@@ -758,6 +852,8 @@ animationMilliseconds;
    this.currentLine = 0;
   }
 
+  /**
+  **/
   deleteDomElement(){
    //Delete all Dom elements
    for(var i =  1; i < this.textLineArray.length; i++){
@@ -886,6 +982,8 @@ animationMilliseconds;
       }
     }
 
+    /**
+    **/
     start(initStep = false){
       if(!this.animationRunning){
 
@@ -924,6 +1022,8 @@ animationMilliseconds;
      }
     }
 
+    /**
+    **/
     animationStep(directJump = false){
       //Calculate millis since last execution
       var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
@@ -1015,7 +1115,10 @@ animationMilliseconds;
         }
     }
 
-    //Optional function for spinning animation
+    /**
+    * Optional function used for spinning animation
+    * @param {Number} interval intveral at which this function will be executed
+    **/
     spinningAnimationStep(interval){
 
       switch(this.spinningAnimationStatus){
@@ -1045,6 +1148,9 @@ animationMilliseconds;
 
     }
 
+    /**
+    * Prints the Current Frame of the animation
+    **/
     printCurrentFrame(){
       //Save previos values
       let prevCurrentProgressBarTile = this.currentProgressBarTile;
@@ -1096,6 +1202,8 @@ animationMilliseconds;
       }
     }
 
+    /**
+    **/
     stop(pauseMessage = ""){
       if(this.animationRunning){
         //set status to paused
@@ -1109,6 +1217,8 @@ animationMilliseconds;
       }
     }
 
+    /**
+    **/
     reset(){
       //Stop animation
       this.stop();
@@ -1124,6 +1234,8 @@ animationMilliseconds;
       this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, '');
     }
 
+    /**
+    **/
     deleteDomElement(){
       //Reset animation
       this.reset();
