@@ -219,9 +219,6 @@ get length(){
 /**
 * Animation Base class which has to be inherited from
 * @abstract
-* @param {int} animationPLayTime Maximumplaytime of the Animation
-* @param {int} animationStepTime Time for each step
-* @param {InGameConsole:Object} consoleObject Reference to the object this animation will be attached to
 */
 class ConsoleAnimation{
 animationPlayTime;
@@ -230,11 +227,21 @@ animationRunning;
 //Console Object to be animated to
 consoleObject;
 
+  /**
+  * class construtor
+  * @param {int} animationPLayTime Maximumplaytime of the Animation
+  * @param {int} animationStepTime Time for each step
+  * @param {InGameConsole:Object} consoleObject Reference to the object this animation will be attached to
+  **/
   constructor(animationPlayTime, animationStepTime, consoleObject){
      //This class is not allowed to be initialized alone
-     if (this.constructor === Animation) {
-            throw new TypeError('Abstract class "Animation" cannot be instantiated directly.');
+     if(this.constructor === Animation) {
+            throw new TypeError('Abstract class "Animation" cannot be instantiated directly!');
         }
+     //Check if consoleObject is of type InGameConsole
+     if(!consoleObject instanceof InGameConsole){
+       throw new TypeError('consoleObject needs to be of type InGameConsole!');
+     }
      //Check class Structure
      this.checkSubClassStructure();
      //Set playtime
@@ -277,12 +284,9 @@ get animationRunningStatus(){
     - Every Animation Class must extend Animation Base class
 */
 
-//Displays Text loading animation in Console according to parameters
-//@param playtime (Integer in ms) Time after the animation stops (gets paused) (playtime = 0 --> indefinite)
-//@param maxDotCount (Integer) Number of dots that will be displayed (def:3)
-//@param steptime (Integer in ms) Time between each step (=speed)
-//@param animationText (String) Text that is displayed by the Animation
-//@param consoleObject (Object: InGameConsole) Console animation will be aplied to
+/**
+ * Displays Text loading animation in Console according to parameters
+**/
 class ConsoleTextLoadingAnimation extends ConsoleAnimation{
 maxDotCount;
 animationObject;
@@ -294,6 +298,14 @@ animationMilliseconds;
 totalStepCount;
 currentStep;
 
+    /**
+    * Construcotr
+    * @param {Number} playtime (in ms) Time after the animation stops (gets paused) (playtime = 0 --> indefinite)
+    * @param {Number} maxDotCount Number of dots that will be displayed (def:3)
+    * @param {Number} steptime (in ms) Time between each step (=speed)
+    * @param {String} animationText Text that is displayed by the Animation
+    * @param {Object:InGameConsole} consoleObject Console animation will be aplied to
+    **/
     constructor(playtime, steptime, maxDotCount, animationText, consoleObject){
        super(playtime, steptime, consoleObject);
        //Calculate Total Step count
@@ -388,10 +400,9 @@ deleteDomElement(){
 
 }
 
-//Displays Text loading animation in Console according to parameters
-//@param playtime (Integer in ms) Time after the animation stops (gets paused) (playtime = 0 --> infinite)
-//@param animationText (String) Text to be printed
-//@param consoleObject (Object: InGameConsole) Console animation will be aplied to
+/**
+* Displays Text loading animation in Console according to parameters
+**/
 class ConsoleTextTypingAnimation extends ConsoleAnimation{
 animationText;
 currentAnimationCharIndex;
@@ -400,7 +411,12 @@ animationIDString;
 
 animationMilliseconds;
 
-
+/**
+* Constructor
+* @param {Number} playtime (in ms) Time after the animation stops (gets paused) (playtime = 0 --> infinite)
+* @param {String} animationText Text to be printed
+* @param {Object:InGameConsole} consoleObject Console animation will be aplied to
+**/
 constructor(playtime, animationText, consoleObject){
       //Calculate Animation step Time
       var animationStepTime = playtime/animationText.length;
@@ -490,14 +506,9 @@ get currentAnimationObject(){
 
 }
 
-
-//Displays Text loading animation with Typing animation
-//@param playtime (Integer in ms) Time after the animation stops (gets paused) (playtime = 0 --> indefinite)
-//@param steptime (Integer in ms) Time between each step (=speed)
-//@param animationText (String) Text to be printed
-//@param onlyDotsAfterStart (Boolean) Set if onlyDots will be animated after first text print or Text will be printed new everytime as well
-//@param typingTextPlayTime Time of the typing Animation on start
-//@param consoleObject (Object: InGameConsole) Console animation will be aplied to
+/**
+* Displays Text loading animation with Typing animation
+**/
 class ConsoleTextLoadingAnimationTyping extends ConsoleAnimation{
 animationObject;
 animationText;
@@ -507,6 +518,15 @@ onlyConstantDotAnimation;
 
 animationMilliseconds;
 
+/**
+* constructor
+* @param {Number} playtime (in ms) Time after the animation stops (gets paused) (playtime = 0 --> indefinite)
+* @param {Number} steptime (in ms) Time between each step (=speed)
+* @param {String} animationText Text to be printed
+* @param {Boolean} onlyDotsAfterStart Set if onlyDots will be animated after first text print or Text will be printed new everytime as well
+* @param {Number} typingTextPlayTime Time of the typing Animation on start
+* @param {Object:InGameConsole} consoleObject Console animation will be aplied to
+**/
 constructor(playtime, steptime, animationText, maxDotCount, onlyDotsAfterStart, typingTextPlayTime, consoleObject){
       //Call Animation Constructor
       super(playtime, steptime, consoleObject);
@@ -644,11 +664,9 @@ deleteDomElement(){
 
 
 }
-
-//Prints different lines on the console without individual line animations
-//@param playtime (Integer in ms) Time after the animation stops (gets paused)
-//@param lines (String Array) Contains all lines to be printed as Strings
-//@param consoleObject (Object: InGameConsole) Console animation will be aplied to
+/**
+* Prints different lines on the console without individual line animations
+**/
 class ConsoleLinePrint extends ConsoleAnimation{
 textLineArray;
 currentLine;
@@ -657,6 +675,12 @@ animationClassString;
 
 animationMilliseconds;
 
+  /**
+  * constructor of the class
+  * @param {Number} playtime (in ms) Time after the animation stops (gets paused)
+  * @param {String[]} lines Contains all lines to be printed as Strings
+  * @param {Object:InGameConsole} consoleObject Console animation will be aplied to
+  **/
   constructor(playtime, lines, consoleObject){
     //Calculate Steptime
      var steptime = playtime/lines.length;
@@ -746,21 +770,10 @@ animationMilliseconds;
   }
 
 }
-
-//A progessbar loading animation
-//Example: loading # [======       ] 37% /
-//@param playtime (Integer in ms) Time after the animation stops (gets paused) - Controls animation speed
-//@param startPercent (int) Percentage at wich the loading animation starts (0-99)
-//@param stopPerecent (int) Percentage at wich the loading animation stops (1-100)
-//@param loadingBarWidth (int) Width of loading bar in chars (0 = hidden)
-//@param loadingBarFullCharacter (char) character that will be used inside the loading bar for full bars
-//@param loadingBarEmptyCharacter (char) character that will be used inside the loading bar for empty bars
-//@param showPercentage (boolean) shows and animates percentage value
-//@param spinningAnimationStatus (String) text that is printed at 100% completion(length = 0: removes it) Example: loading # [==========] 100% [completedText]
-//@param loadingSpinErrorStatus (String) text that is printed at an endPercentage before 100% (length = 0: remvoves it) Example: loading # [======       ] 50% [errorText]
-//@param percentageIncrement (int) increment of how big the steps are
-//@param animationText (String) text that is shown in front of the Animation
-//@param consoleObject (Object: InGameConsole) Console animation will be aplied to
+/**
+* A progessbar loading animation
+* Example: loading # [======       ] 37% /
+**/
 class ProgressBarLoadingAnimation extends ConsoleAnimation{
 //animation text
 animationText;
@@ -799,6 +812,21 @@ spinningAnimationStatus;
 //Milliseconds since last execution
 animationMilliseconds;
 
+    /**
+    * Constructor for initialization of Animation
+    * @param {Number} playtime (in ms) Time after the animation stops (gets paused) - Controls animation speed
+    * @param {Number} startPercent Percentage at wich the loading animation starts (0-99)
+    * @param {Number} stopPerecent Percentage at wich the loading animation stops (1-100)
+    * @param {Number} loadingBarWidth Width of loading bar in chars (0 = hidden)
+    * @param {Char} loadingBarFullCharacter character that will be used inside the loading bar for full bars
+    * @param {Char} loadingBarEmptyCharacter character that will be used inside the loading bar for empty bars
+    * @param {Boolean} showPercentage shows and animates percentage value
+    * @param {String} spinningAnimationStatus text that is printed at 100% completion(length = 0: removes it) Example: loading # [==========] 100% [completedText]
+    * @param {String} loadingSpinErrorStatus text that is printed at an endPercentage before 100% (length = 0: remvoves it) Example: loading # [======       ] 50% [errorText]
+    * @param {Number} percentageIncrement increment of how big the steps are
+    * @param {String} animationText text that is shown in front of the Animation
+    * @param {Object:InGameConsole} consoleObject Console animation will be aplied to
+    **/
     constructor(playtime, startPercent, stopPercent, loadingBarWidth, loadingBarFullCharacter, loadingBarEmptyCharacter, showPercentage, loadingSpinDoneStatus, loadingSpinErrorStatus, percentageIncrement, animationText, consoleObject){
         //Calculate step time
         let stepCount = (stopPercent - startPercent)/percentageIncrement;
@@ -1032,8 +1060,10 @@ animationMilliseconds;
       this.currentPercentage = prevNextPercentage;
     }
 
-    //Method for jumping forward by a specific amount
-    //@param amount (Integer) jumpvalue (in percent)
+    /**
+    *Method for jumping forward by a specific amount
+    * @param {number} amount jumpvalue (in percent)
+    **/
     jumpForward(amount){
       let maximumJumpAmount = this.endPercentage - this.nextPercentage;
       if(amount <= maximumJumpAmount){
@@ -1049,8 +1079,10 @@ animationMilliseconds;
       }
     }
 
-    //Method for jumping backwards by a specific amount
-    //@param amount (Integer) jumpvalue (in percent)
+    /**
+    * Method for jumping backwards by a specific amount
+    * @param {number} amount jumpvalue (in percent)
+    **/
     jumpBackwards(amount){
       let maximumJumpAmount = this.nextPercentage - this.startPercentage;
       if(amount <= maximumJumpAmount){
@@ -1103,5 +1135,3 @@ animationMilliseconds;
     }
 
 }
-
-//TODO update filename and abstract classname to console animation
