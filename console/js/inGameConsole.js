@@ -62,16 +62,23 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
   this.addActiveEventListenerForConsole();
 }
 
-//Getter for Objects
+/**
+* @return {Dom-Object} Returns reference to the Dom Element for the consoleLog
+**/
 get consoleLogObject(){
   return this.consoleLog;
 }
 
+/**
+* @return {Dom-Object} Returns reference to the Dom Element for the consoleLog
+**/
 get consoleInput(){
   return this.consoleInput;
 }
 
-//Clears complete CommandBlock of Console
+/**
+* Clears complete CommandBlock of Console
+**/
 clearCommandLog(){
   this.consoleLog.textContent = "";
 }
@@ -133,12 +140,16 @@ for(var i = 0; i < responseToLog.length; i++){
   this.consoleLog.append(newDiv);
 }
 
-//Clears all text in command input
+/**
+* Clears all text in command input
+**/
 clearCommandInput(){
   this.consoleInput.value = "";
 }
 
-//Hides InputCommandLine
+/**
+* Hides InputCommandLine
+**/
 disableCommandInput(){
  this.clearCommandInput();
  this.commandLine.style.display = "none";
@@ -146,7 +157,9 @@ disableCommandInput(){
  this.consoleInput.disabled = true;
 }
 
-//Shows InputCommandLine of Console
+/**
+* Shows input CommandLine of console
+**/
 enableCommandInput(){
   this.clearCommandInput();
   this.commandLine.removeAttribute("style");
@@ -155,7 +168,9 @@ enableCommandInput(){
   this.consoleInput.focus();
 }
 
-//Adds spacing for Command input
+/**
+* Adds spacing before Input
+**/
 addCommandLineInputSpacing(){
   var newLineObject = document.createElement("br");
   this.consoleLog.append(newLineObject);
@@ -170,12 +185,16 @@ setCommandsTillInputDeactivation(commandCount){
   }
 }
 
-//Reset Count of allowed commands to Infinity
+/**
+* Reset Count of allowed commands to Infinity
+**/
 clearCommandsTillInputDeactivation(){
   this.commandsTillDeactivation = -1;
 }
 
-//Function that executes whatever is inside the input field
+/**
+* Function that executes whatever is inside the input field
+**/
 onCommandInput(){
    var inputCommand = this.consoleInput.value;
 
@@ -188,7 +207,10 @@ onCommandInput(){
    }
  }
 
-//Executes an Command
+/**
+* Executes an Command
+* @param {String} command Commandstring that shall be executed
+**/
 executeCommand(command){
   //Disable CommandInput while processing
   this.disableCommandInput();
@@ -218,7 +240,9 @@ executeCommand(command){
   this.commandLine.scrollIntoView();
 }
 
-//Handles press of Enter Key
+/**
+* Handles press of Enter Key
+**/
 onEnterPress(){
   //only execute if CommandInput has Focus
   if(document.activeElement === this.consoleInput){
@@ -235,12 +259,16 @@ this.currentPath = pathName;
 this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + pathName + consoleInputChar;
 }
 
-//Method that resets to the current console path
+/**
+* Method that resets to the current console path
+**/
 resetPath(){
  this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + this.currentPath + consoleInputChar;
 }
 
-//Method that returns the current Path
+/**
+* Method that returns the current Path
+**/
 get getCurrentPath(){
   return this.currentPath;
 }
@@ -253,17 +281,23 @@ setToProgramm(programName){
 
 }
 
-//Method to set autocomplete to Auto exec
+/**
+* Method to set autocomplete to Auto exec
+**/
 setAutoCompleteToAutoExec(){
     this.autoCompleteAutoExec = true;
 }
 
-//Method to set autocomplete to Manual exec
+/**
+* Method to set autocomplete to Manual exec
+**/
 setAutoCompleteToManualExec(){
    this.autoCompleteAutoExec = false;
 }
 
-//Method that handles the autocomplete Feature
+/**
+* Method that handles the autocomplete Feature
+**/
 autoComplete(){
   //If Console input is active
   if(document.activeElement === this.consoleInput && this.consoleInput.value.length != 0 ){
@@ -292,18 +326,24 @@ autoComplete(){
      }
    }
 
-//Method that sets input of console to Auto execution
+/**
+* Method that sets input of console to Auto execution
+**/
 setInputToAutoExecution(){
   //Set eventListener on input change
   this.consoleInput.addEventListener("input", this.autoExecution.bind(this));
 }
 
-//Methids that disables Auto Execution for consoleInput
+/**
+* Methods that disables Auto Execution for consoleInput
+**/
 disableInputAutoExectution(){
   this.consoleInput.removeEventListener("input", this.autoExecution.bind(this));
 }
 
-//Method for autoExecution
+/**
+* Method for autoExecution
+**/
 autoExecution(){
   var fittingCommands = this.commandDefinition.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
 
@@ -318,7 +358,9 @@ autoExecution(){
 
 }
 
-//Method that adjust the Width of the input command line according to how big the current path is
+/**
+* Method that adjust the Width of the input command line according to how big the current path is
+**/
 adjustInputCommandWidth(){
   let totalWidth = parseFloat(window.getComputedStyle(this.commandLine).width);
   let pathWidth = parseFloat(window.getComputedStyle(this.commandLine.firstElementChild).width);
@@ -327,7 +369,9 @@ adjustInputCommandWidth(){
   this.consoleInput.style.width = totalWidth - pathWidth - totalWidth*0.03 + "px";
 }
 
-//Handles Keyboard events
+/**
+* Handles Keyboard events
+**/
 onKeyPress(e){
     switch(e.keyCode){
       case 13: //If Enter is pressed
@@ -355,11 +399,17 @@ onKeyPress(e){
 
 }
 
+/**
+* Adds eventlistener for automatic focusing of input on any keypress
+**/
 addActiveEventListenerForConsole(){
   //Add Eventlistener for KeyboardInput
   document.addEventListener("keydown", this.onKeyPress.bind(this));
 }
 
+/**
+* Removes eventlistener for automatic focusing of input on any keypress
+**/
 removeActiveEventListenerForConsole(){
   document.removeEventListener("keydown", this.onKeyPress.bind(this));
 }
