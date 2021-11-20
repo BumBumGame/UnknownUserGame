@@ -151,8 +151,6 @@ const localCommands = new CommandDefinition();
 
 /**
 * Class that is used to process Commands-------------------------------------------------------------------------------------------
-* @param {String} command Command that shall be processed
-* @param {CommandDefinition:Object} CommandDefinition that the command should be searched for in
 */
 class CommandProcessor{
 //Current command Answer variable
@@ -162,6 +160,11 @@ currentCommand;
 //Current CommandDefinition
 commandDefinition;
 
+/**
+* Constructor of class
+* @param {String} command Command that shall be processed
+* @param {CommandDefinition:Object} CommandDefinition that the command should be searched for in
+**/
 constructor(command, commandDefinition){
   //Save Command to Datafield
  this.currentCommand = command.toLowerCase().trim();
@@ -171,7 +174,9 @@ constructor(command, commandDefinition){
  this.commandDefinition = commandDefinition;
 }
 
-//Processes Current saved command through searching it in commandDefinition
+/**
+* Processes Current saved command through searching it in commandDefinition
+**/
 processCommand(){
   var currentCommandResponse = this.commandDefinition.executeCommandFunction(this.currentCommand);
   //Check if Command exists local
