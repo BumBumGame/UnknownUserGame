@@ -364,8 +364,6 @@ autoExecution(){
 adjustInputCommandWidth(){
   let totalWidth = parseFloat(window.getComputedStyle(this.commandLine).width);
   let pathWidth = parseFloat(window.getComputedStyle(this.commandLine.firstElementChild).width);
-  console.log(totalWidth);
-  console.log(pathWidth);
   this.consoleInput.style.width = totalWidth - pathWidth - totalWidth*0.03 + "px";
 }
 
