@@ -1,5 +1,6 @@
 /**
 *Class that holds all Command defintitions for a console----------------------------------------------------------------------
+*@typedef {Object} CommandDefinition
 */
 class CommandDefinition{
 localCommandStartAlias;
@@ -148,6 +149,93 @@ return commandResponse;
 //Create Global Command Definition Object
 const localCommands = new CommandDefinition();
 //-------------------------------------------------
+
+/**
+* Type that can hold either a commandDefinition- or a function reference
+* @typedef {(function|CommandDefinition)} commandExecutionType
+**/
+
+/**
+* Class that represents an Command
+**/
+class Command{
+//bool if command is a program that needs to be started
+isProgram;
+//start alias of the command
+commandStartAlias;
+//Description of the Command
+commandDescritption;
+//Object of type commandExecutionType that holds either an commandDefinition or an Reference to a function
+commandExececutionReference;
+
+/**
+* constructor of Command class
+* @param {String} commandStartAlias First Word/Alias that the command Starts with
+* @param {String} commandDescritption The description of the Command
+* @param {Boolean} isProgram Boolean that sets if the Command starts a new Program or executes a simple function
+* @param {commandExecutionType} commandExecutionReference Reference to the CommandDefinition or the function that shall be used to execute the Command/Programm
+**/
+constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionReference){
+
+  //Check and save commandExececutionReference
+  if(typeof commandExececutionReference === "object"){
+
+     if(!isProgram){
+       throw new TypeError("For isProgram = false, commandExecutionReference needs to be of type function!");
+      }
+
+     if(!commandExecutionReference instanceof CommandDefinition){
+       throw new TypeError("commandExececutionReference for isProgram = true, needs to be an instace of CommandDefinition!");
+     }
+
+  }
+
+  if(typeof commandExecutionReference === "function" && isProgram){
+      throw new TypeError("commandExececutionReference for isProgram = true, needs to be an instace of CommandDefinition!");
+  }
+
+  this.commandExecutionReference = commandExececutionReference;
+  //Save startAlias
+  this.commandStartAlias = commandStartAlias;
+  //Save description
+  this.commandDescritption = commandDescritption;
+  //Save isProgram
+  this.isProgram = isProgram;
+}
+
+/**
+* Returns the current commandStartAlias
+* @return {String} The commandStartAlias of the Command
+**/
+get commandStartAlias(){
+  return this.commandStartAlias;
+}
+
+/**
+* Returns the description of the command
+* @return {String} Description of the Command
+**/
+get commandDescritption(){
+  return this.commandDescritption;
+}
+
+/**
+* Return if the command is a program or not
+* @return {Boolean} if command is a Program or not
+**/
+get isProgram(){
+   return this.isProgram;
+}
+
+/**
+* Return the Reference to the executionInformation
+* @return {commandExecutionType} reference to function or Command Defintion for execution
+**/
+get commandExecutionReference(){
+   return this.commandExecutionReference;
+}
+
+}
 
 /**
 * Class that is used to process Commands-------------------------------------------------------------------------------------------
