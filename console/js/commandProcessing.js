@@ -226,6 +226,15 @@ getCommandsStartingWith(commandStart){
 }
 
 /**
+* Function that returns if the command is a program or a simple Command
+* @param {Number} commandIndex Index of the command
+* @return {Boolean} Boolean whether the command is a program or not
+**/
+get commandIsProgram(commandIndex){
+  return this.commandArray[commandIndex].isProgram;
+}
+
+/**
 *Function that executes the a Command Based on their Alias.
 * @param {String} command Command for the Command which function should be executed
 * @return {String[]} Answer Array which each line as seperate, NULL if not successfull
@@ -237,7 +246,7 @@ if(commandIndex == -1){
  return null;
 }
 
-var commandResponse = this.localCommandFunction[commandIndex](command);
+var commandResponse = this.commandArray[commandIndex].commandExecutionReference(command);
 
 if(commandResponse == null){
  //Return empty response Array
