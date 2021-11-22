@@ -1,156 +1,4 @@
 /**
-*Class that holds all Command defintitions for a console----------------------------------------------------------------------
-*@typedef {Object} CommandDefinition
-*/
-class CommandDefinition{
-localCommandStartAlias;
-localCommandDescriptions;
-localCommandFunction;
-
-constructor(){
-  //init Arrays
-   this.localCommandStartAlias = [];
-   this.localCommandDescriptions = [];
-   this.localCommandFunction = [];
-}
-/**
-*Adds Command to Local Command definition
-* @param {String} commandStartAlias Alias that the command will be started with in the console input
-* @param {String} commandDescritption A Description of the command (newline marked with /n)
-* @param {String} commandFunction A reference to the function that will be executed with this command
-*/
-addCommand(commandStartAlias, commandDescritption, commandFunction){
-  this.localCommandStartAlias.push(commandStartAlias.trim().toLowerCase());
-  this.localCommandDescriptions.push(commandDescritption.trim());
-  this.localCommandFunction.push(commandFunction);
-}
-
-/**
-* Clears all of the Commands out of the Command definition
-*/
-clearAllCommands(){
-  this.localCommandStartAlias = [];
-  this.localCommandDescriptions = [];
-  this.localCommandFunction = [];
-}
-
-/**
-*Removes a Command
-* @param {int} commandIndex Index of the command that shall be removed
-*/
-removeCommand(commandIndex){
-  //Remove Element if found
-  if(commandIndex != -1){
-    localCommandStartAlias.splice(1, commandIndex);
-    localCommandDescriptions.splice(1, commandIndex);
-    localCommandFunction.splice(1, commandIndex);
-  }else{
-    throw "Error: Command not found in Defintition!";
-  }
-
-}
-
-/**
-*Function that returns the Index of a Specific Command based on its Alias. Returns -1 of no Command is found
-* @param {String} command The comand of which index shall be searched for
-* @return {int} Index of the Command, if not found -1
-*/
-getCommandIndex(command){
- var currentCommandStartAlias = command.split(" ")[0];
- return this.localCommandStartAlias.indexOf(currentCommandStartAlias.trim().toLowerCase());
-}
-
-/**
-* Function that returns the current count of local Commands
-* @return Count of all Commands in this Defintion
-*/
-get localCommandCount(){
-  return this.localCommandStartAlias.length;
-}
-
-/**
-* Functions returns Command Allias as String
-* @param {int} commandIndex Index of the command which Alias shall be returned;
-* @return {String} Alias to the requested Index
-*/
-getLocalCommandAlias(commandIndex){
-  return this.localCommandStartAlias[commandIndex];
-}
-
-/**
-* Function returns commandDescritption as an Array to @param Index of Command
-* @param {int} commandIndex Index of the command
-* @return {String:Array} Array of Strings that holds each line of an description seperately
-*/
-getLocalCommandDescription(commandIndex){
-  var descriptionArray = this.localCommandDescriptions[commandIndex].split("\n");
-
-  return descriptionArray;
-}
-
-/**
-* Function returns the First Line of a commandDescritption as String
-* @param {int} commandIndex Index of the command
-* @return {String} First line of the commandDescritption
-*/
-getFirstLineOfCommandDescription(commandIndex){
-  return this.localCommandDescriptions[commandIndex].split("\n")[0];
-}
-
-/**
-* Function that returns all Commands that start with param
-* @param {String} commandStart String with shall be searched for fitting commands to
-* @return {String:Array} An Array with alle The fitting Command Aliases
-}
-*/
-getCommandsStartingWith(commandStart){
-  var fittingCommandArray = [];
-
-  //Check Start of each Alias and add any Matching to Array
-  for(var i = 0; i < this.localCommandStartAlias.length; i++){
-
-    if(this.localCommandStartAlias[i].startsWith(commandStart)){
-      fittingCommandArray.push(this.localCommandStartAlias[i]);
-    }
-
-  }
-
-  //Return array of found Commands
-  return fittingCommandArray;
-}
-
-/**
-*Function that executes the a Command Based on their Alias.
-* @param {String} command Command for the Command which function should be executed
-* @return {String:Array} Answer Array which each line as seperate, NULL if not successfull
-*/
-executeCommandFunction(command){
-var commandIndex = this.getCommandIndex(command);
-//If Command not found then return null
-if(commandIndex == -1){
- return null;
-}
-
-var commandResponse = this.localCommandFunction[commandIndex](command);
-
-if(commandResponse == null){
- //Return empty response Array
- var emptyResponseArray = [];
- return emptyResponseArray;
-}
-
-//Return response Array
-return commandResponse;
-}
-
-}
-
-//-------------------------------------------------
-//Create Global Command Definition Object
-const localCommands = new CommandDefinition();
-//-------------------------------------------------
-
-/**
 * Type that can hold either a commandDefinition- or a function reference
 * @typedef {(function|CommandDefinition)} commandExecutionType
 **/
@@ -196,9 +44,9 @@ constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionR
 
   this.commandExecutionReference = commandExececutionReference;
   //Save startAlias
-  this.commandStartAlias = commandStartAlias;
+  this.commandStartAlias = commandStartAlias.trim().toLowerCase();
   //Save description
-  this.commandDescritption = commandDescritption;
+  this.commandDescritption = commandDescritption.trim();
   //Save isProgram
   this.isProgram = isProgram;
 }
@@ -236,6 +84,177 @@ get commandExecutionReference(){
 }
 
 }
+
+/**
+*Class that holds all Command defintitions for a console----------------------------------------------------------------------
+*@typedef {Object} CommandDefinition
+*/
+class CommandDefinition{
+//Array Collection of commands
+commandArray;
+
+constructor(){
+  //init Arrays
+   this.commandArray = [];
+}
+/**
+*Adds Command to Local Command definition
+* @param {String} commandStartAlias Alias that the command will be started with in the console input
+* @param {String} commandDescritption A Description of the command (newline marked with /n)
+* @param {commandExecutionType} commandExecutionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
+**/
+addCommand(commandStartAlias, commandDescritption, commandExecutionReference){
+  //Create a new command and add it to array
+  var newCommand = new Command(commandStartAlias, commandDescritption, false, commandExecutionReference);
+  //Add new command to list
+  this.commandArray.push(newCommand);
+}
+
+/**
+* Clears all of the Commands out of the Command definition
+**/
+clearAllCommands(){
+  this.commandArray = [];
+}
+
+/**
+*Removes a Command (Throws error if not found)
+* @param {Number} commandIndex Index of the command that shall be removed
+**/
+removeCommand(commandIndex){
+  //Remove Element if found
+  var extractedElement = this.commandArray.splice(1, commandIndex);
+
+  if(extractedElement.length == 0){
+    throw "Error: Command not found in Defintition!";
+  }
+
+}
+
+/**
+*Function that returns the Index of a Specific Command based on its Alias. Returns -1 of no Command is found
+* @param {String} command The comand of which index shall be searched for
+* @return {int} Index of the Command, if not found -1
+**/
+getCommandIndex(command){
+ var currentCommandStartAlias = command.split(" ")[0].trim().toLowerCase();
+
+ //Search all commands
+ for(var i = 0; i < this.commandArray.length; i++){
+
+    if(this.commandArray[i].commandStartAlias == currentCommandStartAlias){
+      return i;
+    }
+
+ }
+
+ return -1;
+}
+
+/**
+* Function that returns the current count of local Commands
+* @return Count of all Commands in this Defintion
+**/
+get length(){
+  return this.commandArray.length;
+}
+
+/**
+* Functions returns Command Allias as String
+* @param {int} commandIndex Index of the command which Alias shall be returned;
+* @return {String} Alias to the requested Index or null if index doesnt exist
+**/
+getLocalCommandAlias(commandIndex){
+  if(commandIndex >= 0 && commandIndex < this.length){
+      return this.commandArray[commandIndex].commandStartAlias;
+  }
+      //else
+    	return null;
+}
+
+/**
+* Function returns commandDescritption as an Array to @param Index of Command
+* @param {Number} commandIndex Index of the command
+* @return {String[]} Array of Strings that holds each line of an description seperately, null if index doest exist
+**/
+getLocalCommandDescription(commandIndex){
+  if(commandIndex >= 0 && commandIndex < this.length){
+    var descriptionArray = this.commandArray[commandIndex].commandDescritption.split("\n");
+
+    return descriptionArray;
+  }
+
+  //else
+  return null;
+}
+
+/**
+* Function returns the First Line of a commandDescritption as String
+* @param {int} commandIndex Index of the command
+* @return {String} First line of the commandDescritption or null if index doesnt exist
+**/
+getFirstLineOfCommandDescription(commandIndex){
+  if(commandIndex >= 0 && commandIndex < this.length){
+      return this.commandArray[commandIndex].commandDescritption.split("\n")[0];
+  }
+
+  //else
+  return null;
+}
+
+/**
+* Function that returns all Commands that start with param
+* @param {String} commandStart String with shall be searched for fitting commands to
+* @return {String[]} An Array with alle The fitting Command Aliases
+}
+**/
+getCommandsStartingWith(commandStart){
+  var fittingCommandArray = [];
+  commandStart = commandStart.toLowerCase().trim();
+
+  //Check Start of each Alias and add any Matching to Array
+  for(var i = 0; i < this.length; i++){
+
+    if(this.commandArray[i].commandStartAlias.startsWith(commandStart)){
+      fittingCommandArray.push(this.commandArray[i].commandStartAlias);
+    }
+
+  }
+
+  //Return array of found Commands
+  return fittingCommandArray;
+}
+
+/**
+*Function that executes the a Command Based on their Alias.
+* @param {String} command Command for the Command which function should be executed
+* @return {String[]} Answer Array which each line as seperate, NULL if not successfull
+**/
+executeCommandFunction(command){
+var commandIndex = this.getCommandIndex(command);
+//If Command not found then return null
+if(commandIndex == -1){
+ return null;
+}
+
+var commandResponse = this.localCommandFunction[commandIndex](command);
+
+if(commandResponse == null){
+ //Return empty response Array
+ var emptyResponseArray = [];
+ return emptyResponseArray;
+}
+
+//Return response Array
+return commandResponse;
+}
+
+}
+
+//-------------------------------------------------
+//Create Global Command Definition Object
+const localCommands = new CommandDefinition();
+//-------------------------------------------------
 
 /**
 * Class that is used to process Commands-------------------------------------------------------------------------------------------
