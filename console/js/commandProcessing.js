@@ -230,7 +230,7 @@ getCommandsStartingWith(commandStart){
 * @param {Number} commandIndex Index of the command
 * @return {Boolean} Boolean whether the command is a program or not
 **/
-get commandIsProgram(commandIndex){
+getCommandIsProgram(commandIndex){
   return this.commandArray[commandIndex].isProgram;
 }
 

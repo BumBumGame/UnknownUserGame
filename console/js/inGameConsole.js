@@ -216,13 +216,29 @@ executeCommand(command){
   this.disableCommandInput();
   //Put Command in Log
   this.logCommand(command);
+
+
+  //get CommandIndex
+  var commandIndex = this.commandDefinition.getCommandIndex(command);
+  //Check if command exists
+  if(commandIndex != -1){
+
+  //Check if Command is a program
+  if(this.commandDefinition.getCommandIsProgram(commandIndex)){
+    //start the program
+  }else{
+
   //process Command
   var commandProcessing = new CommandProcessor(command, this.commandDefinition);
   commandProcessing.processCommand();
   //Print out Answer to Command if exists
-  if(commandProcessing.commandResponse != null){
+    if(commandProcessing.commandResponse != null){
     this.logServerResponse(commandProcessing.commandResponse);
+    }
+    
   }
+
+}
   //Add space for new Command input
   this.addCommandLineInputSpacing();
 
