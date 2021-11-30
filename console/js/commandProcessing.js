@@ -86,13 +86,16 @@ get commandExecutionReference(){
 }
 
 /**
-*Class that holds all Command defintitions for a console----------------------------------------------------------------------
-*@typedef {Object} CommandDefinition
-*/
+* Class that holds all Command defintitions for a console
+* @typedef {Object} CommandDefinition
+**/
 class CommandDefinition{
 //Array Collection of commands
 commandArray;
 
+/**
+* constructor
+**/
 constructor(){
   //init Arrays
    this.commandArray = [];
@@ -108,6 +111,14 @@ addCommand(commandStartAlias, commandDescritption, commandExecutionReference){
   var newCommand = new Command(commandStartAlias, commandDescritption, false, commandExecutionReference);
   //Add new command to list
   this.commandArray.push(newCommand);
+}
+
+/**
+* Adds Command Object to command List
+* @param {Objekt:Command} commandObject The command Object to be added
+**/
+addCommand(commandObject){
+ this.commandArray.push(commandObject);
 }
 
 /**
@@ -230,7 +241,7 @@ getCommandsStartingWith(commandStart){
 * @param {Number} commandIndex Index of the command
 * @return {Boolean} Boolean whether the command is a program or not
 **/
-get commandIsProgram(commandIndex){
+getCommandIsProgram(commandIndex){
   return this.commandArray[commandIndex].isProgram;
 }
 
