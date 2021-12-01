@@ -6,7 +6,7 @@ const consoleInputChar = "$";
 
 /**
 * Class that can be attached to a console to give it functionality
-*/
+**/
 class InGameConsole{
 //Console log Object
 consoleLog;
@@ -24,6 +24,12 @@ commandDefinition;
 currentPath;
 //input status (if active or not)
 inputActive;
+//Boolean if variable is in program mode
+isInProgramMode;
+//Command Definition for the running program (if there is one)
+currentProgramCommandDefinition;
+//Programname (if in Program mode)
+currentProgramName;
 
 /**
 * constructor for initialization of class
@@ -33,7 +39,7 @@ inputActive;
 * @param {CommandDefinition} commandDefinition CommandDefinition object that holds the information about all the commands available in this console
 * @param {String} currentPath Path that the console will be initialized with
 **/
-constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefinition, currentPath = "~"){
+constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefinition, isInProgramMode = false, currentPath = "~"){
   //Set console Log Object
   this.consoleLog = consoleLogObject;
   //Set Console Input Object
@@ -46,6 +52,10 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
   this.autoCompleteAutoExec = false;
   //Set commandDefinition Object
   this.commandDefinition = commandDefinition;
+  //Set isInProgramMode
+  this.isInProgramMode = isInProgramMode;
+  //init programCommandDefinition
+  this.currentProgramCommandDefinition = null;
 
   //set currentpath to initialized
   this.currentPath = currentPath;
@@ -86,7 +96,7 @@ clearCommandLog(){
 /**
 * Logs Command in Command log of Console
 * @param {String} commandToLog Logs current command to this console
-*/
+**/
 logCommand(commandToLog){
  var newCommandToLog = document.createTextNode(playerUsername +":"+ this.currentPath + consoleInputChar +" " + commandToLog);
  var newLineObject = document.createElement("br");
@@ -117,7 +127,7 @@ printOnConsole(output, optionalPreID = ""){
 * Logs ServerResponse in Command Log
 * @param {String:Array} responseToLog with each line
 * @param {String} additionalClass Adds an aditional class to the div object
-*/
+**/
 logServerResponse(responseToLog, addionalClass = ""){
   var newDiv = document.createElement("div");
   newDiv.classList.add("serverResponse");
@@ -178,7 +188,7 @@ addCommandLineInputSpacing(){
 /**
 * Set count of allowed commands until input gets automaticly disabled
 * @param {int} commandCount sets the count
-*/
+**/
 setCommandsTillInputDeactivation(commandCount){
   if(commandCount > 0){
     this.commandsTillDeactivation = commandCount;
@@ -217,25 +227,36 @@ executeCommand(command){
   //Put Command in Log
   this.logCommand(command);
 
+  //Get currently active commandDefiniton
+  var currentActiveCommandDefintion = this.currentActiveCommandDefintion;
 
   //get CommandIndex
-  var commandIndex = this.commandDefinition.getCommandIndex(command);
+  var commandIndex = currentActiveCommandDefintion.getCommandIndex(command);
   //Check if command exists
   if(commandIndex != -1){
 
   //Check if Command is a program
-  if(this.commandDefinition.getCommandIsProgram(commandIndex)){
+  if(currentActiveCommandDefintion.getCommandIsProgram(commandIndex)){
     //start the program
   }else{
 
   //process Command
-  var commandProcessing = new CommandProcessor(command, this.commandDefinition);
+
+  //Check if program Defintion or normal console Defintion needs to be used
+  var commandProcessing;
+
+  if(this.isInProgramMode){
+    commandProcessing = new CommandProcessor(command, this.programCommandDefinition);
+  }else{
+    commandProcessing = new CommandProcessor(command, this.commandDefinition);
+}
+
   commandProcessing.processCommand();
   //Print out Answer to Command if exists
     if(commandProcessing.commandResponse != null){
     this.logServerResponse(commandProcessing.commandResponse);
     }
-    
+
   }
 
 }
@@ -269,16 +290,24 @@ onEnterPress(){
 /**
 * Method that sets new console path
 * @param {String} pathName New path that will be written in front of the console
-*/
+**/
 setNewPath(pathName){
 this.currentPath = pathName;
-this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + pathName + consoleInputChar;
+//Show path
+this.updateVisiblePath();
 }
 
 /**
-* Method that resets to the current console path
+* Method that prints the current path or programname in front of the input
 **/
-resetPath(){
+updateVisiblePath(){
+ //Check if console is in program mode
+ if(this.isInProgramMode){
+ this.commandLine.firstElementChild.innerHTML = this.currentProgramName;
+ return;
+ }
+
+ //If not print normal path
  this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + this.currentPath + consoleInputChar;
 }
 
@@ -290,11 +319,39 @@ get getCurrentPath(){
 }
 
 /**
-* Method that sets the path view to a specific programmm
-* @param {String} programName The name of the programm that will be running
-*/
-setToProgramm(programName){
+* Method which returns the current active commandDefinition
+* @return {CommandDefinition} Reference to currently active commandDefinition on this console
+**/
+get currentActiveCommandDefintion(){
+  if(this.isInProgramMode){
+    return this.currentProgramCommandDefinition;
+  }
 
+    return this.commandDefinition;
+}
+
+/**
+* Method that sets the path view to a specific programmm
+* @param {Number} commandIndex The Index of the commandDefinition currently used by this console
+**/
+startProgram(commandIndex){
+  //Get currently used commandDefinition
+  var activeCommandDefinition = this.currentActiveCommandDefintion;
+
+  //Check if command is acutally a program
+  if(!activeCommandDefinition.getCommandIsProgram(commandIndex)){
+    throw new TypeError("Given Command is not a Program!");
+    return;
+  }
+
+  //Set console into program mode
+  this.isInProgramMode = true;
+  //Write programName
+  this.currentProgramName = activeCommandDefinition.getCommandAlias(commandIndex);
+  //Write commandDefiniton
+  this.currentProgramCommandDefinition = activeCommandDefinition.getCommandExecutionReference(commandIndex);
+  //Update view
+  this.updateVisiblePath();
 }
 
 /**
@@ -317,7 +374,7 @@ setAutoCompleteToManualExec(){
 autoComplete(){
   //If Console input is active
   if(document.activeElement === this.consoleInput && this.consoleInput.value.length != 0 ){
-    var fittingCommands = this.commandDefinition.getCommandsStartingWith(this.consoleInput.value.trim().toLowerCase());
+    var fittingCommands = this.currentActiveCommandDefintion.getCommandsStartingWith(this.consoleInput.value.trim().toLowerCase());
 
     if(fittingCommands.length != 0){
 
@@ -361,7 +418,7 @@ disableInputAutoExectution(){
 * Method for autoExecution
 **/
 autoExecution(){
-  var fittingCommands = this.commandDefinition.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
+  var fittingCommands = this.currentActiveCommandDefintion.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
 
   //Only if there is one clear option for a command
   if(fittingCommands.length == 1){

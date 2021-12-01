@@ -87,7 +87,6 @@ get commandExecutionReference(){
 
 /**
 * Class that holds all Command defintitions for a console
-* @typedef {Object} CommandDefinition
 **/
 class CommandDefinition{
 //Array Collection of commands
@@ -175,7 +174,7 @@ get length(){
 * @param {int} commandIndex Index of the command which Alias shall be returned;
 * @return {String} Alias to the requested Index or null if index doesnt exist
 **/
-getLocalCommandAlias(commandIndex){
+getCommandAlias(commandIndex){
   if(commandIndex >= 0 && commandIndex < this.length){
       return this.commandArray[commandIndex].commandStartAlias;
   }
@@ -184,11 +183,24 @@ getLocalCommandAlias(commandIndex){
 }
 
 /**
+* Returns the execution reference of an command
+* @param {int} commandIndex Index of the command
+* @return {commandExecutionType} ExecutionRefernce to the requested Index or null if index doesnt exist
+**/
+getCommandExecutionReference(commandIndex){
+  if(commandIndex >= 0 && commandIndex < this.length){
+    return this.commandArray[commandIndex].commandExecutionReference;
+  }
+  //else
+    return null;
+}
+
+/**
 * Function returns commandDescritption as an Array to @param Index of Command
 * @param {Number} commandIndex Index of the command
 * @return {String[]} Array of Strings that holds each line of an description seperately, null if index doest exist
 **/
-getLocalCommandDescription(commandIndex){
+getCommandDescription(commandIndex){
   if(commandIndex >= 0 && commandIndex < this.length){
     var descriptionArray = this.commandArray[commandIndex].commandDescritption.split("\n");
 
