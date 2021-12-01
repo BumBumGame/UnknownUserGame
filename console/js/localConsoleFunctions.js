@@ -1,7 +1,7 @@
 //Functions for CommandExecution (Return null if no out to the console is needed) (Return Array of Strings for Answer: Each element = one line)
 //clear function
-function executeClearConsole(command){
-   clearCommandLog();
+function executeClearConsole(command, executingConsole){
+   executingConsole.clearCommandLog();
    return null;
 }
 
@@ -15,13 +15,13 @@ function showHelpDialog(command){
   //Print Command list if no Argument is given
   if(commandParameters.length <= 1){
   //define normal Start output
-   outputArray = localCommands.getLocalCommandDescription(localCommands.getCommandIndex("help"));
+   outputArray = localCommands.getCommandDescription(localCommands.getCommandIndex("help"));
    outputArray.push("");//Empty line
 
    //Print each first line
    //First print local commands
     for(var i = 0; i < localCommands.localCommandCount; i++){
-      outputArray.push(localCommands.getLocalCommandAlias(i) + ": ");
+      outputArray.push(localCommands.getCommandAlias(i) + ": ");
       outputArray.push("    " +localCommands.getFirstLineOfCommandDescription(i));
       //Push Empty line
       outputArray.push("");
@@ -36,7 +36,7 @@ function showHelpDialog(command){
 
     if(secondCommandIndex != -1){
        //Second command found locally
-       outputArray = localCommands.getLocalCommandDescription(secondCommandIndex);
+       outputArray = localCommands.getCommandDescription(secondCommandIndex);
     }else{
       //Check Server Commands
       outputArray = ["Befehl '"+ commandParameters[1] +"' nicht gefunden!"];

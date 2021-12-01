@@ -14,7 +14,7 @@ commandStartAlias;
 //Description of the Command
 commandDescritption;
 //Object of type commandExecutionType that holds either an commandDefinition or an Reference to a function
-commandExececutionReference;
+commandExecutionReference;
 
 /**
 * constructor of Command class
@@ -42,7 +42,7 @@ constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionR
       throw new TypeError("commandExececutionReference for isProgram = true, needs to be an instace of CommandDefinition!");
   }
 
-  this.commandExecutionReference = commandExececutionReference;
+  this.commandExecutionReference = commandExecutionReference;
   //Save startAlias
   this.commandStartAlias = commandStartAlias.trim().toLowerCase();
   //Save description
@@ -116,7 +116,7 @@ addCommand(commandStartAlias, commandDescritption, commandExecutionReference){
 * Adds Command Object to command List
 * @param {Objekt:Command} commandObject The command Object to be added
 **/
-addCommand(commandObject){
+addCommandObject(commandObject){
  this.commandArray.push(commandObject);
 }
 
@@ -262,14 +262,14 @@ getCommandIsProgram(commandIndex){
 * @param {String} command Command for the Command which function should be executed
 * @return {String[]} Answer Array which each line as seperate, NULL if not successfull
 **/
-executeCommandFunction(command){
+executeCommandFunction(command, executingConsole){
 var commandIndex = this.getCommandIndex(command);
 //If Command not found then return null
 if(commandIndex == -1){
  return null;
 }
 
-var commandResponse = this.commandArray[commandIndex].commandExecutionReference(command);
+var commandResponse = this.commandArray[commandIndex].commandExecutionReference(command, executingConsole);
 
 if(commandResponse == null){
  //Return empty response Array
@@ -298,26 +298,31 @@ currentCommandAnswer;
 currentCommand;
 //Current CommandDefinition
 commandDefinition;
+//executingConsole
+executingConsole;
 
 /**
 * Constructor of class
 * @param {String} command Command that shall be processed
 * @param {CommandDefinition:Object} CommandDefinition that the command should be searched for in
+* @param {InGameConsole} executingConsole Reference to the Console which is executing the command
 **/
-constructor(command, commandDefinition){
+constructor(command, commandDefinition, executingConsole){
   //Save Command to Datafield
  this.currentCommand = command.toLowerCase().trim();
  //Standard init CommandAnswer
  this.currentCommandAnswer = null;
  //Set commandDefinition Reference
  this.commandDefinition = commandDefinition;
+ //Save executing console reference
+ this.executingConsole = executingConsole;
 }
 
 /**
 * Processes Current saved command through searching it in commandDefinition
 **/
 processCommand(){
-  var currentCommandResponse = this.commandDefinition.executeCommandFunction(this.currentCommand);
+  var currentCommandResponse = this.commandDefinition.executeCommandFunction(this.currentCommand, this.executingConsole);
   //Check if Command exists local
   if(currentCommandResponse != null) {
     //If he does exist

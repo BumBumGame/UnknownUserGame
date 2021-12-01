@@ -217,5 +217,15 @@ function anyKeyPressedForThirdStage(){
 }
 
 //window.addEventListener("load", startNewGame);
-mainConsoleObject.disableCommandInput();
-window.addEventListener("load", loadFileAnimation);
+
+//mainConsoleObject.disableCommandInput();
+//window.addEventListener("load", loadFileAnimation);
+
+
+/* CONSOLE TEST -THIS SECTION WILL BE DELETED LATER-*/
+
+//Add clear Command
+localCommands.addCommand("clear", "Löscht den Kompletten Kommando-Log.", executeClearConsole);
+//Add help Command
+localCommands.addCommand("help", "Zeigt eine Liste der Verfügbaren Commands mit ihrer Beschreibung an. \n"
+                    + "Um genauere Informationen über einen Befehl zu erhalten schreiben sie: help [Befehl].", showHelpDialog);

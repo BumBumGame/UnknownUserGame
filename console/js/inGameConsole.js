@@ -56,6 +56,8 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
   this.isInProgramMode = isInProgramMode;
   //init programCommandDefinition
   this.currentProgramCommandDefinition = null;
+  //init isInputActive
+  this.isInputActive = true;
 
   //set currentpath to initialized
   this.currentPath = currentPath;
@@ -128,7 +130,7 @@ printOnConsole(output, optionalPreID = ""){
 * @param {String:Array} responseToLog with each line
 * @param {String} additionalClass Adds an aditional class to the div object
 **/
-logServerResponse(responseToLog, addionalClass = ""){
+logServerResponse(responseToLog, additionalClass = ""){
   var newDiv = document.createElement("div");
   newDiv.classList.add("serverResponse");
 
@@ -246,9 +248,9 @@ executeCommand(command){
   var commandProcessing;
 
   if(this.isInProgramMode){
-    commandProcessing = new CommandProcessor(command, this.programCommandDefinition);
+    commandProcessing = new CommandProcessor(command, this.programCommandDefinition, this);
   }else{
-    commandProcessing = new CommandProcessor(command, this.commandDefinition);
+    commandProcessing = new CommandProcessor(command, this.commandDefinition, this);
 }
 
   commandProcessing.processCommand();
