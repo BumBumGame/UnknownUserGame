@@ -311,6 +311,9 @@ updateVisiblePath(){
 
  //If not print normal path
  this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + this.currentPath + consoleInputChar;
+
+ //recalculate size of input
+ this.adjustInputCommandWidth();
 }
 
 /**
