@@ -240,10 +240,10 @@ executeCommand(command){
   //Check if Command is a program
   if(currentActiveCommandDefintion.getCommandIsProgram(commandIndex)){
     //start the program
+    this.startProgram(commandIndex);
+
   }else{
-
   //process Command
-
   //Check if program Defintion or normal console Defintion needs to be used
   var commandProcessing;
 
@@ -334,7 +334,7 @@ get currentActiveCommandDefintion(){
 
 /**
 * Method that sets the path view to a specific programmm
-* @param {Number} commandIndex The Index of the commandDefinition currently used by this console
+* @param {Number} commandIndex The Index inside the commandDefinition currently used by this console
 **/
 startProgram(commandIndex){
   //Get currently used commandDefinition
