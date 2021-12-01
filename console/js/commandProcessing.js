@@ -102,14 +102,27 @@ constructor(){
 /**
 *Adds Command to Local Command definition
 * @param {String} commandStartAlias Alias that the command will be started with in the console input
-* @param {String} commandDescritption A Description of the command (newline marked with /n)
+* @param {String} commandDescription A Description of the command (newline marked with /n)
 * @param {commandExecutionType} commandExecutionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
 **/
-addCommand(commandStartAlias, commandDescritption, commandExecutionReference){
+addCommand(commandStartAlias, commandDescription, commandExecutionReference){
   //Create a new command and add it to array
-  var newCommand = new Command(commandStartAlias, commandDescritption, false, commandExecutionReference);
+  var newCommand = new Command(commandStartAlias, commandDescription, false, commandExecutionReference);
   //Add new command to list
   this.commandArray.push(newCommand);
+}
+
+/**
+*Adds Command to Local Command definition
+* @param {String} programStartAlias Alias that the command will be started with in the console input
+* @param {String} commandDescription A Description of the command (newline marked with /n)
+* @param {commandExecutionType} programExecutionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
+**/
+addProgram(programStartAlias, programDescription, programExecutionReference){
+  //Create new program
+  var newProgram = new Command(programStartAlias, programDescription, true, programExecutionReference);
+  //add program to list
+  this.commandArray.push(newProgram);
 }
 
 /**
