@@ -306,12 +306,10 @@ updateVisiblePath(){
  //Check if console is in program mode
  if(this.isInProgramMode){
  this.commandLine.firstElementChild.innerHTML = this.currentProgramName;
- return;
- }
-
+}else{
  //If not print normal path
- this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + this.currentPath + consoleInputChar;
-
+this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + this.currentPath + consoleInputChar;
+}
  //recalculate size of input
  this.adjustInputCommandWidth();
 }
