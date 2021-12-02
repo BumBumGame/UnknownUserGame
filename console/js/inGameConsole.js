@@ -105,7 +105,8 @@ clearCommandLog(){
 * @param {String} commandToLog Logs current command to this console
 **/
 logCommand(commandToLog){
- var newCommandToLog = document.createTextNode(playerUsername +":"+ this.currentPath + consoleInputChar +" " + commandToLog);
+  //Get waterver is currently written in front of the input and add it to new textNode
+ var newCommandToLog = document.createTextNode(this.commandLine.firstElementChild.textContent);
  var newLineObject = document.createElement("br");
 
  this.consoleLog.append(newCommandToLog);
