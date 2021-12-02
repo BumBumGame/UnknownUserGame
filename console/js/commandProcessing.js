@@ -36,6 +36,9 @@ constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionR
        throw new TypeError("commandExececutionReference for isProgram = true, needs to be an instace of CommandDefinition!");
      }
 
+       //TODO Add exit function to definition if command is a program
+       //commandExecutionReference.addCommand();
+
   }
 
   if(typeof commandExecutionReference === "function" && isProgram){
