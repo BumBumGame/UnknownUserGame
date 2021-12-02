@@ -106,8 +106,8 @@ clearCommandLog(){
 **/
 logCommand(commandToLog){
   //Get waterver is currently written in front of the input and add it to new textNode
- var newCommandToLog = document.createTextNode(this.commandLine.firstElementChild.textContent);
- var newLineObject = document.createElement("br");
+ let newCommandToLog = document.createTextNode(this.commandLine.firstElementChild.textContent);
+ let newLineObject = document.createElement("br");
 
  this.consoleLog.append(newCommandToLog);
  this.consoleLog.append(newLineObject);
@@ -119,8 +119,8 @@ logCommand(commandToLog){
 * @param {int} optionalPreID (optional) String of an ID that gets assigned to the pre-Element
 **/
 printOnConsole(output, optionalPreID = ""){
-   var textToPrint = document.createTextNode(output);
-   var rawOutputObject = document.createElement("pre");
+   let textToPrint = document.createTextNode(output);
+   let rawOutputObject = document.createElement("pre");
 
    //if PreClass is given
    if(optionalPreID.length > 0){
@@ -137,7 +137,7 @@ printOnConsole(output, optionalPreID = ""){
 * @param {String} additionalClass Adds an aditional class to the div object
 **/
 logServerResponse(responseToLog, additionalClass = ""){
-  var newDiv = document.createElement("div");
+  let newDiv = document.createElement("div");
   newDiv.classList.add("serverResponse");
 
    if(additionalClass.length > 0){
@@ -145,12 +145,12 @@ logServerResponse(responseToLog, additionalClass = ""){
    }
 
   //Start spacing from CommandLog
-  var newLineObject = document.createElement("br");
+  let newLineObject = document.createElement("br");
   newDiv.append(newLineObject);
 
-for(var i = 0; i < responseToLog.length; i++){
-  var newPreformTextElement = document.createElement("pre");
-  var newResponse = document.createTextNode(responseToLog[i]);
+for(let i = 0; i < responseToLog.length; i++){
+  let newPreformTextElement = document.createElement("pre");
+  let newResponse = document.createTextNode(responseToLog[i]);
   newPreformTextElement.append(newResponse);
   newDiv.append(newPreformTextElement);
 }
@@ -190,7 +190,7 @@ enableCommandInput(){
 * Adds spacing before Input
 **/
 addCommandLineInputSpacing(){
-  var newLineObject = document.createElement("br");
+  let newLineObject = document.createElement("br");
   this.consoleLog.append(newLineObject);
 }
 /**
@@ -214,7 +214,7 @@ clearCommandsTillInputDeactivation(){
 * Function that executes whatever is inside the input field
 **/
 onCommandInput(){
-   var inputCommand = this.consoleInput.value;
+   let inputCommand = this.consoleInput.value;
 
    //Only do some when Command is inputted at all
    if(inputCommand.length != 0){
@@ -236,10 +236,10 @@ executeCommand(command){
   this.logCommand(command);
 
   //Get currently active commandDefiniton
-  var currentActiveCommandDefintion = this.currentActiveCommandDefintion;
+  let currentActiveCommandDefintion = this.currentActiveCommandDefintion;
 
   //get CommandIndex
-  var commandIndex = currentActiveCommandDefintion.getCommandIndex(command);
+  let commandIndex = currentActiveCommandDefintion.getCommandIndex(command);
   //Check if command exists
   if(commandIndex != -1){
 
@@ -251,7 +251,7 @@ executeCommand(command){
   }else{
   //process Command
   //Check if program Defintion or normal console Defintion needs to be used
-  var commandProcessing;
+  let commandProcessing;
 
   if(this.isInProgramMode){
     commandProcessing = new CommandProcessor(command, this.programCommandDefinition, this);
@@ -365,7 +365,7 @@ get currentActiveCommandDefintion(){
 **/
 startProgram(commandIndex){
   //Get currently used commandDefinition
-  var activeCommandDefinition = this.currentActiveCommandDefintion;
+  let activeCommandDefinition = this.currentActiveCommandDefintion;
 
   //Check if command is acutally a program
   if(!activeCommandDefinition.getCommandIsProgram(commandIndex)){
@@ -401,7 +401,7 @@ setAutoCompleteToManualExec(){
 autoComplete(){
   //If Console input is active
   if(document.activeElement === this.consoleInput && this.consoleInput.value.length != 0 ){
-    var fittingCommands = this.currentActiveCommandDefintion.getCommandsStartingWith(this.consoleInput.value.trim().toLowerCase());
+    let fittingCommands = this.currentActiveCommandDefintion.getCommandsStartingWith(this.consoleInput.value.trim().toLowerCase());
 
     if(fittingCommands.length != 0){
 
@@ -412,9 +412,9 @@ autoComplete(){
                this.onCommandInput();
             }
          }else{
-            var autoCompleteString = "";
+            let autoCompleteString = "";
 
-            for(var i = 0; i < fittingCommands.length; i++){
+            for(let i = 0; i < fittingCommands.length; i++){
               autoCompleteString += fittingCommands[i] + " ";
             }
 
@@ -445,7 +445,7 @@ disableInputAutoExectution(){
 * Method for autoExecution
 **/
 autoExecution(){
-  var fittingCommands = this.currentActiveCommandDefintion.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
+  let fittingCommands = this.currentActiveCommandDefintion.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
 
   //Only if there is one clear option for a command
   if(fittingCommands.length == 1){
