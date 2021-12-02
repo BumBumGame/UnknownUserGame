@@ -105,8 +105,11 @@ clearCommandLog(){
 * @param {String} commandToLog Logs current command to this console
 **/
 logCommand(commandToLog){
-  //Get waterver is currently written in front of the input and add it to new textNode
- let newCommandToLog = document.createTextNode(this.commandLine.firstElementChild.textContent + " " + commandToLog);
+  //Create Textnode with command
+ let newCommandToLog = document.createTextNode(commandToLog);
+  //Get waterver is currently written in front of the input and add it to new front of textNode
+ this.consoleLog.insertAdjacentHTML("beforeend", this.commandLine.firstElementChild.innerHTML + " ");
+
  let newLineObject = document.createElement("br");
 
  this.consoleLog.append(newCommandToLog);
@@ -328,7 +331,7 @@ updateVisiblePath(){
 
  //Check if console is in program mode
  if(this.isInProgramMode){
- this.commandLine.firstElementChild.innerHTML = this.currentProgramName;
+ this.commandLine.firstElementChild.innerHTML = "<u>"+ this.currentProgramName + "</u> >";
 }else{
  //If not print normal path
  this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + this.currentPath + consoleInputChar;
