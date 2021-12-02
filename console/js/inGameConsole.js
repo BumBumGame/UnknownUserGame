@@ -106,7 +106,7 @@ clearCommandLog(){
 **/
 logCommand(commandToLog){
   //Get waterver is currently written in front of the input and add it to new textNode
- let newCommandToLog = document.createTextNode(this.commandLine.firstElementChild.textContent);
+ let newCommandToLog = document.createTextNode(this.commandLine.firstElementChild.textContent + " " + commandToLog);
  let newLineObject = document.createElement("br");
 
  this.consoleLog.append(newCommandToLog);
