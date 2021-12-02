@@ -22,6 +22,8 @@ autoCompleteAutoExec;
 commandDefinition;
 //currentpath
 currentPath;
+//Boolean if path has changed from shown
+pathChanged;
 //input status (if active or not)
 inputActive;
 //Boolean if variable is in program mode
@@ -64,6 +66,9 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
 
   //Set Path to init
   this.setNewPath(currentPath);
+
+  //Update path visibility
+  this.updateVisiblePath();
 
   //Adjust consoleInput width to console size and set eventListener
   this.adjustInputCommandWidth();
@@ -270,6 +275,8 @@ executeCommand(command){
     this.commandsTillDeactivation = -1;
   }else{
     this.enableCommandInput();
+    //Update path view
+    this.updateVisiblePath();
   }
 
   if(this.commandsTillDeactivation > 0){
@@ -290,28 +297,46 @@ onEnterPress(){
   }
 
 /**
-* Method that sets new console path
+* Method that sets new console path (updateVisiblePath() needs to be called for this to be shown!)
 * @param {String} pathName New path that will be written in front of the console
 **/
 setNewPath(pathName){
 this.currentPath = pathName;
-//Show path
-this.updateVisiblePath();
+//Set path to changed
+this.pathChanged = true;
+}
+
+/**
+* Method that sets a program name (updateVisiblePath() needs to be called for this to be shown!)
+* @param {String} programName New programName that will be written in front of the console if the program is running
+**/
+setNewProgramName(programName){
+this.currentProgramName = programName;
+//Set path to changed
+this.pathChanged = true;
 }
 
 /**
 * Method that prints the current path or programname in front of the input
 **/
 updateVisiblePath(){
+ //Check if path needs to be updated
+ if(!this.pathChanged){
+   return;
+ }
+
  //Check if console is in program mode
  if(this.isInProgramMode){
  this.commandLine.firstElementChild.innerHTML = this.currentProgramName;
 }else{
  //If not print normal path
-this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + this.currentPath + consoleInputChar;
+ this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + this.currentPath + consoleInputChar;
 }
+
  //recalculate size of input
  this.adjustInputCommandWidth();
+ //Set path changed to false
+ this.pathChanged = false;
 }
 
 /**
@@ -350,11 +375,9 @@ startProgram(commandIndex){
   //Set console into program mode
   this.isInProgramMode = true;
   //Write programName
-  this.currentProgramName = activeCommandDefinition.getCommandAlias(commandIndex);
+  this.setNewProgramName(activeCommandDefinition.getCommandAlias(commandIndex));
   //Write commandDefiniton
   this.currentProgramCommandDefinition = activeCommandDefinition.getCommandExecutionReference(commandIndex);
-  //Update view
-  this.updateVisiblePath();
 }
 
 /**
