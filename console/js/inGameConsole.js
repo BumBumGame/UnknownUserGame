@@ -363,7 +363,7 @@ get currentActiveCommandDefintion(){
 }
 
 /**
-* Method that sets the path view to a specific programmm
+* Method that starts a program
 * @param {Number} commandIndex The Index inside the commandDefinition currently used by this console
 **/
 startProgram(commandIndex){
@@ -382,6 +382,14 @@ startProgram(commandIndex){
   this.setNewProgramName(activeCommandDefinition.getCommandAlias(commandIndex));
   //Write commandDefiniton
   this.currentProgramCommandDefinition = activeCommandDefinition.getCommandExecutionReference(commandIndex);
+}
+
+/**
+* TODO implement this function and add buffer array to save all program layers
+* Method that closes the currently active program (doesnt do anything if no program is active)
+**/
+closeProgram(){
+
 }
 
 /**

@@ -109,6 +109,7 @@ constructor(){
 * @param {commandExecutionType} commandExecutionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
 **/
 addCommand(commandStartAlias, commandDescription, commandExecutionReference){
+  //TODO Ovewriting of existing commands and programs
   //Create a new command and add it to array
   var newCommand = new Command(commandStartAlias, commandDescription, false, commandExecutionReference);
   //Add new command to list
