@@ -26,12 +26,8 @@ currentPath;
 pathChanged;
 //input status (if active or not)
 inputActive;
-//Boolean if variable is in program mode
-isInProgramMode;
-//Command Definition for the running program (if there is one)
-currentProgramCommandDefinition;
-//Programname (if in Program mode)
-currentProgramName;
+//array with programs (last index is latest)
+programs;
 
 /**
 * constructor for initialization of class
@@ -54,12 +50,10 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
   this.autoCompleteAutoExec = false;
   //Set commandDefinition Object
   this.commandDefinition = commandDefinition;
-  //Set isInProgramMode
-  this.isInProgramMode = isInProgramMode;
-  //init programCommandDefinition
-  this.currentProgramCommandDefinition = null;
   //init isInputActive
   this.isInputActive = true;
+  //init Program array
+  this.programs = [];
 
   //set currentpath to initialized
   this.currentPath = currentPath;
@@ -239,15 +233,15 @@ executeCommand(command){
   this.logCommand(command);
 
   //Get currently active commandDefiniton
-  let currentActiveCommandDefintion = this.currentActiveCommandDefintion;
+  let currentActiveCommandDefinition = this.currentActiveCommandDefinition;
 
   //get CommandIndex
-  let commandIndex = currentActiveCommandDefintion.getCommandIndex(command);
+  let commandIndex = currentActiveCommandDefinition.getCommandIndex(command);
   //Check if command exists
   if(commandIndex != -1){
 
   //Check if Command is a program
-  if(currentActiveCommandDefintion.getCommandIsProgram(commandIndex)){
+  if(currentActiveCommandDefinition.getCommandIsProgram(commandIndex)){
     //start the program
     this.startProgram(commandIndex);
 
@@ -256,8 +250,8 @@ executeCommand(command){
   //Check if program Defintion or normal console Defintion needs to be used
   let commandProcessing;
 
-  if(this.isInProgramMode){
-    commandProcessing = new CommandProcessor(command, this.programCommandDefinition, this);
+  if(this.programs.length > 0){
+    commandProcessing = new CommandProcessor(command, this.programs[this.programs.length - 1].commandExecutionReference, this);
   }else{
     commandProcessing = new CommandProcessor(command, this.commandDefinition, this);
 }
@@ -311,16 +305,6 @@ this.pathChanged = true;
 }
 
 /**
-* Method that sets a program name (updateVisiblePath() needs to be called for this to be shown!)
-* @param {String} programName New programName that will be written in front of the console if the program is running
-**/
-setNewProgramName(programName){
-this.currentProgramName = programName;
-//Set path to changed
-this.pathChanged = true;
-}
-
-/**
 * Method that prints the current path or programname in front of the input
 **/
 updateVisiblePath(){
@@ -330,8 +314,8 @@ updateVisiblePath(){
  }
 
  //Check if console is in program mode
- if(this.isInProgramMode){
- this.commandLine.firstElementChild.innerHTML = "<u>"+ this.currentProgramName + "</u> >";
+ if(this.programs.length > 0){
+ this.commandLine.firstElementChild.innerHTML = "<u>"+ this.programs[this.programs.length - 1].commandStartAlias + "</u> >";
 }else{
  //If not print normal path
  this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + this.currentPath + consoleInputChar;
@@ -354,9 +338,9 @@ get getCurrentPath(){
 * Method which returns the current active commandDefinition
 * @return {CommandDefinition} Reference to currently active commandDefinition on this console
 **/
-get currentActiveCommandDefintion(){
-  if(this.isInProgramMode){
-    return this.currentProgramCommandDefinition;
+get currentActiveCommandDefinition(){
+  if(this.programs.length > 0){
+    return this.programs[this.programs.length - 1].commandExecutionReference;
   }
 
     return this.commandDefinition;
@@ -368,7 +352,7 @@ get currentActiveCommandDefintion(){
 **/
 startProgram(commandIndex){
   //Get currently used commandDefinition
-  let activeCommandDefinition = this.currentActiveCommandDefintion;
+  let activeCommandDefinition = this.currentActiveCommandDefinition;
 
   //Check if command is acutally a program
   if(!activeCommandDefinition.getCommandIsProgram(commandIndex)){
@@ -376,12 +360,10 @@ startProgram(commandIndex){
     return;
   }
 
-  //Set console into program mode
-  this.isInProgramMode = true;
-  //Write programName
-  this.setNewProgramName(activeCommandDefinition.getCommandAlias(commandIndex));
-  //Write commandDefiniton
-  this.currentProgramCommandDefinition = activeCommandDefinition.getCommandExecutionReference(commandIndex);
+  //Get commandObject and add it to program Array
+  this.programs.push(activeCommandDefinition.getCommandObject(commandIndex));
+  //Set path to changed
+  this.pathChanged = true;
 }
 
 /**
@@ -389,6 +371,21 @@ startProgram(commandIndex){
 * Method that closes the currently active program (doesnt do anything if no program is active)
 **/
 closeProgram(){
+  //if there is a program to close - close it
+  if(this.programs.length > 0){
+     //if there are more than one program in que
+     if(this.programs.length > 1){
+       this.programs.splice(this.programs.length - 1, 1);
+     }else{
+        //if its the last program in cue
+        //clear program array
+        this.programs = [];
+     }
+
+     //set path change to true
+     this.pathChanged = true;
+
+  }
 
 }
 
@@ -412,7 +409,7 @@ setAutoCompleteToManualExec(){
 autoComplete(){
   //If Console input is active
   if(document.activeElement === this.consoleInput && this.consoleInput.value.length != 0 ){
-    let fittingCommands = this.currentActiveCommandDefintion.getCommandsStartingWith(this.consoleInput.value.trim().toLowerCase());
+    let fittingCommands = this.currentActiveCommandDefinition.getCommandsStartingWith(this.consoleInput.value.trim().toLowerCase());
 
     if(fittingCommands.length != 0){
 
@@ -456,7 +453,7 @@ disableInputAutoExectution(){
 * Method for autoExecution
 **/
 autoExecution(){
-  let fittingCommands = this.currentActiveCommandDefintion.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
+  let fittingCommands = this.currentActiveCommandDefinition.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
 
   //Only if there is one clear option for a command
   if(fittingCommands.length == 1){

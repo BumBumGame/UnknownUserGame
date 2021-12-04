@@ -47,7 +47,7 @@ constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionR
 
   this.commandExecutionReference = commandExecutionReference;
   //Save startAlias
-  this.commandStartAlias = commandStartAlias.trim().toLowerCase();
+  this.commandStartAlias = commandStartAlias.trim();
   //Save description
   this.commandDescritption = commandDescritption.trim();
   //Save isProgram
@@ -169,7 +169,7 @@ getCommandIndex(command){
  //Search all commands
  for(var i = 0; i < this.commandArray.length; i++){
 
-    if(this.commandArray[i].commandStartAlias == currentCommandStartAlias){
+    if(this.commandArray[i].commandStartAlias.toLowerCase() == currentCommandStartAlias){
       return i;
     }
 
@@ -197,6 +197,20 @@ getCommandAlias(commandIndex){
   }
       //else
     	return null;
+}
+
+/**
+* Functions returns Command commandObject
+* @param {int} commandIndex Index of the command which Alias shall be returned;
+* @return {Command} Command Object
+**/
+getCommandObject(commandIndex){
+    if(commandIndex >= 0 && commandIndex < this.length){
+      return this.commandArray[commandIndex];
+  }
+
+    //else
+    return null;
 }
 
 /**
@@ -255,7 +269,7 @@ getCommandsStartingWith(commandStart){
   //Check Start of each Alias and add any Matching to Array
   for(var i = 0; i < this.length; i++){
 
-    if(this.commandArray[i].commandStartAlias.startsWith(commandStart)){
+    if(this.commandArray[i].commandStartAlias.toLowerCase().startsWith(commandStart)){
       fittingCommandArray.push(this.commandArray[i].commandStartAlias);
     }
 
