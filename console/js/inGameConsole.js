@@ -367,7 +367,6 @@ startProgram(commandIndex){
 }
 
 /**
-* TODO implement this function and add buffer array to save all program layers
 * Method that closes the currently active program (doesnt do anything if no program is active)
 **/
 closeProgram(){
