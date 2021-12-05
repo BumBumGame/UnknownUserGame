@@ -121,8 +121,13 @@ addCommand(commandStartAlias, commandDescription, commandExecutionReference){
 * @param {String} programStartAlias Alias that the command will be started with in the console input
 * @param {String} commandDescription A Description of the command (newline marked with /n)
 * @param {commandExecutionType} programExecutionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
+* @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
 **/
-addProgram(programStartAlias, programDescription, programExecutionReference){
+addProgram(programStartAlias, programDescription, programExecutionReference, exitable = true){
+  //Add exit function to executionreference if program is exitable
+  if(exitable){
+    programExecutionReference.addCommand("exit", "Exists the current Program", exitProgram);
+  }
   //Create new program
   var newProgram = new Command(programStartAlias, programDescription, true, programExecutionReference);
   //add program to list
@@ -313,6 +318,18 @@ return commandResponse;
 }
 
 }
+
+//--------------------------------------------
+/**
+* Function for exiting inside a program
+* @param {String} command command which has been put in the console
+* @param {InGameConsole} executingConsole console Object which the command has been executed on
+**/
+function exitProgram(command, executingConsole){
+  //Call close function of executing Console
+  executingConsole.closeProgram();
+}
+//--------------------------------------------
 
 //-------------------------------------------------
 //Create Global Command Definition Object
