@@ -130,10 +130,15 @@ printOnConsole(output, optionalPreID = ""){
 
 /**
 * Logs ServerResponse in Command Log
-* @param {String:Array} responseToLog with each line
+* @param {String:Array|String} responseToLog with each line
 * @param {String} additionalClass Adds an aditional class to the div object
 **/
 logServerResponse(responseToLog, additionalClass = ""){
+  //if Response log is not an array save it as one whith one line
+  if(!Array.isArray(responseToLog)){
+    responseToLog = [responseToLog];
+  }
+
   let newDiv = document.createElement("div");
   newDiv.classList.add("serverResponse");
 
