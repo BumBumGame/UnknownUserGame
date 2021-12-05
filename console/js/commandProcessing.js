@@ -319,7 +319,7 @@ return commandResponse;
 
 }
 
-//--------------------------------------------
+//--------------------------------------------Standard command functions
 /**
 * Function for exiting inside a program
 * @param {String} command command which has been put in the console
@@ -328,6 +328,62 @@ return commandResponse;
 function exitProgram(command, executingConsole){
   //Call close function of executing Console
   executingConsole.closeProgram();
+}
+
+/**
+* Function that displays help Dialog
+* @param {String} command command which has been put in the console
+**/
+function showHelpDialog(command){
+  //Split Command into Parameters
+  var commandParameters = command.split(" ");
+  //Define Output array
+  var outputArray;
+
+  //Print Command list if no Argument is given
+  if(commandParameters.length <= 1){
+  //define normal Start output
+   outputArray = localCommands.getCommandDescription(localCommands.getCommandIndex("help"));
+   outputArray.push("");//Empty line
+
+   //Print each first line
+   //First print local commands
+    for(var i = 0; i < localCommands.localCommandCount; i++){
+      outputArray.push(localCommands.getCommandAlias(i) + ": ");
+      outputArray.push("    " +localCommands.getFirstLineOfCommandDescription(i));
+      //Push Empty line
+      outputArray.push("");
+    }
+
+    //Second Print ServerCommands
+
+  }else{
+    //Take second Command and try to identify command and show Full description
+    //First Check local Commands
+    var secondCommandIndex = localCommands.getCommandIndex(commandParameters[1]);
+
+    if(secondCommandIndex != -1){
+       //Second command found locally
+       outputArray = localCommands.getCommandDescription(secondCommandIndex);
+    }else{
+      //Check Server Commands
+      outputArray = ["Befehl '"+ commandParameters[1] +"' nicht gefunden!"];
+    }
+
+  }
+
+   //return Console output
+   return outputArray;
+}
+
+/**
+* Command functions which clears the consoleLog
+* @param {String} command command which has been put in the console
+* @param {InGameConsole} executingConsole console Object which the command has been executed on
+**/
+function executeClearConsole(command, executingConsole){
+   executingConsole.clearCommandLog();
+   return null;
 }
 //--------------------------------------------
 
