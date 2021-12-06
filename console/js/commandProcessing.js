@@ -110,7 +110,7 @@ constructor(){
 **/
 addCommand(commandStartAlias, commandDescription, commandExecutionReference){
   //get existing alias commandIndex (or -1 if not exists)
-  let existingCommandIndex = this.getCommandIndex(programStartAlias);
+  let existingCommandIndex = this.getCommandIndex(commandStartAlias);
 
   //Create a new command and add it to array
   var newCommand = new Command(commandStartAlias, commandDescription, false, commandExecutionReference);
