@@ -103,27 +103,40 @@ constructor(){
    this.commandArray = [];
 }
 /**
-*Adds Command to Local Command definition
+*Adds Command to Local Command definition or overides exising one
 * @param {String} commandStartAlias Alias that the command will be started with in the console input
 * @param {String} commandDescription A Description of the command (newline marked with /n)
 * @param {commandExecutionType} commandExecutionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
 **/
 addCommand(commandStartAlias, commandDescription, commandExecutionReference){
-  //TODO Ovewriting of existing commands and programs
+  //get existing alias commandIndex (or -1 if not exists)
+  let existingCommandIndex = this.getCommandIndex(programStartAlias);
+
   //Create a new command and add it to array
   var newCommand = new Command(commandStartAlias, commandDescription, false, commandExecutionReference);
-  //Add new command to list
-  this.commandArray.push(newCommand);
+
+  //Add or overide program if alias exists
+  if(existingCommandIndex == -1){
+    //add program to list
+    this.commandArray.push(newCommand);
+  }else{
+    //override program
+    this.commandArray[existingCommandIndex] = newCommand;
+  }
+
 }
 
 /**
-*Adds Command to Local Command definition
+*Adds Command to Local Command definition or overwrites exising one
 * @param {String} programStartAlias Alias that the command will be started with in the console input
 * @param {String} commandDescription A Description of the command (newline marked with /n)
 * @param {commandExecutionType} programExecutionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
 * @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
 **/
 addProgram(programStartAlias, programDescription, programExecutionReference, exitable = true){
+  //get existing alias commandIndex (or -1 if not exists)
+  let existingCommandIndex = this.getCommandIndex(programStartAlias);
+
   //Add exit function to executionreference if program is exitable
   if(exitable){
     programExecutionReference.addCommand("exit", "Exists the current Program", exitProgram);
@@ -138,16 +151,35 @@ addProgram(programStartAlias, programDescription, programExecutionReference, exi
 
   //Create new program
   var newProgram = new Command(programStartAlias, programDescription, true, programExecutionReference);
-  //add program to list
-  this.commandArray.push(newProgram);
+
+  //Add or overide program if alias exists
+  if(existingCommandIndex == -1){
+    //add program to list
+    this.commandArray.push(newProgram);
+  }else{
+    //override program
+    this.commandArray[existingCommandIndex] = newProgram;
+  }
+
 }
 
 /**
-* Adds Command Object to command List
+* Adds Command Object to command List or overides existing one
 * @param {Objekt:Command} commandObject The command Object to be added
 **/
 addCommandObject(commandObject){
- this.commandArray.push(commandObject);
+  //get existing alias commandIndex (or -1 if not exists)
+  let existingCommandIndex = this.getCommandIndex(commandObject.commandStartAlias);
+
+  //Add or overide program if alias exists
+  if(existingCommandIndex == -1){
+    //add program to list
+    this.commandArray.push(commandObject);
+  }else{
+    //override program
+    this.commandArray[existingCommandIndex] = newProgram;
+  }
+
 }
 
 /**
