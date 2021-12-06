@@ -103,7 +103,7 @@ constructor(){
    this.commandArray = [];
 }
 /**
-*Adds Command to Local Command definition or overides exising one
+* Adds Command to Local Command definition or overides exising one
 * @param {String} commandStartAlias Alias that the command will be started with in the console input
 * @param {String} commandDescription A Description of the command (newline marked with /n)
 * @param {commandExecutionType} commandExecutionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
@@ -127,7 +127,7 @@ addCommand(commandStartAlias, commandDescription, commandExecutionReference){
 }
 
 /**
-*Adds Command to Local Command definition or overwrites exising one
+* Adds Command to Local Command definition or overwrites exising one
 * @param {String} programStartAlias Alias that the command will be started with in the console input
 * @param {String} commandDescription A Description of the command (newline marked with /n)
 * @param {commandExecutionType} programExecutionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
@@ -161,6 +161,38 @@ addProgram(programStartAlias, programDescription, programExecutionReference, exi
     this.commandArray[existingCommandIndex] = newProgram;
   }
 
+}
+
+/**
+* Adds Program Object to command list or overides existing one
+* @param {Objekt:Command} programObject The command Object to be added
+* @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
+**/
+addProgramObject(programObject, exitable = true){
+  //get existing alias commandIndex (or -1 if not exists)
+  let existingCommandIndex = this.getCommandIndex(programObject.commandStartAlias);
+
+  //Add exit function to executionreference if program is exitable
+  if(exitable){
+    programExecutionReference.addCommand("exit", "Exists the current Program", exitProgram);
+  }
+
+  //Add Standard commands
+  //help
+  programExecutionReference.addCommand("help", "Zeigt eine Liste der Verfügbaren Commands mit ihrer Beschreibung an. \n"
+                      + "Um genauere Informationen über einen Befehl zu erhalten schreiben sie: help [Befehl].", showHelpDialog);
+
+  //clear
+  programExecutionReference.addCommand("clear", "Löscht den Kompletten Kommando-Log.", executeClearConsole);
+
+  //Add or overide program if alias exists
+  if(existingCommandIndex == -1){
+    //add program to list
+    this.commandArray.push(programObject);
+  }else{
+    //override program
+    this.commandArray[existingCommandIndex] = programObject;
+  }
 }
 
 /**
