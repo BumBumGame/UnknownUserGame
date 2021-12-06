@@ -218,30 +218,5 @@ function anyKeyPressedForThirdStage(){
 
 //window.addEventListener("load", startNewGame);
 
-//mainConsoleObject.disableCommandInput();
-//window.addEventListener("load", loadFileAnimation);
-
-
-/* CONSOLE TEST -THIS SECTION WILL BE DELETED LATER-*/
-
-//Add clear Command
-localCommands.addCommand("clear", "Löscht den Kompletten Kommando-Log.", executeClearConsole);
-//Add help Command
-localCommands.addCommand("help", "Zeigt eine Liste der Verfügbaren Commands mit ihrer Beschreibung an. \n"
-                    + "Um genauere Informationen über einen Befehl zu erhalten schreiben sie: help [Befehl].", showHelpDialog);
-
-//Creating a test program
-function printForTestProgram(){
-  return "lol hi i can print";
-}
-
-function printForTestProgram2(){
-  return "lol hi i can print2 youuuuuuuuuuu";
-}
-
-var testProgramCommandDefinition = new CommandDefinition();
-
-testProgramCommandDefinition.addCommand("test1", "lol im test 1", printForTestProgram);
-testProgramCommandDefinition.addCommand("test2", "lol bim test2", printForTestProgram2);
-
-localCommands.addProgram("TestProgram", "lol ich bin ein test", testProgramCommandDefinition);
+mainConsoleObject.disableCommandInput();
+window.addEventListener("load", loadFileAnimation);
