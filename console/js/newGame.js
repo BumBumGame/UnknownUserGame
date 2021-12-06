@@ -228,6 +228,7 @@ function anyKeyPressedForThirdStage(){
   //Clear console
   mainConsoleObject.clearCommandLog();
 //TODO WRITE next step here
+//TODO Next step: Write messagerClient
 }
 
 //window.addEventListener("load", startNewGame);
