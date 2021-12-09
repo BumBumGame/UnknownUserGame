@@ -399,7 +399,7 @@ return commandResponse;
 **/
 function exitProgram(command, executingConsole){
   //Call close function of executing Console
-  executingConsole.closeProgram();
+  executingConsole.closeCurrentProgram();
 
   return null;
 }

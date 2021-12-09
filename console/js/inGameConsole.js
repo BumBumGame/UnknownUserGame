@@ -9,25 +9,25 @@ const consoleInputChar = "$";
 **/
 class InGameConsole{
 //Console log Object
-consoleLog;
+#consoleLog;
 //Console input Object
-consoleInput;
+#consoleInput;
 //CommandLine Object
-commandLine;
+#commandLine;
 //commandsTillDeactivation Counter
-commandsTillDeactivation;
+#commandsTillDeactivation;
 //autoCompleteAutoExec Setting (Boolean)
-autoCompleteAutoExec;
+#autoCompleteAutoExec;
 //commandDefinition Object
-commandDefinition;
+#commandDefinition;
 //currentpath
-currentPath;
+#currentPath;
 //Boolean if path has changed from shown
-pathChanged;
+#pathChanged;
 //input status (if active or not)
-inputActive;
+#inputActive;
 //array with programs (last index is latest)
-programs;
+#programs;
 
 /**
 * constructor for initialization of class
@@ -39,24 +39,24 @@ programs;
 **/
 constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefinition, isInProgramMode = false, currentPath = "~"){
   //Set console Log Object
-  this.consoleLog = consoleLogObject;
+  this.#consoleLog = consoleLogObject;
   //Set Console Input Object
-  this.consoleInput = consoleInputObject;
+  this.#consoleInput = consoleInputObject;
   //Set Commandline Object (Outer border around input)
-  this.commandLine = commandLineObject;
+  this.#commandLine = commandLineObject;
   //Set default for Deactivation Counter
-  this.commandsTillDeactivation = -1;
+  this.#commandsTillDeactivation = -1;
   //Set defeault for autoCompleteAutoExec Setting
-  this.autoCompleteAutoExec = false;
+  this.#autoCompleteAutoExec = false;
   //Set commandDefinition Object
-  this.commandDefinition = commandDefinition;
+  this.#commandDefinition = commandDefinition;
   //init isInputActive
-  this.isInputActive = true;
+  this.#inputActive = true;
   //init Program array
-  this.programs = [];
+  this.#programs = [];
 
   //set currentpath to initialized
-  this.currentPath = currentPath;
+  this.#currentPath = currentPath;
 
   //Set Path to init
   this.setNewPath(currentPath);
@@ -65,8 +65,8 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
   this.updateVisiblePath();
 
   //Adjust consoleInput width to console size and set eventListener
-  this.adjustInputCommandWidth();
-  window.addEventListener("resize", this.adjustInputCommandWidth.bind(this));
+  this.#adjustInputCommandWidth();
+  window.addEventListener("resize", this.#adjustInputCommandWidth.bind(this));
 
   //Set event listener
   //Add Eventlistener for KeyboardInput
@@ -77,37 +77,38 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
 * @return {Dom-Object} Returns reference to the Dom Element for the consoleLog
 **/
 get consoleLogObject(){
-  return this.consoleLog;
+  return this.#consoleLog;
 }
 
 /**
 * @return {Dom-Object} Returns reference to the Dom Element for the consoleLog
 **/
 get consoleInput(){
-  return this.consoleInput;
+  return this.#consoleInput;
 }
 
 /**
 * Clears complete CommandBlock of Console
 **/
 clearCommandLog(){
-  this.consoleLog.textContent = "";
+  this.#consoleLog.textContent = "";
 }
 
 /**
 * Logs Command in Command log of Console
 * @param {String} commandToLog Logs current command to this console
+* @private
 **/
-logCommand(commandToLog){
+#logCommand(commandToLog){
   //Create Textnode with command
  let newCommandToLog = document.createTextNode(commandToLog);
   //Get waterver is currently written in front of the input and add it to new front of textNode
- this.consoleLog.insertAdjacentHTML("beforeend", this.commandLine.firstElementChild.innerHTML + " ");
+ this.#consoleLog.insertAdjacentHTML("beforeend", this.#commandLine.firstElementChild.innerHTML + " ");
 
  let newLineObject = document.createElement("br");
 
- this.consoleLog.append(newCommandToLog);
- this.consoleLog.append(newLineObject);
+ this.#consoleLog.append(newCommandToLog);
+ this.#consoleLog.append(newLineObject);
 }
 
 /**
@@ -125,7 +126,7 @@ printOnConsole(output, optionalPreID = ""){
    }
 
    rawOutputObject.append(textToPrint);
-   this.consoleLog.append(rawOutputObject);
+   this.#consoleLog.append(rawOutputObject);
 }
 
 /**
@@ -157,14 +158,14 @@ for(let i = 0; i < responseToLog.length; i++){
   newDiv.append(newPreformTextElement);
 }
 
-  this.consoleLog.append(newDiv);
+  this.#consoleLog.append(newDiv);
 }
 
 /**
 * Clears all text in command input
 **/
 clearCommandInput(){
-  this.consoleInput.value = "";
+  this.#consoleInput.value = "";
 }
 
 /**
@@ -172,9 +173,9 @@ clearCommandInput(){
 **/
 disableCommandInput(){
  this.clearCommandInput();
- this.commandLine.style.display = "none";
+ this.#commandLine.style.display = "none";
  this.removeActiveEventListenerForConsole();
- this.consoleInput.disabled = true;
+ this.#consoleInput.disabled = true;
 }
 
 /**
@@ -182,18 +183,19 @@ disableCommandInput(){
 **/
 enableCommandInput(){
   this.clearCommandInput();
-  this.commandLine.removeAttribute("style");
-  this.consoleInput.removeAttribute("disabled");
+  this.#commandLine.removeAttribute("style");
+  this.#consoleInput.removeAttribute("disabled");
   this.addActiveEventListenerForConsole();
-  this.consoleInput.focus();
+  this.#consoleInput.focus();
 }
 
 /**
 * Adds spacing before Input
+* @private
 **/
-addCommandLineInputSpacing(){
+#addCommandLineInputSpacing(){
   let newLineObject = document.createElement("br");
-  this.consoleLog.append(newLineObject);
+  this.#consoleLog.append(newLineObject);
 }
 /**
 * Set count of allowed commands until input gets automaticly disabled
@@ -201,7 +203,7 @@ addCommandLineInputSpacing(){
 **/
 setCommandsTillInputDeactivation(commandCount){
   if(commandCount > 0){
-    this.commandsTillDeactivation = commandCount;
+    this.#commandsTillDeactivation = commandCount;
   }
 }
 
@@ -209,14 +211,15 @@ setCommandsTillInputDeactivation(commandCount){
 * Reset Count of allowed commands to Infinity
 **/
 clearCommandsTillInputDeactivation(){
-  this.commandsTillDeactivation = -1;
+  this.#commandsTillDeactivation = -1;
 }
 
 /**
 * Function that executes whatever is inside the input field
+* @private
 **/
-onCommandInput(){
-   let inputCommand = this.consoleInput.value;
+#onCommandInput(){
+   let inputCommand = this.#consoleInput.value;
 
    //Only do some when Command is inputted at all
    if(inputCommand.length != 0){
@@ -235,7 +238,7 @@ executeCommand(command){
   //Disable CommandInput while processing
   this.disableCommandInput();
   //Put Command in Log
-  this.logCommand(command);
+  this.#logCommand(command);
 
   //Get currently active commandDefiniton
   let currentActiveCommandDefinition = this.currentActiveCommandDefinition;
@@ -248,18 +251,12 @@ executeCommand(command){
   //Check if Command is a program
   if(currentActiveCommandDefinition.getCommandIsProgram(commandIndex)){
     //start the program
-    this.startProgram(commandIndex);
+    this.#startProgram(commandIndex);
 
   }else{
   //process Command
   //Check if program Defintion or normal console Defintion needs to be used
-  let commandProcessing;
-
-  if(this.programs.length > 0){
-    commandProcessing = new CommandProcessor(command, this.programs[this.programs.length - 1].commandExecutionReference, this);
-  }else{
-    commandProcessing = new CommandProcessor(command, this.commandDefinition, this);
-}
+  let commandProcessing = new CommandProcessor(command, this.currentActiveCommandDefinition, this);
 
   commandProcessing.processCommand();
   //Print out Answer to Command if exists
@@ -271,31 +268,32 @@ executeCommand(command){
 
 }
   //Add space for new Command input
-  this.addCommandLineInputSpacing();
+  this.#addCommandLineInputSpacing();
 
  //Check if input needs to be disabled after this command
-  if(this.commandsTillDeactivation == 1){
-    this.commandsTillDeactivation = -1;
+  if(this.#commandsTillDeactivation == 1){
+    this.#commandsTillDeactivation = -1;
   }else{
     this.enableCommandInput();
     //Update path view
     this.updateVisiblePath();
   }
 
-  if(this.commandsTillDeactivation > 0){
-   this.commandsTillDeactivation--;
+  if(this.#commandsTillDeactivation > 0){
+   this.#commandsTillDeactivation--;
   }
   //scroll Intoview
-  this.commandLine.scrollIntoView();
+  this.#commandLine.scrollIntoView();
 }
 
 /**
 * Handles press of Enter Key
+* @private
 **/
-onEnterPress(){
+#onEnterPress(){
   //only execute if CommandInput has Focus
-  if(document.activeElement === this.consoleInput){
-      this.onCommandInput();
+  if(document.activeElement === this.#consoleInput){
+      this.#onCommandInput();
    }
   }
 
@@ -304,9 +302,9 @@ onEnterPress(){
 * @param {String} pathName New path that will be written in front of the console
 **/
 setNewPath(pathName){
-this.currentPath = pathName;
+this.#currentPath = pathName;
 //Set path to changed
-this.pathChanged = true;
+this.#pathChanged = true;
 }
 
 /**
@@ -314,29 +312,29 @@ this.pathChanged = true;
 **/
 updateVisiblePath(){
  //Check if path needs to be updated
- if(!this.pathChanged){
+ if(!this.#pathChanged){
    return;
  }
 
  //Check if console is in program mode
- if(this.programs.length > 0){
- this.commandLine.firstElementChild.innerHTML = "<u>"+ this.programs[this.programs.length - 1].commandStartAlias + "</u> >";
+ if(this.#programs.length > 0){
+ this.#commandLine.firstElementChild.innerHTML = "<u>"+ this.#programs[this.#programs.length - 1].commandStartAlias + "</u> >";
 }else{
  //If not print normal path
- this.commandLine.firstElementChild.innerHTML = playerUsername + ":" + this.currentPath + consoleInputChar;
+ this.#commandLine.firstElementChild.innerHTML = playerUsername + ":" + this.#currentPath + consoleInputChar;
 }
 
  //recalculate size of input
- this.adjustInputCommandWidth();
+ this.#adjustInputCommandWidth();
  //Set path changed to false
- this.pathChanged = false;
+ this.#pathChanged = false;
 }
 
 /**
 * Method that returns the current Path
 **/
 get getCurrentPath(){
-  return this.currentPath;
+  return this.#currentPath;
 }
 
 /**
@@ -344,18 +342,19 @@ get getCurrentPath(){
 * @return {CommandDefinition} Reference to currently active commandDefinition on this console
 **/
 get currentActiveCommandDefinition(){
-  if(this.programs.length > 0){
-    return this.programs[this.programs.length - 1].commandExecutionReference;
+  if(this.#programs.length > 0){
+    return this.#programs[this.#programs.length - 1].commandExecutionReference;
   }
 
-    return this.commandDefinition;
+    return this.#commandDefinition;
 }
 
 /**
 * Method that starts a program
 * @param {Number} commandIndex The Index inside the commandDefinition currently used by this console
+* @private
 **/
-startProgram(commandIndex){
+#startProgram(commandIndex){
   //Get currently used commandDefinition
   let activeCommandDefinition = this.currentActiveCommandDefinition;
 
@@ -366,28 +365,35 @@ startProgram(commandIndex){
   }
 
   //Get commandObject and add it to program Array
-  this.programs.push(activeCommandDefinition.getCommandObject(commandIndex));
+  this.#programs.push(activeCommandDefinition.getCommandObject(commandIndex));
   //Set path to changed
-  this.pathChanged = true;
+  this.#pathChanged = true;
+}
+
+/**
+* Starts and injects a custom Program into the console (will be started over currentrunning program)
+**/
+startCustomProgram(){
+
 }
 
 /**
 * Method that closes the currently active program (doesnt do anything if no program is active)
 **/
-closeProgram(){
+closeCurrentProgram(){
   //if there is a program to close - close it
-  if(this.programs.length > 0){
+  if(this.#programs.length > 0){
      //if there are more than one program in que
-     if(this.programs.length > 1){
-       this.programs.splice(this.programs.length - 1, 1);
+     if(this.#programs.length > 1){
+       this.#programs.splice(this.#programs.length - 1, 1);
      }else{
         //if its the last program in cue
         //clear program array
-        this.programs = [];
+        this.#programs = [];
      }
 
      //set path change to true
-     this.pathChanged = true;
+     this.#pathChanged = true;
 
   }
 
@@ -397,14 +403,14 @@ closeProgram(){
 * Method to set autocomplete to Auto exec
 **/
 setAutoCompleteToAutoExec(){
-    this.autoCompleteAutoExec = true;
+    this.#autoCompleteAutoExec = true;
 }
 
 /**
 * Method to set autocomplete to Manual exec
 **/
 setAutoCompleteToManualExec(){
-   this.autoCompleteAutoExec = false;
+   this.#autoCompleteAutoExec = false;
 }
 
 /**
@@ -412,16 +418,16 @@ setAutoCompleteToManualExec(){
 **/
 autoComplete(){
   //If Console input is active
-  if(document.activeElement === this.consoleInput && this.consoleInput.value.length != 0 ){
-    let fittingCommands = this.currentActiveCommandDefinition.getCommandsStartingWith(this.consoleInput.value.trim().toLowerCase());
+  if(document.activeElement === this.#consoleInput && this.#consoleInput.value.length != 0 ){
+    let fittingCommands = this.currentActiveCommandDefinition.getCommandsStartingWith(this.#consoleInput.value.trim().toLowerCase());
 
     if(fittingCommands.length != 0){
 
          if(fittingCommands.length == 1){
-            this.consoleInput.value = fittingCommands[0];
+            this.#consoleInput.value = fittingCommands[0];
             //Execute Command if in Auto Exec Mode
-            if(this.autoCompleteAutoExec){
-               this.onCommandInput();
+            if(this.#autoCompleteAutoExec){
+               this.#onCommandInput();
             }
          }else{
             let autoCompleteString = "";
@@ -430,7 +436,7 @@ autoComplete(){
               autoCompleteString += fittingCommands[i] + " ";
             }
 
-            this.logCommand(this.consoleInput.value);
+            this.#logCommand(this.#consoleInput.value);
             this.printOnConsole(autoCompleteString.trim());
             this.printOnConsole(""); //Print an empty line
          }
@@ -443,27 +449,28 @@ autoComplete(){
 **/
 setInputToAutoExecution(){
   //Set eventListener on input change
-  this.consoleInput.addEventListener("input", this.autoExecution.bind(this));
+  this.#consoleInput.addEventListener("input", this.#autoExecution.bind(this));
 }
 
 /**
 * Methods that disables Auto Execution for consoleInput
 **/
 disableInputAutoExectution(){
-  this.consoleInput.removeEventListener("input", this.autoExecution.bind(this));
+  this.#consoleInput.removeEventListener("input", this.#autoExecution.bind(this));
 }
 
 /**
 * Method for autoExecution
+* @private
 **/
-autoExecution(){
-  let fittingCommands = this.currentActiveCommandDefinition.getCommandsStartingWith(consoleInput.value.trim().toLowerCase());
+#autoExecution(){
+  let fittingCommands = this.currentActiveCommandDefinition.getCommandsStartingWith(this.#consoleInput.value.trim().toLowerCase());
 
   //Only if there is one clear option for a command
   if(fittingCommands.length == 1){
     //Check if command is fully put in
-    if(this.consoleInput.value.trim().length == fittingCommands[0].length){
-      this.onCommandInput();
+    if(this.#consoleInput.value.trim().length == fittingCommands[0].length){
+      this.#onCommandInput();
     }
 
   }
@@ -472,36 +479,38 @@ autoExecution(){
 
 /**
 * Method that adjust the Width of the input command line according to how big the current path is
+* @private
 **/
-adjustInputCommandWidth(){
-  let totalWidth = parseFloat(window.getComputedStyle(this.commandLine).width);
-  let pathWidth = parseFloat(window.getComputedStyle(this.commandLine.firstElementChild).width);
-  this.consoleInput.style.width = totalWidth - pathWidth - totalWidth*0.03 + "px";
+#adjustInputCommandWidth(){
+  let totalWidth = parseFloat(window.getComputedStyle(this.#commandLine).width);
+  let pathWidth = parseFloat(window.getComputedStyle(this.#commandLine.firstElementChild).width);
+  this.#consoleInput.style.width = totalWidth - pathWidth - totalWidth*0.03 + "px";
 }
 
 /**
 * Handles Keyboard events
+* @private
 **/
-onKeyPress(e){
+#onKeyPress(e){
     switch(e.keyCode){
       case 13: //If Enter is pressed
-      this.onEnterPress();
+      this.#onEnterPress();
       break;
       case 9: //If Tab is pressed
       e.preventDefault();
       this.autoComplete();
-      this.commandLine.scrollIntoView();
+      this.#commandLine.scrollIntoView();
       break;
       default:
 
-    if(document.activeElement != this.consoleInput){
+    if(document.activeElement != this.#consoleInput){
       if(e.key.match(".*") && e.key.length == 1){
         e.preventDefault();
-        this.consoleInput.value += e.key;
-        this.consoleInput.focus();
-        this.commandLine.scrollIntoView();
+        this.#consoleInput.value += e.key;
+        this.#consoleInput.focus();
+        this.#commandLine.scrollIntoView();
         //Fire input event
-        this.consoleInput.dispatchEvent(new Event('input', { bubbles: true }));
+        this.#consoleInput.dispatchEvent(new Event('input', { bubbles: true }));
       }
       break;
     }
@@ -514,14 +523,14 @@ onKeyPress(e){
 **/
 addActiveEventListenerForConsole(){
   //Add Eventlistener for KeyboardInput
-  document.addEventListener("keydown", this.onKeyPress.bind(this));
+  document.addEventListener("keydown", this.#onKeyPress.bind(this));
 }
 
 /**
 * Removes eventlistener for automatic focusing of input on any keypress
 **/
 removeActiveEventListenerForConsole(){
-  document.removeEventListener("keydown", this.onKeyPress.bind(this));
+  document.removeEventListener("keydown", this.#onKeyPress.bind(this));
 }
 
 }
