@@ -372,8 +372,12 @@ get currentActiveCommandDefinition(){
 
 /**
 * Starts and injects a custom Program into the console (will be started over currentrunning program)
+* @param {String} programName Alias of the Program
+* @param {CommandDefinition} programCommandDefinition Command Definiton for the Program
+* @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
+* @param {String} [customProgramPath = null] OptionalParameter for adding a customProgramPath to a program (null = no CustomPath)
 **/
-startCustomProgram(){
+startCustomProgram(programName, programCommandDefinition, programExitable = true, customProgramPath = null){
 
 }
 
