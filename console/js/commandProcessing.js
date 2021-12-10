@@ -8,13 +8,13 @@
 **/
 class Command{
 //bool if command is a program that needs to be started
-isProgram;
+#isProgram;
 //start alias of the command
-commandStartAlias;
+#commandStartAlias;
 //Description of the Command
-commandDescritption;
+#commandDescritption;
 //Object of type commandExecutionType that holds either an commandDefinition or an Reference to a function
-commandExecutionReference;
+#commandExecutionReference;
 
 /**
 * constructor of Command class
@@ -23,10 +23,10 @@ commandExecutionReference;
 * @param {Boolean} isProgram Boolean that sets if the Command starts a new Program or executes a simple function
 * @param {commandExecutionType} commandExecutionReference Reference to the CommandDefinition or the function that shall be used to execute the Command/Programm
 **/
-constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionReference){
+constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionReference, exitable = true){
 
   //Check and save commandExececutionReference
-  if(typeof commandExececutionReference === "object"){
+  if(typeof commandExecutionReference === "object"){
 
      if(!isProgram){
        throw new TypeError("For isProgram = false, commandExecutionReference needs to be of type function!");
@@ -37,7 +37,17 @@ constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionR
      }
 
        //TODO Add exit function to definition if command is a program
-       //commandExecutionReference.addCommand();
+       //Add exit function to executionreference if program is exitable
+       if(exitable){
+         commandExecutionReference.addCommand("exit", "Exists the current Program", exitProgram);
+       }
+        //Add basic Commands
+        //Help
+        commandExecutionReference.addCommand("help", "Zeigt eine Liste der Verfügbaren Commands mit ihrer Beschreibung an. \n"
+                           + "Um genauere Informationen über einen Befehl zu erhalten schreiben sie: help [Befehl].", showHelpDialog);
+
+        //clear
+        commandExecutionReference.addCommand("clear", "Löscht den Kompletten Kommando-Log.", executeClearConsole);
 
   }
 
@@ -45,13 +55,13 @@ constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionR
       throw new TypeError("commandExececutionReference for isProgram = true, needs to be an instace of CommandDefinition!");
   }
 
-  this.commandExecutionReference = commandExecutionReference;
+  this.#commandExecutionReference = commandExecutionReference;
   //Save startAlias
-  this.commandStartAlias = commandStartAlias.trim();
+  this.#commandStartAlias = commandStartAlias.trim();
   //Save description
-  this.commandDescritption = commandDescritption.trim();
+  this.#commandDescritption = commandDescritption.trim();
   //Save isProgram
-  this.isProgram = isProgram;
+  this.#isProgram = isProgram;
 }
 
 /**
@@ -59,7 +69,7 @@ constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionR
 * @return {String} The commandStartAlias of the Command
 **/
 get commandStartAlias(){
-  return this.commandStartAlias;
+  return this.#commandStartAlias;
 }
 
 /**
@@ -67,7 +77,7 @@ get commandStartAlias(){
 * @return {String} Description of the Command
 **/
 get commandDescritption(){
-  return this.commandDescritption;
+  return this.#commandDescritption;
 }
 
 /**
@@ -75,7 +85,7 @@ get commandDescritption(){
 * @return {Boolean} if command is a Program or not
 **/
 get isProgram(){
-   return this.isProgram;
+   return this.#isProgram;
 }
 
 /**
@@ -83,7 +93,7 @@ get isProgram(){
 * @return {commandExecutionType} reference to function or Command Defintion for execution
 **/
 get commandExecutionReference(){
-   return this.commandExecutionReference;
+   return this.#commandExecutionReference;
 }
 
 }
@@ -93,14 +103,14 @@ get commandExecutionReference(){
 **/
 class CommandDefinition{
 //Array Collection of commands
-commandArray;
+#commandArray;
 
 /**
 * constructor
 **/
 constructor(){
   //init Arrays
-   this.commandArray = [];
+   this.#commandArray = [];
 }
 /**
 * Adds Command to Local Command definition or overides exising one
@@ -118,10 +128,10 @@ addCommand(commandStartAlias, commandDescription, commandExecutionReference){
   //Add or overide program if alias exists
   if(existingCommandIndex == -1){
     //add program to list
-    this.commandArray.push(newCommand);
+    this.#commandArray.push(newCommand);
   }else{
     //override program
-    this.commandArray[existingCommandIndex] = newCommand;
+    this.#commandArray[existingCommandIndex] = newCommand;
   }
 
 }
@@ -137,28 +147,16 @@ addProgram(programStartAlias, programDescription, programExecutionReference, exi
   //get existing alias commandIndex (or -1 if not exists)
   let existingCommandIndex = this.getCommandIndex(programStartAlias);
 
-  //Add exit function to executionreference if program is exitable
-  if(exitable){
-    programExecutionReference.addCommand("exit", "Exists the current Program", exitProgram);
-  }
-  //Add Standard commands
-  //help
-  programExecutionReference.addCommand("help", "Zeigt eine Liste der Verfügbaren Commands mit ihrer Beschreibung an. \n"
-                      + "Um genauere Informationen über einen Befehl zu erhalten schreiben sie: help [Befehl].", showHelpDialog);
-
-  //clear
-  programExecutionReference.addCommand("clear", "Löscht den Kompletten Kommando-Log.", executeClearConsole);
-
   //Create new program
-  var newProgram = new Command(programStartAlias, programDescription, true, programExecutionReference);
+  var newProgram = new Command(programStartAlias, programDescription, true, programExecutionReference, exitable);
 
   //Add or overide program if alias exists
   if(existingCommandIndex == -1){
     //add program to list
-    this.commandArray.push(newProgram);
+    this.#commandArray.push(newProgram);
   }else{
     //override program
-    this.commandArray[existingCommandIndex] = newProgram;
+    this.#commandArray[existingCommandIndex] = newProgram;
   }
 
 }
@@ -172,26 +170,13 @@ addProgramObject(programObject, exitable = true){
   //get existing alias commandIndex (or -1 if not exists)
   let existingCommandIndex = this.getCommandIndex(programObject.commandStartAlias);
 
-  //Add exit function to executionreference if program is exitable
-  if(exitable){
-    programExecutionReference.addCommand("exit", "Exists the current Program", exitProgram);
-  }
-
-  //Add Standard commands
-  //help
-  programExecutionReference.addCommand("help", "Zeigt eine Liste der Verfügbaren Commands mit ihrer Beschreibung an. \n"
-                      + "Um genauere Informationen über einen Befehl zu erhalten schreiben sie: help [Befehl].", showHelpDialog);
-
-  //clear
-  programExecutionReference.addCommand("clear", "Löscht den Kompletten Kommando-Log.", executeClearConsole);
-
   //Add or overide program if alias exists
   if(existingCommandIndex == -1){
     //add program to list
-    this.commandArray.push(programObject);
+    this.#commandArray.push(programObject);
   }else{
     //override program
-    this.commandArray[existingCommandIndex] = programObject;
+    this.#commandArray[existingCommandIndex] = programObject;
   }
 }
 
@@ -206,10 +191,10 @@ addCommandObject(commandObject){
   //Add or overide program if alias exists
   if(existingCommandIndex == -1){
     //add program to list
-    this.commandArray.push(commandObject);
+    this.#commandArray.push(commandObject);
   }else{
     //override program
-    this.commandArray[existingCommandIndex] = newProgram;
+    this.#commandArray[existingCommandIndex] = newProgram;
   }
 
 }
@@ -218,7 +203,7 @@ addCommandObject(commandObject){
 * Clears all of the Commands out of the Command definition
 **/
 clearAllCommands(){
-  this.commandArray = [];
+  this.#commandArray = [];
 }
 
 /**
@@ -227,7 +212,7 @@ clearAllCommands(){
 **/
 removeCommand(commandIndex){
   //Remove Element if found
-  var extractedElement = this.commandArray.splice(1, commandIndex);
+  var extractedElement = this.#commandArray.splice(1, commandIndex);
 
   if(extractedElement.length == 0){
     throw "Error: Command not found in Defintition!";
@@ -244,9 +229,9 @@ getCommandIndex(command){
  var currentCommandStartAlias = command.split(" ")[0].trim().toLowerCase();
 
  //Search all commands
- for(var i = 0; i < this.commandArray.length; i++){
+ for(var i = 0; i < this.#commandArray.length; i++){
 
-    if(this.commandArray[i].commandStartAlias.toLowerCase() == currentCommandStartAlias){
+    if(this.#commandArray[i].commandStartAlias.toLowerCase() == currentCommandStartAlias){
       return i;
     }
 
@@ -260,7 +245,7 @@ getCommandIndex(command){
 * @return Count of all Commands in this Defintion
 **/
 get length(){
-  return this.commandArray.length;
+  return this.#commandArray.length;
 }
 
 /**
@@ -270,7 +255,7 @@ get length(){
 **/
 getCommandAlias(commandIndex){
   if(commandIndex >= 0 && commandIndex < this.length){
-      return this.commandArray[commandIndex].commandStartAlias;
+      return this.#commandArray[commandIndex].commandStartAlias;
   }
       //else
     	return null;
@@ -283,7 +268,7 @@ getCommandAlias(commandIndex){
 **/
 getCommandObject(commandIndex){
     if(commandIndex >= 0 && commandIndex < this.length){
-      return this.commandArray[commandIndex];
+      return this.#commandArray[commandIndex];
   }
 
     //else
@@ -297,7 +282,7 @@ getCommandObject(commandIndex){
 **/
 getCommandExecutionReference(commandIndex){
   if(commandIndex >= 0 && commandIndex < this.length){
-    return this.commandArray[commandIndex].commandExecutionReference;
+    return this.#commandArray[commandIndex].commandExecutionReference;
   }
   //else
     return null;
@@ -310,7 +295,7 @@ getCommandExecutionReference(commandIndex){
 **/
 getCommandDescription(commandIndex){
   if(commandIndex >= 0 && commandIndex < this.length){
-    var descriptionArray = this.commandArray[commandIndex].commandDescritption.split("\n");
+    var descriptionArray = this.#commandArray[commandIndex].commandDescritption.split("\n");
 
     return descriptionArray;
   }
@@ -326,7 +311,7 @@ getCommandDescription(commandIndex){
 **/
 getFirstLineOfCommandDescription(commandIndex){
   if(commandIndex >= 0 && commandIndex < this.length){
-      return this.commandArray[commandIndex].commandDescritption.split("\n")[0];
+      return this.#commandArray[commandIndex].commandDescritption.split("\n")[0];
   }
 
   //else
@@ -346,8 +331,8 @@ getCommandsStartingWith(commandStart){
   //Check Start of each Alias and add any Matching to Array
   for(var i = 0; i < this.length; i++){
 
-    if(this.commandArray[i].commandStartAlias.toLowerCase().startsWith(commandStart)){
-      fittingCommandArray.push(this.commandArray[i].commandStartAlias);
+    if(this.#commandArray[i].commandStartAlias.toLowerCase().startsWith(commandStart)){
+      fittingCommandArray.push(this.#commandArray[i].commandStartAlias);
     }
 
   }
@@ -362,11 +347,11 @@ getCommandsStartingWith(commandStart){
 * @return {Boolean} Boolean whether the command is a program or not
 **/
 getCommandIsProgram(commandIndex){
-  return this.commandArray[commandIndex].isProgram;
+  return this.#commandArray[commandIndex].isProgram;
 }
 
 /**
-*Function that executes the a Command Based on their Alias.
+* Function that executes the a Command Based on their Alias.
 * @param {String} command Command for the Command which function should be executed
 * @return {String[]} Answer Array which each line as seperate, NULL if not successfull
 **/
@@ -377,7 +362,7 @@ if(commandIndex == -1){
  return null;
 }
 
-var commandResponse = this.commandArray[commandIndex].commandExecutionReference(command, executingConsole);
+var commandResponse = this.#commandArray[commandIndex].commandExecutionReference(command, executingConsole);
 
 if(commandResponse == null){
  //Return empty response Array
@@ -472,13 +457,13 @@ const localCommands = new CommandDefinition();
 */
 class CommandProcessor{
 //Current command Answer variable
-currentCommandAnswer;
+#currentCommandAnswer;
 //current Command
-currentCommand;
+#currentCommand;
 //Current CommandDefinition
-commandDefinition;
+#commandDefinition;
 //executingConsole
-executingConsole;
+#executingConsole;
 
 /**
 * Constructor of class
@@ -488,26 +473,26 @@ executingConsole;
 **/
 constructor(command, commandDefinition, executingConsole){
   //Save Command to Datafield
- this.currentCommand = command.toLowerCase().trim();
+ this.#currentCommand = command.toLowerCase().trim();
  //Standard init CommandAnswer
- this.currentCommandAnswer = null;
+ this.#currentCommandAnswer = null;
  //Set commandDefinition Reference
- this.commandDefinition = commandDefinition;
+ this.#commandDefinition = commandDefinition;
  //Save executing console reference
- this.executingConsole = executingConsole;
+ this.#executingConsole = executingConsole;
 }
 
 /**
 * Processes Current saved command through searching it in commandDefinition
 **/
 processCommand(){
-  var currentCommandResponse = this.commandDefinition.executeCommandFunction(this.currentCommand, this.executingConsole);
+  var currentCommandResponse = this.#commandDefinition.executeCommandFunction(this.#currentCommand, this.#executingConsole);
   //Check if Command exists local
   if(currentCommandResponse != null) {
     //If he does exist
      //Check if Command send Response
      if(currentCommandResponse.length != 0){
-       this.currentCommandAnswer = currentCommandResponse;
+       this.#currentCommandAnswer = currentCommandResponse;
      }
 
   }else{
@@ -520,7 +505,7 @@ processCommand(){
 * @return Answer to command if processed, null if not available
 */
 get commandResponse(){
-    return this.currentCommandAnswer;
+    return this.#currentCommandAnswer;
 }
 
 }
