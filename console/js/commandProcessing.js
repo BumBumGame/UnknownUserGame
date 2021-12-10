@@ -15,6 +15,8 @@ class Command{
 #commandDescritption;
 //Object of type commandExecutionType that holds either an commandDefinition or an Reference to a function
 #commandExecutionReference;
+//Custom path that will be used for the program
+#customProgramPath;
 
 /**
 * constructor of Command class
@@ -22,8 +24,10 @@ class Command{
 * @param {String} commandDescritption The description of the Command
 * @param {Boolean} isProgram Boolean that sets if the Command starts a new Program or executes a simple function
 * @param {commandExecutionType} commandExecutionReference Reference to the CommandDefinition or the function that shall be used to execute the Command/Programm
+* @param {String} [customProgramPath = null] OptionalParameter for adding a customProgramPath to a program (null = no CustomPath)
+* @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
 **/
-constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionReference, exitable = true){
+constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionReference, customProgramPath = null, exitable = true){
 
   //Check and save commandExececutionReference
   if(typeof commandExecutionReference === "object"){
@@ -36,7 +40,11 @@ constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionR
        throw new TypeError("commandExececutionReference for isProgram = true, needs to be an instace of CommandDefinition!");
      }
 
-       //TODO Add exit function to definition if command is a program
+       //IF command is a program
+
+       //Save custom path
+       this.#customProgramPath = customProgramPath;
+
        //Add exit function to executionreference if program is exitable
        if(exitable){
          commandExecutionReference.addCommand("exit", "Exists the current Program", exitProgram);
@@ -96,6 +104,22 @@ get commandExecutionReference(){
    return this.#commandExecutionReference;
 }
 
+/**
+* Return CommandCustom path as String or null if no one has been set
+* @return {String|null} CustomPath as String or null if no one exists
+**/
+get customProgramPath(){
+  return this.#customProgramPath;
+}
+
+/**
+* Return if the command has a customProgramPath
+* @return {Boolean} if command has a customProgramPath or not
+**/
+get hasCustomProgramPath(){
+  return this.#customProgramPath !== null;
+}
+
 }
 
 /**
@@ -141,14 +165,15 @@ addCommand(commandStartAlias, commandDescription, commandExecutionReference){
 * @param {String} programStartAlias Alias that the command will be started with in the console input
 * @param {String} commandDescription A Description of the command (newline marked with /n)
 * @param {commandExecutionType} programExecutionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
+* @param {String} [customProgramPath = null] OptionalParameter for adding a customProgramPath to a program (null = no CustomPath)
 * @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
 **/
-addProgram(programStartAlias, programDescription, programExecutionReference, exitable = true){
+addProgram(programStartAlias, programDescription, programExecutionReference, customProgramPath = null, exitable = true){
   //get existing alias commandIndex (or -1 if not exists)
   let existingCommandIndex = this.getCommandIndex(programStartAlias);
 
   //Create new program
-  var newProgram = new Command(programStartAlias, programDescription, true, programExecutionReference, exitable);
+  let newProgram = new Command(programStartAlias, programDescription, true, programExecutionReference, customProgramPath, exitable);
 
   //Add or overide program if alias exists
   if(existingCommandIndex == -1){
