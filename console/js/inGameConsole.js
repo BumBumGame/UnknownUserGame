@@ -318,10 +318,29 @@ updateVisiblePath(){
 
  //Check if console is in program mode
  if(this.#programs.length > 0){
- this.#commandLine.firstElementChild.innerHTML = "<u>"+ this.#programs[this.#programs.length - 1].commandStartAlias + "</u> >";
-}else{
+
+   //Check if running program has a custom path
+   if(this.#programs[this.#programs.length - 1].hasCustomProgramPath){
+     //Set custom path
+     this.#commandLine.firstElementChild.innerHTML = "<u>" + this.#programs[this.#programs.length - 1].customProgramPath + "</u> >";
+   }else{
+  //Set relative program path
+
+   let programStructureAlias = "";
+
+   //create programStructureAlias
+   //Add all previos programs
+   for(let i = 0; i < this.#programs.length - 1; i++){
+     programStructureAlias += this.#programs[i].commandStartAlias + "/";
+   }
+   //Add last program underlined
+   programStructureAlias += "<u>" + this.#programs[this.#programs.length - 1].commandStartAlias + "</u> >";
+
+   this.#commandLine.firstElementChild.innerHTML = programStructureAlias;
+    }
+  }else{
  //If not print normal path
- this.#commandLine.firstElementChild.innerHTML = playerUsername + ":" + this.#currentPath + consoleInputChar;
+  this.#commandLine.firstElementChild.innerHTML = playerUsername + ":" + this.#currentPath + consoleInputChar;
 }
 
  //recalculate size of input
