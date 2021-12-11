@@ -1,5 +1,21 @@
+/**
+* Communicator module (uses server Connection as default, can be set to use a local xml file)
+* @module Communicator
+**/
+
+//Global Module variable for xmlFile
+var xmlFile = null;
+
 //Communicator functions-------
-function checkForNewMassages(command, executingConsole){
+export function checkForNewMassages(command, executingConsole){
 
 }
 //----------------------------
+
+/**
+* Method which sets the Communicator into offline mode and uses the xml File given as a parameter
+* @param {String} pathToXML Path to the xml File to be used
+**/
+export function setOfflineXML(pathToXML){
+
+}
