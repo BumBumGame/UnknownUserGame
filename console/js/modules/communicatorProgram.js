@@ -8,7 +8,7 @@ var xmlFile = null;
 
 //Communicator functions-------
 export function checkForNewMassages(command, executingConsole){
-
+//implement function
 }
 //----------------------------
 
