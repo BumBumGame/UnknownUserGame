@@ -3,7 +3,7 @@
 * @module Communicator
 **/
 
-//Global Module variable for xmlFile
+//Global Module variable for xmlFile (null if on online mode)
 var xmlFile = null;
 
 //Communicator functions-------

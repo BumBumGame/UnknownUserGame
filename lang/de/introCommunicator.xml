@@ -1,0 +1,29 @@
+<?xml version='1.1' encoding="UTF-8" standalone='yes'?>
+<communicatorChat>
+  <communicatorChatMessage type="messagerStatement">
+    <messageContent>
+      Warnung: Speech-to-Text auf diesem Gerät nicht verfügbar!
+    </messageContent>
+  </communicatorChatMessage>
+
+  <communicatorChatMessage type="messagerStatement">
+    <messageContent>
+      Info: Text-To-Speech aktiviert.
+    </messageContent>
+  </communicatorChatMessage>
+
+  <communicatorChatMessage type="question">
+      <messageContent>
+        Wer ist da?
+      </messageContent>
+
+      <Answer>
+        Wer will das wissen?
+      <Answer>
+
+      <Answer>
+        Dein Spiegel.
+      <Answer>
+  </communicatorChatMessage>
+
+</communicatorChat>
