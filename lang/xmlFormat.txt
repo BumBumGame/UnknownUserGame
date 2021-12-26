@@ -1,9 +1,27 @@
-XML Format for communicator:
+---XML Format for communicator:
 - As Maintag <communicatorChat> will be used to create a new chat structure
 - Every Message or Question will have the Tag <communicatorChatMessage>
   - As Types there can currently be used: messagerStatement, question, messagerWarning
 - The Content of every message will be defined with a <messageContent> Tag inside of <communicatorChatMessage>
   - In Questions every possible Answer can be defined with a new <Answer> Tag
     - To save a condition if a certain Answer has been chosen, put a setCondition=[ConditionName] Attribute in the Answer Tag
-- To check for a condition at any communicatorChatMessage or Answer then just put a checkCondition = [ConditionName] Attribute in the according Tag
+- To check for a condition at any communicatorChatMessage or Answer then just put a checkCondition = [ConditionName] or checkNotCondition = [ConditionName] Attribute in the according Tag
 - To end a communicator chat put a empty <endCommunication> tag at the corresponding Spot
+
+Communicator Branches:
+- New Conversation Branches will be created with <branch> Tags at the End of the currently active branch
+- Branch tags can have an optional name = [BranchName] Attribute for better description
+- <branch> Tags can also check conditions
+- If a branch reaches its end it will check the Conditions for the new <branch> tags and will choose the first one of which all conditions are true
+- If there are no further <branch> Tags at the end of a branch, The communicator will be ended.
+- The main starting Branch is not specified with a branch Tag
+- To jump to a branch from an answer: Put a jumpToBranch = [BranchIndex] or jumpToBranchName = [BranchName] Attribute in the Answer tag
+  - BranchIndex: Index of the Branch text starting from 0, Example: 1.Branchtag: Index = 0, 2.Branchtag: Index = 1, etc.
+  - BranchName: The name of a branch, if written as Attribute into Branch name
+  - If Branch to Jump to is not found, it will be ignored and the Reader carries on as normal
+
+Conditions:
+- Conditions don't have to be set by answers
+- Not set Conditions are treated as !true by default
+- Conditions can also be set through a Method of the communicator-Reader-Module
+---
