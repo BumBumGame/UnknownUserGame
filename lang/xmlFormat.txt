@@ -1,5 +1,7 @@
 ---XML Format for communicator:
 - As Maintag <communicatorChat> will be used to create a new chat structure
+- A chatname needs to be added as Attribute chatName = [ChatName] inside of the Maintag
+  - The filename needs to be the chatName (exception: This is not needed if a chat is only loaded as OfflineXML)
 - Every Message or Question will have the Tag <communicatorChatMessage>
   - As Types there can currently be used: messagerStatement, question, messagerWarning
 - The Content of every message will be defined with a <messageContent> Tag inside of <communicatorChatMessage>
@@ -24,4 +26,9 @@ Conditions:
 - Conditions don't have to be set by answers
 - Not set Conditions are treated as !true by default
 - Conditions can also be set through a Method of the communicator-Reader-Module
+- To set a Condition for the whole communication, add the checkCondition = [ConditionName] or checkNotCondition = [ConditionName] Attribute to the <communicatorChat> Tag
+
+Info:
+- All conditions will be stored in the save file
+  - Conditions being set in an offline loaded xml wont be stored in a save file. (But they will be saved locally as longs as the xml is active)
 ---
