@@ -30,5 +30,8 @@ Conditions:
 
 Info:
 - All conditions will be stored in the save file
-  - Conditions being set in an offline loaded xml wont be stored in a save file. (But they will be saved locally as longs as the xml is active)
+  - Conditions being set in an offline loaded xml wont be stored in a save file. (But they will be saved locally as long as the xml is active)
+  - Offline loaded XMLs cannot access conditions saved in a saveFile
+  - --> Offline Xmls have their one condition scope
+  - Each old condition scope will be overridden if a new offlineXml is being loaded
 ---
