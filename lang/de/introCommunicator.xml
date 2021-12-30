@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <communicatorChat chatName="???">
+  <branch>
   <communicatorChatMessage type="messagerStatement">
     <messageContent>
       Warnung: Speech-to-Text auf diesem Gerät nicht verfügbar!
@@ -25,5 +26,6 @@
         Dein Spiegel.
       </Answer>
   </communicatorChatMessage>
+</branch>
 
 </communicatorChat>

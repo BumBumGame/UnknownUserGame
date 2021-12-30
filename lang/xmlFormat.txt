@@ -16,7 +16,7 @@ Communicator Branches:
 - <branch> Tags can also check conditions
 - If a branch reaches its end it will check the Conditions for the new <branch> tags and will choose the first one of which all conditions are true
 - If there are no further <branch> Tags at the end of a branch, The communicator will be ended.
-- The main starting Branch is not specified with a branch Tag
+- The main starting Branch needs to be defined with a branch tag
 - To jump to a branch from an answer: Put a jumpToBranch = [BranchIndex] or jumpToBranchName = [BranchName] Attribute in the Answer tag
   - BranchIndex: Index of the Branch text starting from 0, Example: 1.Branchtag: Index = 0, 2.Branchtag: Index = 1, etc.
   - BranchName: The name of a branch, if written as Attribute into Branch name
