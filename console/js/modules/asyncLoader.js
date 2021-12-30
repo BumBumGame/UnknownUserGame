@@ -5,10 +5,11 @@
 
 /**
 * Method that loads (via ajax-GET) and returns a promise for the xmlFile on the setted Path
+* @async
 * @param {String} pathToFile String that contains the relative or absolute path to a the xmlFile
 * @return {Promise} A Promise for the requested File
 **/
-export function loadFileFromServerAsXml(pathToFile){
+export async function loadFileFromServerAsXml(pathToFile){
 
 //create and Return a promise for the entire method
 return new Promise(function (resolve, reject) {
