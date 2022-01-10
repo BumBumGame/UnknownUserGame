@@ -512,6 +512,7 @@ disableInputAutoExectution(){
 
 /**
 * Handles Keyboard events
+* @param {event} e The Fired keyboard event
 * @private
 **/
 #onKeyPress(e){

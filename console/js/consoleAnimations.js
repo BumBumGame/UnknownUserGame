@@ -2,20 +2,20 @@
 * Queue that contains different Animation and can play them after one and another
 */
 class ConsoleAnimationQueue{
-animationObjectArray; //Array of Animation Objects
-animationDelayArray; // Array with delays for when each animation should start playing
-currentRunningAnimationIndex; //Current run index
-queCurrentlyRunning; //Boolean if Cue is currently running --> False means paused
-queTotalRuntime; //Array of total automated runtimes with each index is one after one pause
-queUnlimetedRuntimeAnimations; //Array that holds the animationObjectArrayIndex of Elemetns with unlimeted animation time;
+#animationObjectArray; //Array of Animation Objects
+#animationDelayArray; // Array with delays for when each animation should start playing
+#currentRunningAnimationIndex; //Current run index
+#queCurrentlyRunning; //Boolean if Cue is currently running --> False means paused
+#queTotalRuntime; //Array of total automated runtimes with each index is one after one pause
+#queUnlimetedRuntimeAnimations; //Array that holds the animationObjectArrayIndex of Elemetns with unlimeted animation time;
 
 constructor(){
-  this.animationObjectArray = [];
-  this.animationDelayArray = [];
-  this.queTotalRuntime = [0];
-  this.queUnlimetedRuntimeAnimations = [];
-  this.currentRunningAnimationIndex = 0;
-  this.queCurrentlyRunning = false;
+  this.#animationObjectArray = [];
+  this.#animationDelayArray = [];
+  this.#queTotalRuntime = [0];
+  this.#queUnlimetedRuntimeAnimations = [];
+  this.#currentRunningAnimationIndex = 0;
+  this.#queCurrentlyRunning = false;
 }
 
 /**
@@ -34,19 +34,19 @@ addAnimation(animation, startDelay = 0){
   //Check if animation time is limited
   if(animation.animationPlayTime > 0){
     //Add animationPLaytime and startDelay to total runtime
-    this.queTotalRuntime[this.queTotalRuntime.length - 1] += animation.animationPlayTime;
-    this.queTotalRuntime[this.queTotalRuntime.length - 1] += startDelay;
+    this.#queTotalRuntime[this.#queTotalRuntime.length - 1] += animation.animationPlayTime;
+    this.#queTotalRuntime[this.#queTotalRuntime.length - 1] += startDelay;
   }else{
     //If animation runs unlimeted set new array index
-    this.queTotalRuntime.push(0);
+    this.#queTotalRuntime.push(0);
     //Add startDelay
-    this.queTotalRuntime[this.queTotalRuntime.length - 1] += startDelay;
+    this.#queTotalRuntime[this.#queTotalRuntime.length - 1] += startDelay;
     //Save Element in special Array
-    this.queUnlimetedRuntimeAnimations.push(this.animationObjectArray.length);
+    this.#queUnlimetedRuntimeAnimations.push(this.#animationObjectArray.length);
   }
   //Add properties to local Arrays
-  this.animationObjectArray.push(animation);
-  this.animationDelayArray.push(startDelay);
+  this.#animationObjectArray.push(animation);
+  this.#animationDelayArray.push(startDelay);
 }
 
 /**
@@ -58,51 +58,51 @@ removeAnimmation(animationQueueIndex){
   //stop Queue if running
   this.stop();
   //Check if animation is an indefinite Animation
-  if(this.animationObjectArray[animationQueueIndex].animationPlayTime == 0){
+  if(this.#animationObjectArray[animationQueueIndex].animationPlayTime == 0){
      //get Index in queUnlimetedRuntime
-     unlimetedRuntimeIndex = this.queUnlimetedRuntimeAnimations.indexOf(animationQueueIndex);
+     unlimetedRuntimeIndex = this.#queUnlimetedRuntimeAnimations.indexOf(animationQueueIndex);
      //Decreade every Index after this
-     for(var i = unlimetedRuntimeIndex; i < this.queUnlimetedRuntimeAnimations.length; i++){
-       this.queUnlimetedRuntimeAnimations[i]--;
+     for(var i = unlimetedRuntimeIndex; i < this.#queUnlimetedRuntimeAnimations.length; i++){
+       this.#queUnlimetedRuntimeAnimations[i]--;
      }
      //Add totaltime After Pause to previos
-     this.queTotalRuntime[unlimetedRuntimeIndex] += this.queTotalRuntime[unlimetedRuntimeIndex + 1];
+     this.#queTotalRuntime[unlimetedRuntimeIndex] += this.#queTotalRuntime[unlimetedRuntimeIndex + 1];
      //Delete Total Que time
-     this.queTotalRuntime.splice(unlimetedRuntimeIndex + 1, 1);
+     this.#queTotalRuntime.splice(unlimetedRuntimeIndex + 1, 1);
      //Delete UnLimitedRuntime From Array
-     this.queUnlimetedRuntimeAnimations.splice(unlimetedRuntimeIndex, 1);
+     this.#queUnlimetedRuntimeAnimations.splice(unlimetedRuntimeIndex, 1);
   }else{
     //Get Animationplaytime
-    var animationPlayTime = this.animationObjectArray[animationQueueIndex].animationPlayTime;
+    var animationPlayTime = this.#animationObjectArray[animationQueueIndex].animationPlayTime;
     //Get unlimeteRuntimeIndex from witch everything has to shiftet by one
-    for(var i = 0; i < this.queUnlimetedRuntimeAnimations.length; i++){
+    for(var i = 0; i < this.#queUnlimetedRuntimeAnimations.length; i++){
        //Check when index is smaller than in queUnlimetedRuntimeAnimations
-       if(this.queUnlimetedRuntimeAnimations[i] > animationQueueIndex){
+       if(this.#queUnlimetedRuntimeAnimations[i] > animationQueueIndex){
           //Save index
           unlimetedRuntimeIndex = i;
           break;
        }
 
      //If it its after the last element
-     if(i == this.queUnlimetedRuntimeAnimations.length - 1){
-        unlimetedRuntimeIndex = this.queUnlimetedRuntimeAnimations.length;
+     if(i == this.#queUnlimetedRuntimeAnimations.length - 1){
+        unlimetedRuntimeIndex = this.#queUnlimetedRuntimeAnimations.length;
      }
 
     }
     //Shift unlimeteRuntimeIndex
-    for(var i = unlimetedRuntimeIndex; i < this.queUnlimetedRuntimeAnimations.length; i++){
-      this.queUnlimetedRuntimeAnimations[i]--;
+    for(var i = unlimetedRuntimeIndex; i < this.#queUnlimetedRuntimeAnimations.length; i++){
+      this.#queUnlimetedRuntimeAnimations[i]--;
     }
 
 
   }
   //Substract time from Totaltime
-  this.queTotalRuntime[unlimetedRuntimeIndex] -= this.animationObjectArray[animationQueueIndex].animationPlayTime;
-  this.queTotalRuntime[unlimetedRuntimeIndex] -= this.animationDelayArray[animationQueueIndex];
+  this.#queTotalRuntime[unlimetedRuntimeIndex] -= this.#animationObjectArray[animationQueueIndex].animationPlayTime;
+  this.#queTotalRuntime[unlimetedRuntimeIndex] -= this.#animationDelayArray[animationQueueIndex];
   //Remove Element from animationArray
-  this.animationObjectArray.splice(animationQueueIndex, 1);
+  this.#animationObjectArray.splice(animationQueueIndex, 1);
   //Remove Element from delay Array:
-  this.animationDelayArray.splice(animationQueueIndex, 1);
+  this.#animationDelayArray.splice(animationQueueIndex, 1);
 
 }
 /**
@@ -110,19 +110,19 @@ removeAnimmation(animationQueueIndex){
 */
 start(){
   //Set status to running
-  this.queCurrentlyRunning = true;
+  this.#queCurrentlyRunning = true;
   var prevThis = this;
    //Start only when there are Elements in the Cue
    if(this.length > 0){
   //Start first Animation with delay
   setTimeout(function () {
-  prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].start();
+  prevThis.#animationObjectArray[prevThis.#currentRunningAnimationIndex].start();
 
-  if(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime > 0){
+  if(prevThis.#animationObjectArray[prevThis.#currentRunningAnimationIndex].animationPlayTime > 0){
     setTimeout(function () { prevThis.next();}, 100);
   }
 
-  }, this.animationDelayArray[this.currentRunningAnimationIndex]);
+  }, this.#animationDelayArray[this.#currentRunningAnimationIndex]);
 
 }
   }
@@ -131,8 +131,8 @@ start(){
 * stops the cue at the currentState
 */
 stop(){
- this.queCurrentlyRunning = false;
- this.animationObjectArray[this.currentRunningAnimationIndex].stop();
+ this.#queCurrentlyRunning = false;
+ this.#animationObjectArray[this.#currentRunningAnimationIndex].stop();
 }
 
 /**
@@ -141,33 +141,33 @@ Jump to next Animation
 next(){
     var prevThis = this;
   //Check if Current Running Animation is done
-  if(this.animationObjectArray[this.currentRunningAnimationIndex].animationRunning == false){
+  if(this.#animationObjectArray[this.#currentRunningAnimationIndex].animationRunning == false){
     //Start next animation
 
       //Wait the delay before Starting
       setTimeout(function () {
         //Count up Animatimation Index
-        prevThis.currentRunningAnimationIndex++;
+        prevThis.#currentRunningAnimationIndex++;
         //Check if Que is done
-        if(prevThis.length <= prevThis.currentRunningAnimationIndex){
+        if(prevThis.length <= prevThis.#currentRunningAnimationIndex){
           //Disable Que
-          prevThis.queCurrentlyRunning = false;
+          prevThis.#queCurrentlyRunning = false;
           return;
         }
         //Start next Animation
-        prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].start();
+        prevThis.#animationObjectArray[prevThis.#currentRunningAnimationIndex].start();
 
         //Set next AnimationStart Check
-        if(!(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationplaytime > 0) && prevThis.queCurrentlyRunning){
+        if(!(prevThis.#animationObjectArray[prevThis.#currentRunningAnimationIndex].animationplaytime > 0) && prevThis.#queCurrentlyRunning){
           //Time next execution
           setTimeout(function () { prevThis.next(); }, 100);
         }else{
           //Pause cue
-          console.log(prevThis.animationObjectArray[prevThis.currentRunningAnimationIndex].animationPlayTime);
-          prevThis.queCurrentlyRunning = false;
+          console.log(prevThis.#animationObjectArray[prevThis.#currentRunningAnimationIndex].animationPlayTime);
+          prevThis.#queCurrentlyRunning = false;
         }
 
-        }, prevThis.animationDelayArray[prevThis.currentRunningAnimationIndex + 1]);
+        }, prevThis.#animationDelayArray[prevThis.#currentRunningAnimationIndex + 1]);
   }else{
     setTimeout(function () { prevThis.next(); }, 100);
   }
@@ -183,11 +183,11 @@ reset(){
 
   //Call Reseters of every single Animation Object
   for(var i = 0; i < this.length; i++){
-     this.animationObjectArray[i].reset();
+     this.#animationObjectArray[i].reset();
   }
 
   //Reset queAnimationIndex
-  this.currentRunningAnimationIndex = 0;
+  this.#currentRunningAnimationIndex = 0;
 
 }
 
@@ -199,7 +199,7 @@ deleteAnimationsDomElements(){
   this.reset();
  //Call all delete Functions of Elements in Array
  for(var i = 0; i < this.length; i++){
-   this.animationObjectArray[i].deleteDomElement();
+   this.#animationObjectArray[i].deleteDomElement();
  }
 
 }
@@ -209,7 +209,11 @@ deleteAnimationsDomElements(){
 * @return {int} Count of Animations inside Cue
 */
 get length(){
-  return this.animationObjectArray.length;
+  return this.#animationObjectArray.length;
+}
+
+get queCurrentlyRunning(){
+  return this.#queCurrentlyRunning;
 }
 
 }
