@@ -225,11 +225,14 @@ get queCurrentlyRunning(){
 * @abstract
 */
 class ConsoleAnimation{
-animationPlayTime;
-animationStepTime;
+//Total Lifetime of the animation
+#animationPlayTime;
+//Time per Step
+#animationStepTime;
+//Current Animation Status
 animationRunning;
 //Console Object to be animated to
-consoleObject;
+#consoleObject;
 
   /**
   * class construtor
@@ -249,11 +252,11 @@ consoleObject;
      //Check class Structure
      this.checkSubClassStructure();
      //Set playtime
-     this.animationPlayTime = animationPlayTime;
+     this.#animationPlayTime = animationPlayTime;
      //Set StepTime
-     this.animationStepTime = animationStepTime;
+     this.#animationStepTime = animationStepTime;
      //Save reference to Console Object
-     this.consoleObject = consoleObject;
+     this.#consoleObject = consoleObject;
      //Init Animation as not running
      this.animationRunning = false;
   }
@@ -320,8 +323,8 @@ deleteDomElement(){
 * Returns animationPlaytime
 * @return {Number} animationPlaytime of the animation
 **/
-get animationplatime(){
-  return this.animationPlayTime;
+get animationPlayTime(){
+  return this.#animationPlayTime;
 }
 
 /**
@@ -330,6 +333,22 @@ get animationplatime(){
 **/
 get animationRunningStatus(){
   return this.animationRunning;
+}
+
+/**
+* Returns the StepTime of the Animation
+* @return {Number} Steptime of Animation
+**/
+get animationStepTime(){
+  return this.#animationStepTime;
+}
+
+/**
+* Returns a reference the Object of the console that this animation is connected to
+* @return {Object:InGameConsole} Reference to connected InGameConsole Object
+**/
+get consoleObject(){
+  return this.#consoleObject;
 }
 
 }
