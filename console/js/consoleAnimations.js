@@ -876,41 +876,41 @@ animationMilliseconds;
 **/
 class ProgressBarLoadingAnimation extends ConsoleAnimation{
 //animation text
-animationText;
+#animationText;
 //start percentage (saved for reset)
-startPercentage;
+#startPercentage;
 //endPercentage
-endPercentage;
+#endPercentage;
 //nextPercentage (inits with startPercentage)
-nextPercentage;
+#nextPercentage;
 //currentPercentage (inits with startPercentage)
-currentPercentage;
+#currentPercentage;
 //Show percentage boolean
-showPercentage;
+#showPercentage;
 //Percentage increment
-percentageIncrement;
+#percentageIncrement;
 //width of loading bar
-loadingBarWidth;
+#loadingBarWidth;
 //Character used for loadindBar full bars
-loadingBarFullCharacter;
+#loadingBarFullCharacter;
 //Character used for loadindBar empty bars
-loadingBarEmptyCharacter;
+#loadingBarEmptyCharacter;
 //Number of activated loadingbar chars (max = loadingBarWidth)
-currentProgressBarTile;
+#currentProgressBarTile;
 //IDString for Element
-animationIDString;
+#animationIDString;
 //Animation Object
-animationObject;
+#animationObject;
 //text that is printed at 100% completion (can be length 0)
-loadingSpinDoneStatus;
+#loadingSpinDoneStatus;
 ////text that is printed at an end percentage below 100% completion (can be length 0)
-loadingSpinErrorStatus;
+#loadingSpinErrorStatus;
 
 //current spinning loading animation status
-spinningAnimationStatus;
+#spinningAnimationStatus;
 
 //Milliseconds since last execution
-animationMilliseconds;
+#animationMilliseconds;
 
     /**
     * Constructor for initialization of Animation
@@ -935,54 +935,54 @@ animationMilliseconds;
         super(playtime, steptime, consoleObject);
 
         //save Animationtext
-        this.animationText = animationText.trim();
+        this.#animationText = animationText.trim();
         //Save start Percent
         if(startPercent > 99){
-          this.startPercentage = 99;
+          this.#startPercentage = 99;
         }else if(startPercent < 0){
-          this.startPercentage = 0;
+          this.#startPercentage = 0;
         }else{
-        this.startPercentage = Math.floor(startPercent);
+        this.#startPercentage = Math.floor(startPercent);
       }
 
         //Save stop Percent
          if(stopPercent > 100){
-           this.endPercentage = 100;
+           this.#endPercentage = 100;
          }else if(stopPercent < 1){
-           this.endPercentage = 1;
+           this.#endPercentage = 1;
          }else{
-        this.endPercentage = Math.floor(stopPercent);
+        this.#endPercentage = Math.floor(stopPercent);
       }
       //init current Percentage
-        this.nextPercentage = this.startPercentage;
-        this.currentPercentage = this.startPercentage;
+        this.#nextPercentage = this.#startPercentage;
+        this.#currentPercentage = this.#startPercentage;
 
         //Save loading bar Width
-        this.loadingBarWidth = loadingBarWidth;
+        this.#loadingBarWidth = loadingBarWidth;
         //Save loading Bar Full Character
-        this.loadingBarFullCharacter = loadingBarFullCharacter.charAt(0);
+        this.#loadingBarFullCharacter = loadingBarFullCharacter.charAt(0);
         //save loading Bar empty character
-        this.loadingBarEmptyCharacter = loadingBarEmptyCharacter.charAt(0);
+        this.#loadingBarEmptyCharacter = loadingBarEmptyCharacter.charAt(0);
         //save showPercentage
-        this.showPercentage = showPercentage;
+        this.#showPercentage = showPercentage;
         //save loadingSpinDoneStatus
-        this.loadingSpinDoneStatus = loadingSpinDoneStatus;
+        this.#loadingSpinDoneStatus = loadingSpinDoneStatus;
         //savve loadingSpinErrorStatus
-        this.loadingSpinErrorStatus = loadingSpinErrorStatus;
+        this.#loadingSpinErrorStatus = loadingSpinErrorStatus;
         //Save percentage increment
-        this.percentageIncrement = percentageIncrement;
+        this.#percentageIncrement = percentageIncrement;
         //Generate random classString
-        this.animationIDString = "ProgressBarLoadingAnimation" + ((Math.random().toFixed(4)) * 10000);
+        this.#animationIDString = "ProgressBarLoadingAnimation" + ((Math.random().toFixed(4)) * 10000);
         //init animationObject
-        this.animationObject = null;
+        this.#animationObject = null;
         //init millis
-        this.animationMilliseconds = 0;
+        this.#animationMilliseconds = 0;
         //init spinanimation
-        this.spinningAnimationStatus = '/';
+        this.#spinningAnimationStatus = '/';
 
         //Calculate loadingBar progress at start (If needed)
-        if(this.loadingBarWidth > 0){
-        this.currentProgressBarTile = Math.floor(loadingBarWidth * (this.startPercentage/100));
+        if(this.#loadingBarWidth > 0){
+        this.#currentProgressBarTile = Math.floor(loadingBarWidth * (this.#startPercentage/100));
       }
     }
 
@@ -992,10 +992,10 @@ animationMilliseconds;
       if(!this.animationRunning){
 
         //Create starting Object if none exists
-        if(this.animationObject == null){
+        if(this.#animationObject == null){
           //Create and bind Object
-          this.consoleObject.printOnConsole("", this.animationIDString);
-          this.animationObject = document.getElementById(this.animationIDString);
+          this.consoleObject.printOnConsole("", this.#animationIDString);
+          this.#animationObject = document.getElementById(this.#animationIDString);
         }
 
         //Setting running status to running
@@ -1005,7 +1005,7 @@ animationMilliseconds;
 
         //Setting current millis
         if(!initStep){
-        this.animationMilliseconds = performance.now();
+        this.#animationMilliseconds = performance.now();
       }
 
         let prevThis = this;
@@ -1013,14 +1013,14 @@ animationMilliseconds;
         if(!initStep){
         let loadingSpinIntervalTime = 100;
         setTimeout(function() {
-          prevThis.spinningAnimationStep(loadingSpinIntervalTime);
+          prevThis.#spinningAnimationStep(loadingSpinIntervalTime);
         }, loadingSpinIntervalTime);
       }
 
         if(!initStep){
-        setTimeout(prevThis.animationStep.bind(this), 2);
+        setTimeout(prevThis.#animationStep.bind(this), 2);
         }else{
-        this.animationStep(true);
+        this.#animationStep(true);
         }
 
      }
@@ -1028,9 +1028,9 @@ animationMilliseconds;
 
     /**
     **/
-    animationStep(directJump = false){
+    #animationStep(directJump = false){
       //Calculate millis since last execution
-      var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
+      var millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
 
 
         //Check if next step can be performed
@@ -1039,19 +1039,19 @@ animationMilliseconds;
           let newGeneratedString = "";
 
           //Add animation text to string
-          newGeneratedString += this.animationText + " # ";
+          newGeneratedString += this.#animationText + " # ";
 
           //Print progress bar if neccessary
-          if(this.loadingBarWidth > 0){
+          if(this.#loadingBarWidth > 0){
             //print starting brackets
             newGeneratedString += "[";
             //Generate loading bar chars that are activated
-            for(let i = 0; i < this.currentProgressBarTile; i++){
-              newGeneratedString += this.loadingBarFullCharacter;
+            for(let i = 0; i < this.#currentProgressBarTile; i++){
+              newGeneratedString += this.#loadingBarFullCharacter;
             }
             //Generate bars that are not active
-            for (let i = 0; i < this.loadingBarWidth - this.currentProgressBarTile; i++) {
-              newGeneratedString += this.loadingBarEmptyCharacter;
+            for (let i = 0; i < this.#loadingBarWidth - this.#currentProgressBarTile; i++) {
+              newGeneratedString += this.#loadingBarEmptyCharacter;
             }
             //print ending brackets
             newGeneratedString += "]";
@@ -1061,61 +1061,61 @@ animationMilliseconds;
           newGeneratedString += " ";
 
           //Display percentage if activated
-          if(this.showPercentage){
-            newGeneratedString += this.nextPercentage + "%";
+          if(this.#showPercentage){
+            newGeneratedString += this.#nextPercentage + "%";
           }
 
           //Print space
           newGeneratedString += " ";
 
           //Print spinning loading animation char
-          if(this.nextPercentage != this.startPercentage){
-          newGeneratedString += this.spinningAnimationStatus;
+          if(this.#nextPercentage != this.#startPercentage){
+          newGeneratedString += this.#spinningAnimationStatus;
           }
 
           //Print new string
-          this.animationObject.textContent = newGeneratedString;
+          this.#animationObject.textContent = newGeneratedString;
 
           //Check if animation is done
-          if(this.nextPercentage >= this.endPercentage){
+          if(this.#nextPercentage >= this.#endPercentage){
             //set loading Spin to done or remove it (only if 100% complete)
-          if(this.endPercentage == 100){
+          if(this.#endPercentage == 100){
               //Stop animation with done Status
-              this.stop(this.loadingSpinDoneStatus);
+              this.stop(this.#loadingSpinDoneStatus);
           }else{
             //Remove the character
-            this.stop(this.loadingSpinErrorStatus);
+            this.stop(this.#loadingSpinErrorStatus);
           }
 
           }
 
           //Save currentPercentage
-          this.currentPercentage = this.nextPercentage;
+          this.#currentPercentage = this.#nextPercentage;
           //claculate next step
-          this.nextPercentage += this.percentageIncrement;
+          this.#nextPercentage += this.#percentageIncrement;
 
           //Check if nextPercentage has hit  or over
-        if(this.showPercentage){
-          if(this.nextPercentage >= this.endPercentage){
+        if(this.#showPercentage){
+          if(this.#nextPercentage >= this.#endPercentage){
             //Set percentage to end
-            this.nextPercentage = this.endPercentage;
+            this.#nextPercentage = this.#endPercentage;
           }
         }
 
           //Calculate bar
-          if(this.loadingBarWidth > 0){
+          if(this.#loadingBarWidth > 0){
             //Calculate next progress bar tile
-            this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.nextPercentage/100));
+            this.#currentProgressBarTile = Math.floor(this.#loadingBarWidth * (this.#nextPercentage/100));
           }
 
           //Save latest millis
-          this.animationMilliseconds = performance.now();
+          this.#animationMilliseconds = performance.now();
         }
 
         let prevThis = this;
 
         if(this.animationRunning){
-        setTimeout(prevThis.animationStep.bind(this), 5);
+        setTimeout(prevThis.#animationStep.bind(this), 5);
         }
     }
 
@@ -1123,22 +1123,22 @@ animationMilliseconds;
     * Optional function used for spinning animation
     * @param {Number} interval intveral at which this function will be executed
     **/
-    spinningAnimationStep(interval){
+    #spinningAnimationStep(interval){
 
-      switch(this.spinningAnimationStatus){
+      switch(this.#spinningAnimationStatus){
           case '/':
-          this.spinningAnimationStatus = '-';
-          this.animationObject.textContent = this.animationObject.textContent.replace('/', '-');
+          this.#spinningAnimationStatus = '-';
+          this.#animationObject.textContent = this.#animationObject.textContent.replace('/', '-');
           break;
 
           case '-':
-          this.spinningAnimationStatus = '\\';
-          this.animationObject.textContent = this.animationObject.textContent.replace('-', '\\');
+          this.#spinningAnimationStatus = '\\';
+          this.#animationObject.textContent = this.#animationObject.textContent.replace('-', '\\');
           break;
 
           case '\\':
-          this.spinningAnimationStatus = '/';
-          this.animationObject.textContent = this.animationObject.textContent.replace('\\', '/');
+          this.#spinningAnimationStatus = '/';
+          this.#animationObject.textContent = this.#animationObject.textContent.replace('\\', '/');
           break;
       }
 
@@ -1146,7 +1146,7 @@ animationMilliseconds;
 
       if(this.animationRunning){
          setTimeout(function() {
-           prevThis.spinningAnimationStep(interval);
+           prevThis.#spinningAnimationStep(interval);
          }, interval);
       }
 
@@ -1157,17 +1157,17 @@ animationMilliseconds;
     **/
     printCurrentFrame(){
       //Save previos values
-      let prevCurrentProgressBarTile = this.currentProgressBarTile;
-      let prevNextPercentage = this.nextPercentage;
-      let prevCurrentPercentage = this.currentPercentage;
+      let prevCurrentProgressBarTile = this.#currentProgressBarTile;
+      let prevNextPercentage = this.#nextPercentage;
+      let prevCurrentPercentage = this.#currentPercentage;
 
       //run 1 init step
       this.start(true);
 
       //Set old values
-      this.currentProgressBarTile = prevCurrentProgressBarTile;
-      this.nextPercentage = prevNextPercentage;
-      this.currentPercentage = prevNextPercentage;
+      this.#currentProgressBarTile = prevCurrentProgressBarTile;
+      this.#nextPercentage = prevNextPercentage;
+      this.#currentPercentage = prevNextPercentage;
     }
 
     /**
@@ -1175,15 +1175,15 @@ animationMilliseconds;
     * @param {number} amount jumpvalue (in percent)
     **/
     jumpForward(amount){
-      let maximumJumpAmount = this.endPercentage - this.nextPercentage;
+      let maximumJumpAmount = this.#endPercentage - this.#nextPercentage;
       if(amount <= maximumJumpAmount){
         //Add on top of percentage
-        this.nextPercentage += amount;
+        this.#nextPercentage += amount;
         //Calculate new progressbar
-        this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.nextPercentage/100));
+        this.#currentProgressBarTile = Math.floor(this.#loadingBarWidth * (this.#nextPercentage/100));
         this.animationStep(true);
         //Substract one of nextPercentage due to shift
-        this.nextPercentage--;
+        this.#nextPercentage--;
       }else{
         console.log("Error: amount bigger than max Possible amount");
       }
@@ -1194,13 +1194,13 @@ animationMilliseconds;
     * @param {number} amount jumpvalue (in percent)
     **/
     jumpBackwards(amount){
-      let maximumJumpAmount = this.nextPercentage - this.startPercentage;
+      let maximumJumpAmount = this.#nextPercentage - this.#startPercentage;
       if(amount <= maximumJumpAmount){
         //Add on top of percentage
-        this.nextPercentage = this.currentPercentage - amount;
+        this.#nextPercentage = this.#currentPercentage - amount;
         //Calculate new progressbar
-        this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.nextPercentage/100));
-        this.animationStep(true);
+        this.#currentProgressBarTile = Math.floor(this.#loadingBarWidth * (this.#nextPercentage/100));
+        this.#animationStep(true);
       }else{
         console.log("Error: amount bigger than max Possible amount");
       }
@@ -1214,9 +1214,9 @@ animationMilliseconds;
         this.animationRunning = false;
         //Set loadingAnimation to pauseMessage (if pauseMessage exists)
          if(pauseMessage.length > 0){
-          this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, "[" + pauseMessage +"]");
+          this.#animationObject.textContent = this.#animationObject.textContent.replace(this.#spinningAnimationStatus, "[" + pauseMessage +"]");
         }else{
-          this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, "");
+          this.#animationObject.textContent = this.#animationObject.textContent.replace(this.#spinningAnimationStatus, "");
         }
       }
     }
@@ -1227,15 +1227,15 @@ animationMilliseconds;
       //Stop animation
       this.stop();
       //Reset values
-      this.nextPercentage = this.startPercentage;
-      this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.startPercentage/100));
+      this.#nextPercentage = this.#startPercentage;
+      this.#currentProgressBarTile = Math.floor(this.#loadingBarWidth * (this.#startPercentage/100));
       //Run first animation step by starting and then stopping
       this.start(true);
       //Reset nextPercentage again and progressbar again (because step changes it)
-      this.nextPercentage = this.startPercentage;
-      this.currentProgressBarTile = Math.floor(this.loadingBarWidth * (this.startPercentage/100));
+      this.#nextPercentage = this.#startPercentage;
+      this.#currentProgressBarTile = Math.floor(this.#loadingBarWidth * (this.#startPercentage/100));
       //Remove loading spinning animation
-      this.animationObject.textContent = this.animationObject.textContent.replace(this.spinningAnimationStatus, '');
+      this.#animationObject.textContent = this.#animationObject.textContent.replace(this.#spinningAnimationStatus, '');
     }
 
     /**
@@ -1244,9 +1244,9 @@ animationMilliseconds;
       //Reset animation
       this.reset();
       //delete DOM element
-      if(this.animationObject != null){
-        this.animationObject.remove();
-        this.animationObject = null;
+      if(this.#animationObject != null){
+        this.#animationObject.remove();
+        this.#animationObject = null;
       }
     }
 
