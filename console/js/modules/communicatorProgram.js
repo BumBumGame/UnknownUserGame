@@ -13,7 +13,7 @@ var xmlFile = null;
 var offlineXMLConditions = [];
 
 //Global Variables which hold the current xmlParser Position
-var currentParserBranchPosition = []; //Array that hold the indexes of each next branch
+var currentParserBranchPosition = []; //Holds the indexes of which branches were taken as an Array (each level is a new index)
 var currentParserMessagePosition = 0; //Index of the current Message inside the branch
 
 /**
@@ -22,22 +22,18 @@ var currentParserMessagePosition = 0; //Index of the current Message inside the 
 * @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
 * @return {String} Next newest unread message or the last read one if no new ones are available
 **/
-export async function getLatestMessage(chatName){
+export function getLatestMessage(chatName){
 
   //Check if offline xml is loaded
   if(isInOfflineMode()){
+    //Choose First Branch if none has been chosen
+
+
     //load latest Message from offline XML
 
   }else{
     //request latest message from Server for chatName
   }
-
-}
-
-/**
-* Returns Message Content at specific position
-**/
-function getOfflineXMLMessageContent(branchIndex, messageIndex){
 
 }
 
@@ -50,7 +46,7 @@ function getOfflineXMLMessageContent(branchIndex, messageIndex){
 export async function setOfflineXML(pathToXML){
   //reserver Variable
   let loadedXmlFile;
-  
+
   //Try to load xml File
   try{
    loadedXmlFile = await asyncLoader.loadFileFromServerAsXml(pathToXML);
@@ -99,3 +95,62 @@ export function setToOnlineMode(){
 export function isInOfflineMode(){
    return xmlFile == null ? false : true;
 }
+
+//---------------------------------------------------
+//Parser
+//---------------------------------------------------
+
+//---Offline-----
+/**
+* Returns Neweset Message of the offline XML
+* @return {String|null} Returns the newest Message as String or null if in online Mode
+**/
+function getLatestOfflineXMLMessageContent(){
+//if in online Mode return null
+if(!isInOfflineMode()){
+  return null;
+}
+
+//Parse to latest Message
+
+}
+
+
+/**
+* Returns all new branch options of the current offline branch as a NodeList (or null if none exist)
+* @return {NodeList|null} Returns branchoptions as Nodelist or null if in onlineMode or no branch options were found.
+**/
+function getCurrentOfflineBranchOptions(){
+//if in online Mode return null
+if(!isInOfflineMode()){
+  return null;
+}
+
+//all branch ELements in the Scope of the current branch
+  //let newBranchList = xmlFile.getElementsByTagName("branch")[currentParserBranchPosition].querySelectorAll(':scope > branch');
+  return xmlFile.getElementsByTagName("branch")[0].querySelectorAll(':scope > branch');
+}
+
+/**
+* Returns the branch the parser is currently in or null if no branch has been chosen at the beginning of the chat
+* @return {DOM-Element|null} Null if there is no active branch, onlineModeActive,branch is not found or the xmlElement of the branch
+**/
+function getCurrentOfflineBranch(){
+  if(currentParserBranchPosition.length == 0 || !isInOfflineMode()) {
+    return null;
+  }
+
+  //Find and return branch
+  //init currentBranchContext with xmlFile
+  let currentBranchContext = xmlFile.querySelectorAll(':scope > branch')[currentParserBranchPosition[0]];
+  for(let i = 1; i < currentParserBranchPosition.length; i++){
+    currentBranchContext = currentBranchContext.querySelectorAll(':scope > branch')[currentParserBranchPosition[i]];
+    //If branch cannot be found return null
+    if(currentBranchContext == null){return null;}
+   }
+
+  //return branch
+  return currentBranchContext;
+}
+
+//-----Online-----
