@@ -499,6 +499,7 @@ deleteDomElement(){
 
 /**
 * Displays Text loading animation in Console according to parameters
+* @extends ConsoleAnimation
 **/
 class ConsoleTextTypingAnimation extends ConsoleAnimation{
 #animationText;
@@ -618,6 +619,7 @@ get currentAnimationObject(){
 
 /**
 * Displays Text loading animation with Typing animation
+* @extends ConsoleAnimation
 **/
 class ConsoleTextLoadingAnimationTyping extends ConsoleAnimation{
 //Reference to Dom element of this Animation
@@ -794,6 +796,7 @@ deleteDomElement(){
 }
 /**
 * Prints different lines on the console without individual line animations
+* @extends ConsoleAnimation
 **/
 class ConsoleLinePrint extends ConsoleAnimation{
 #textLineArray;
@@ -911,6 +914,7 @@ class ConsoleLinePrint extends ConsoleAnimation{
 /**
 * A progessbar loading animation
 * Example: loading # [======       ] 37% /
+* @extends ConsoleAnimation
 **/
 class ProgressBarLoadingAnimation extends ConsoleAnimation{
 //animation text
