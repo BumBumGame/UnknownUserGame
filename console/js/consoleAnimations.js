@@ -500,12 +500,12 @@ deleteDomElement(){
 * Displays Text loading animation in Console according to parameters
 **/
 class ConsoleTextTypingAnimation extends ConsoleAnimation{
-animationText;
-currentAnimationCharIndex;
-animationObject;
-animationIDString;
+#animationText;
+#currentAnimationCharIndex;
+#animationObject;
+#animationIDString;
 
-animationMilliseconds;
+#animationMilliseconds;
 
 /**
 * Constructor
@@ -515,15 +515,15 @@ animationMilliseconds;
 **/
 constructor(playtime, animationText, consoleObject){
       //Calculate Animation step Time
-      var animationStepTime = playtime/animationText.length;
+      let animationStepTime = playtime/animationText.length;
      //Call Animation Constructor
      super(playtime, animationStepTime, consoleObject);
      //Animations text stellen
-     this.animationText = animationText;
+     this.#animationText = animationText;
      //Set startIndex to 0
-     this.currentAnimationCharIndex = 0;
+     this.#currentAnimationCharIndex = 0;
      //Generate id String
-     this.animationIDString = "ConsoleTextTypingAnimation" + ((Math.random().toFixed(4)) * 10000);
+     this.#animationIDString = "ConsoleTextTypingAnimation" + ((Math.random().toFixed(4)) * 10000);
 }
 
 /**
@@ -532,18 +532,18 @@ start(){
   //If Animation is not running
  if(!this.animationRunning){
   //Create Animation Object if it doesnt exist yet
-   if(this.animationObject == null){
-    this.consoleObject.printOnConsole("", this.animationIDString);
-    this.animationObject = document.getElementById(this.animationIDString);
+   if(this.#animationObject == null){
+    this.consoleObject.printOnConsole("", this.#animationIDString);
+    this.#animationObject = document.getElementById(this.#animationIDString);
   }
 
   //Set running Status
   this.setAnimationState(true);
 
   //Save Current Milliseconds
-  this.animationMilliseconds = performance.now();
+  this.#animationMilliseconds = performance.now();
   //Start first step
-  this.animationStep();
+  this.#animationStep();
 
  }
 
@@ -551,29 +551,29 @@ start(){
 
 /**
 **/
-animationStep(){
+#animationStep(){
    //Get millis since last execution
-   var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
+   var millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
    //Check if Step can be performed
    if(millisSinceLastExecution >= this.animationStepTime){
       //Execute Step
       //Add Letter to AnimationObject
-      this.animationObject.textContent += this.animationText.charAt(this.currentAnimationCharIndex);
+      this.#animationObject.textContent += this.#animationText.charAt(this.#currentAnimationCharIndex);
       //Count up AnimationCharIndex
-      this.currentAnimationCharIndex++;
+      this.#currentAnimationCharIndex++;
       //Check if Animation is done or Animation got stopped
-      if(this.currentAnimationCharIndex >= this.animationText.length || !this.animationRunning){
+      if(this.#currentAnimationCharIndex >= this.#animationText.length || !this.animationRunning){
         //Stop animation
         this.stop();
         return;
       }
-      this.animationMilliseconds = performance.now();
+      this.#animationMilliseconds = performance.now();
    }
 
       var prevThis = this;
       //Start next execution check if animation is running
       if(this.animationRunning){
-      setTimeout(function () { prevThis.animationStep(); }, 0);
+      setTimeout(function () { prevThis.#animationStep(); }, 0);
     }
 
 }
@@ -591,8 +591,8 @@ stop(){
 /**
 **/
 reset(){
-  this.animationObject.textContent = "";
-  this.currentAnimationCharIndex = 0;
+  this.#animationObject.textContent = "";
+  this.#currentAnimationCharIndex = 0;
   this.setAnimationState(false);
 }
 
@@ -602,15 +602,15 @@ deleteDomElement(){
   //Reset Animation
   this.reset();
 
-  this.animationObject.remove();
-  this.animationObject = null;
+  this.#animationObject.remove();
+  this.#animationObject = null;
 }
 
 /**
 * @return {Object:Dom-Element} Retruns the dom Element that is being animated
 **/
 get currentAnimationObject(){
-  return this.animationObject;
+  return this.#animationObject;
 }
 
 }
