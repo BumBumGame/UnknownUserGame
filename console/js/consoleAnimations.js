@@ -230,7 +230,7 @@ class ConsoleAnimation{
 //Time per Step
 #animationStepTime;
 //Current Animation Status
-animationRunning;
+#animationRunning;
 //Console Object to be animated to
 #consoleObject;
 
@@ -258,7 +258,7 @@ animationRunning;
      //Save reference to Console Object
      this.#consoleObject = consoleObject;
      //Init Animation as not running
-     this.animationRunning = false;
+     this.setAnimationState(false);
   }
 
 /**
@@ -320,6 +320,16 @@ deleteDomElement(){
 }
 
 /**
+* Sets the animation state
+* @param {Boolean} newAnimationState The new AnimationsState to set (true or false)
+**/
+setAnimationState(newAnimationState){
+  if(typeof newAnimationState == "boolean"){
+    this.#animationRunning = newAnimationState;
+  }
+}
+
+/**
 * Returns animationPlaytime
 * @return {Number} animationPlaytime of the animation
 **/
@@ -331,8 +341,8 @@ get animationPlayTime(){
 * Returns the currentAnimation Status
 * @return {Boolean} animationRunningStatus of the animation
 **/
-get animationRunningStatus(){
-  return this.animationRunning;
+get animationRunning(){
+  return this.#animationRunning;
 }
 
 /**
@@ -428,7 +438,7 @@ animationStep(){
 
   var prevThis = this;
 
-  if(this.animationRunning == true){
+  if(this.animationRunning){
     //Set async restart of function
     setTimeout(function () { prevThis.animationStep();}, 0);
   }
@@ -437,13 +447,13 @@ animationStep(){
 /**
 **/
 start(){
-  if(this.animationRunning == false){
+  if(!this.animationRunning){
     //Create New Element if not exists
     if(this.animationObject == null){
      this.consoleObject.printOnConsole(this.animationText, this.animationIDString);
      this.animationObject = document.getElementById(this.animationIDString);
    }
-     this.animationRunning = true;
+     this.setAnimationState(true);
 
      //Call Step to enable loop with stepDelay
      var prevThis = this;
@@ -458,8 +468,8 @@ start(){
 /**
 **/
 stop(){
-  if(this.animationRunning == true){
-    this.animationRunning = false;
+  if(this.animationRunning){
+    this.setAnimationState(false);
   }
 }
 
@@ -520,7 +530,7 @@ constructor(playtime, animationText, consoleObject){
 **/
 start(){
   //If Animation is not running
- if(this.animationRunning == false){
+ if(!this.animationRunning){
   //Create Animation Object if it doesnt exist yet
    if(this.animationObject == null){
     this.consoleObject.printOnConsole("", this.animationIDString);
@@ -528,7 +538,7 @@ start(){
   }
 
   //Set running Status
-  this.animationRunning = true;
+  this.setAnimationState(true);
 
   //Save Current Milliseconds
   this.animationMilliseconds = performance.now();
@@ -562,7 +572,7 @@ animationStep(){
 
       var prevThis = this;
       //Start next execution check if animation is running
-      if(this.animationRunning == true){
+      if(this.animationRunning){
       setTimeout(function () { prevThis.animationStep(); }, 0);
     }
 
@@ -572,8 +582,8 @@ animationStep(){
 **/
 stop(){
   //If Animation is running
-  if(this.animationRunning == true){
-    this.animationRunning = false;
+  if(this.animationRunning){
+    this.setAnimationState(false);
   }
 
 }
@@ -583,7 +593,7 @@ stop(){
 reset(){
   this.animationObject.textContent = "";
   this.currentAnimationCharIndex = 0;
-  this.animationRunning = false;
+  this.setAnimationState(false);
 }
 
 /**
@@ -647,7 +657,7 @@ constructor(playtime, steptime, animationText, maxDotCount, onlyDotsAfterStart, 
 **/
 start(){
       //Check if Animation is not running
-      if(this.animationRunning == false){
+      if(!this.animationRunning){
          //Check if Animation Object Exists and create One if nessecary
          if(this.animationObject == null){
             //Start Typing animmation to create Animation object
@@ -662,7 +672,7 @@ start(){
          }
 
          //Set animation on running;
-         this.animationRunning = true;
+         this.setAnimationState(true);
 
         //Start next step after Typing animation is finished
         var prevThis = this;
@@ -680,8 +690,8 @@ start(){
 **/
 stop(){
      //Check if Animation is running
-     if(this.animationRunning == true){
-        this.animationRunning = false;
+     if(this.animationRunning){
+        this.setAnimationState(false);
         //Stop Typing animation;
         this.typingAnimationObject.stop();
         //Stop Loading animation
@@ -819,7 +829,7 @@ animationMilliseconds;
            //Start animationStep
            setTimeout(function () { prevThis.animationStep(); }, 0);
            //Set Animation to running
-           this.animationRunning = true;
+           this.setAnimationState(true);
         }
 
      }
@@ -830,7 +840,7 @@ animationMilliseconds;
   **/
   stop(){
    if(this.animationRunning){
-     this.animationRunning = false;
+     this.setAnimationState(false);
    }
   }
 
@@ -1019,7 +1029,7 @@ class ProgressBarLoadingAnimation extends ConsoleAnimation{
 
         //Setting running status to running
         if(!initStep){
-        this.animationRunning = true;
+        this.setAnimationState(true);
         }
 
         //Setting current millis
@@ -1230,7 +1240,7 @@ class ProgressBarLoadingAnimation extends ConsoleAnimation{
     stop(pauseMessage = ""){
       if(this.animationRunning){
         //set status to paused
-        this.animationRunning = false;
+        this.setAnimationState(false);
         //Set loadingAnimation to pauseMessage (if pauseMessage exists)
          if(pauseMessage.length > 0){
           this.#animationObject.textContent = this.#animationObject.textContent.replace(this.#spinningAnimationStatus, "[" + pauseMessage +"]");
