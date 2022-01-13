@@ -45,9 +45,33 @@ function getOfflineXMLMessageContent(branchIndex, messageIndex){
 * Downloads the xml on the path and sets the module into offline mode with downloaded xml
 * @async
 * @param {String} pathToXML Path to the xml File to be used
+* @return {Boolean} true if load was successfull | false if it failed
 **/
 export async function setOfflineXML(pathToXML){
-  xmlFile = await asyncLoader.loadFileFromServerAsXml(pathToXML);
+  //reserver Variable
+  let loadedXmlFile;
+  
+  //Try to load xml File
+  try{
+   loadedXmlFile = await asyncLoader.loadFileFromServerAsXml(pathToXML);
+}catch(error){
+  //If file cannot be loaded then print error and leave function
+  console.log(error.message);
+  //return false
+  return false;
+}
+  //If File was loaded successfully:
+
+  //Reset values of last xml
+  offlineXMLConditions = [];
+  currentParserBranchPosition = [];
+  currentParserMessagePosition = 0;
+
+  //Save xml in variable
+  xmlFile = loadedXmlFile;
+
+  //return true
+  return true;
 }
 
 /**
@@ -63,7 +87,7 @@ export function getOfflineXML(){
 **/
 export function setToOnlineMode(){
   xmlFile = null;
-  var offlineXMLConditions = [];
+  offlineXMLConditions = [];
   currentParserBranchPosition = [];
   currentParserMessagePosition = 0;
 }
