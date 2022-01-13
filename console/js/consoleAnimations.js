@@ -795,12 +795,12 @@ deleteDomElement(){
 * Prints different lines on the console without individual line animations
 **/
 class ConsoleLinePrint extends ConsoleAnimation{
-textLineArray;
-currentLine;
-animationObjects;
-animationClassString;
+#textLineArray;
+#currentLine;
+#animationObjects;
+#animationClassString;
 
-animationMilliseconds;
+#animationMilliseconds;
 
   /**
   * constructor of the class
@@ -814,13 +814,13 @@ animationMilliseconds;
      //Call aniamtion construtor
      super(playtime, steptime, consoleObject);
      //save array in Attribute
-     this.textLineArray = lines;
+     this.#textLineArray = lines;
      //Set standard for currentLine
-     this.currentLine = 0;
+     this.#currentLine = 0;
      //Generate Random ID
-     this.animationClassString = "ConsoleLinePrint" + ((Math.random().toFixed(4)) * 10000);
+     this.#animationClassString = "ConsoleLinePrint" + ((Math.random().toFixed(4)) * 10000);
      //init array
-     this.animationObjects = [];
+     this.#animationObjects = [];
   }
 
   /**
@@ -829,13 +829,13 @@ animationMilliseconds;
      //Only Start if animation is not running
      if(!this.animationRunning){
         //Check if Animation is at last step
-        if(!(this.currentLine >= this.textLineArray.length)){
+        if(!(this.#currentLine >= this.#textLineArray.length)){
            //Start step
            var prevThis = this;
            //Set animation Millis
-           this.animationMilliseconds = performance.now();
+           this.#animationMilliseconds = performance.now();
            //Start animationStep
-           setTimeout(function () { prevThis.animationStep(); }, 0);
+           setTimeout(function () { prevThis.#animationStep(); }, 0);
            //Set Animation to running
            this.setAnimationState(true);
         }
@@ -854,20 +854,20 @@ animationMilliseconds;
 
   /**
   **/
-  animationStep(){
+  #animationStep(){
     //Calculate millis since last execution
-    var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
+    var millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
     //Check if Next execution can be made
       if(millisSinceLastExecution >= this.animationStepTime){
-        var lineObject = this.consoleObject.printOnConsole(this.textLineArray[this.currentLine], this.animationIDString);
+        var lineObject = this.consoleObject.printOnConsole(this.#textLineArray[this.#currentLine], this.#animationClassString);
         //Add to Object Array
-        this.animationObjects.push(lineObject);
+        this.#animationObjects.push(lineObject);
         //Goto next line
-        this.currentLine++;
+        this.#currentLine++;
         //set last execution time
-        this.animationMilliseconds = performance.now();
+        this.#animationMilliseconds = performance.now();
         //Check if currentLine is over existing lines
-        if(this.currentLine >= this.textLineArray.length){
+        if(this.#currentLine >= this.#textLineArray.length){
           this.stop();
           return;
         }
@@ -877,7 +877,7 @@ animationMilliseconds;
       if(this.animationRunning){
         var prevThis = this;
 
-       setTimeout(function () { prevThis.animationStep();}, 0);
+       setTimeout(function () { prevThis.#animationStep();}, 0);
       }
 
   }
@@ -890,19 +890,19 @@ animationMilliseconds;
    //Delete Dom elements
    this.deleteDomElement();
    //Reset currentLine
-   this.currentLine = 0;
+   this.#currentLine = 0;
   }
 
   /**
   **/
   deleteDomElement(){
    //Delete all Dom elements
-   for(var i =  1; i < this.textLineArray.length; i++){
-     this.animationObjects.remove();
+   for(var i =  1; i < this.#textLineArray.length; i++){
+     this.#animationObjects.remove();
    }
 
    //Set references to null
-   this.animationObjects = [];
+   this.#animationObjects = [];
 
   }
 
