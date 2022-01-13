@@ -373,19 +373,20 @@ get consoleObject(){
  * @extends ConsoleAnimation
 **/
 class ConsoleTextLoadingAnimation extends ConsoleAnimation{
-maxDotCount;
-animationObject;
-animationText;
-currentAnimationDotCount;
-animationIDString;
-animationMilliseconds;
+#maxDotCount;
+#animationObject;
+#animationText;
+#currentAnimationDotCount;
+#animationIDString;
+#animationMilliseconds;
 
-totalStepCount;
-currentStep;
+#totalStepCount;
+#currentStep;
 
     /**
     * Constructor
     * @param {Number} playtime (in ms) Time after the animation stops (gets paused) (playtime = 0 --> indefinite)
+    * @param {Number} steptime (in ms) Time how long the animation will wait between each Step
     * @param {Number} maxDotCount Number of dots that will be displayed (def:3)
     * @param {Number} steptime (in ms) Time between each step (=speed)
     * @param {String} animationText Text that is displayed by the Animation
@@ -394,45 +395,45 @@ currentStep;
     constructor(playtime, steptime, maxDotCount, animationText, consoleObject){
        super(playtime, steptime, consoleObject);
        //Calculate Total Step count
-       this.totalStepCount = Math.floor(playtime/steptime);
+       this.#totalStepCount = Math.floor(playtime/steptime);
        //Set currentStep to 0
-       this.currentStep = 0;
-       this.maxDotCount = maxDotCount;
-       this.animationText = animationText;
-       this.currentAnimationDotCount = 0;
-       this.animationObject = null;
+       this.#currentStep = 0;
+       this.#maxDotCount = maxDotCount;
+       this.#animationText = animationText;
+       this.#currentAnimationDotCount = 0;
+       this.#animationObject = null;
        //Generate Random Id String
-       this.animationIDString = "ConsoleTextLoadAnimation" + ((Math.random().toFixed(4)) * 10000);
+       this.#animationIDString = "ConsoleTextLoadAnimation" + ((Math.random().toFixed(4)) * 10000);
          }
 
 /**
 * Animationstep
 **/
-animationStep(){
-  var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
+#animationStep(){
+  var millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
 
   //Check if next Step can be Executed
   if(millisSinceLastExecution >= this.animationStepTime){
 
     //If animaiton has performed all steps: exit
-    if(this.currentStep >= this.totalStepCount){
+    if(this.#currentStep >= this.#totalStepCount){
       this.stop();
       return;
     }else{
-      this.currentStep++;
+      this.#currentStep++;
     }
 
   //Check if Dots are above maximum
-  if(this.currentAnimationDotCount >= this.maxDotCount){
-     this.animationObject.textContent = this.animationText;
-     this.currentAnimationDotCount = 0;
+  if(this.#currentAnimationDotCount >= this.#maxDotCount){
+     this.#animationObject.textContent = this.#animationText;
+     this.#currentAnimationDotCount = 0;
   }else{
 
-  this.animationObject.textContent += ".";
-  this.currentAnimationDotCount++;
+  this.#animationObject.textContent += ".";
+  this.#currentAnimationDotCount++;
   }
 
-   this.animationMilliseconds = performance.now();
+   this.#animationMilliseconds = performance.now();
 
 }
 
@@ -440,7 +441,7 @@ animationStep(){
 
   if(this.animationRunning){
     //Set async restart of function
-    setTimeout(function () { prevThis.animationStep();}, 0);
+    setTimeout(function () { prevThis.#animationStep();}, 0);
   }
 }
 
@@ -449,9 +450,9 @@ animationStep(){
 start(){
   if(!this.animationRunning){
     //Create New Element if not exists
-    if(this.animationObject == null){
-     this.consoleObject.printOnConsole(this.animationText, this.animationIDString);
-     this.animationObject = document.getElementById(this.animationIDString);
+    if(this.#animationObject == null){
+     this.consoleObject.printOnConsole(this.#animationText, this.#animationIDString);
+     this.#animationObject = document.getElementById(this.#animationIDString);
    }
      this.setAnimationState(true);
 
@@ -459,8 +460,8 @@ start(){
      var prevThis = this;
 
      //Set current time
-     this.animationMilliseconds = performance.now();
-     setTimeout(function () { prevThis.animationStep(); }, 0);
+     this.#animationMilliseconds = performance.now();
+     setTimeout(function () { prevThis.#animationStep(); }, 0);
 
   }
 }
@@ -479,9 +480,9 @@ reset(){
   //Stop Animation
   this.stop();
   //Reset Attributes
-  this.animationObject.textContent = this.animationText;
-  this.currentAnimationDotCount = 0;
-  this.currentStep = 0;
+  this.#animationObject.textContent = this.#animationText;
+  this.#currentAnimationDotCount = 0;
+  this.#currentStep = 0;
 }
 
 /**
@@ -490,8 +491,8 @@ deleteDomElement(){
   //Reset Animation
   this.reset();
 
-  this.animationObject.remove();
-  this.animationObject = null;
+  this.#animationObject.remove();
+  this.#animationObject = null;
 }
 
 }
