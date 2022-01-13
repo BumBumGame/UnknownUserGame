@@ -619,19 +619,27 @@ get currentAnimationObject(){
 * Displays Text loading animation with Typing animation
 **/
 class ConsoleTextLoadingAnimationTyping extends ConsoleAnimation{
-animationObject;
-animationText;
-typingAnimationObject;
-loadingAnimationObject;
-onlyConstantDotAnimation;
-
-animationMilliseconds;
+//Reference to Dom element of this Animation
+#animationObject;
+//Text fot the Animation
+#animationText;
+//Reference To typingAnimation Object
+#typingAnimationObject;
+//Reference to loadingAnimation Object
+#loadingAnimationObject;
+//Boolean for onlyConstantDotAnimation
+#onlyConstantDotAnimation;
+//Number of Maximum Dots
+#maxDotCount;
+//Variable to store the Milliseconds for the Animation
+#animationMilliseconds;
 
 /**
 * constructor
 * @param {Number} playtime (in ms) Time after the animation stops (gets paused) (playtime = 0 --> indefinite)
 * @param {Number} steptime (in ms) Time between each step (=speed)
 * @param {String} animationText Text to be printed
+* @param {Number} maxDotCount Number of maximum Loading Dots for the Animation
 * @param {Boolean} onlyDotsAfterStart Set if onlyDots will be animated after first text print or Text will be printed new everytime as well
 * @param {Number} typingTextPlayTime Time of the typing Animation on start
 * @param {Object:InGameConsole} consoleObject Console animation will be aplied to
@@ -640,17 +648,17 @@ constructor(playtime, steptime, animationText, maxDotCount, onlyDotsAfterStart, 
       //Call Animation Constructor
       super(playtime, steptime, consoleObject);
       //Save animationtext
-      this.animationText = animationText;
+      this.#animationText = animationText;
       //Set maxDotCount
-      this.maxDotCount = maxDotCount;
+      this.#maxDotCount = maxDotCount;
       //Save onlyDotsAfterStart (Boolean)
-      this.onlyConstantDotAnimation = onlyDotsAfterStart;
+      this.#onlyConstantDotAnimation = onlyDotsAfterStart;
       //Create typingAnimation
-      this.typingAnimationObject = new ConsoleTextTypingAnimation(typingTextPlayTime, animationText, consoleObject);
+      this.#typingAnimationObject = new ConsoleTextTypingAnimation(typingTextPlayTime, animationText, consoleObject);
       //Create LoadingAnimaitonObject
-      this.loadingAnimationObject = new ConsoleTextLoadingAnimation(playtime, steptime, maxDotCount, animationText, consoleObject);
+      this.#loadingAnimationObject = new ConsoleTextLoadingAnimation(playtime, steptime, maxDotCount, animationText, consoleObject);
       //Set animationObject to null
-      this.animationObject = null;
+      this.#animationObject = null;
 }
 
 /**
@@ -659,16 +667,16 @@ start(){
       //Check if Animation is not running
       if(!this.animationRunning){
          //Check if Animation Object Exists and create One if nessecary
-         if(this.animationObject == null){
+         if(this.#animationObject == null){
             //Start Typing animmation to create Animation object
-            this.typingAnimationObject.start();
+            this.#typingAnimationObject.start();
             //Get AnimationObject
-            this.animationObject = this.typingAnimationObject.currentAnimationObject;
+            this.#animationObject = this.#typingAnimationObject.currentAnimationObject;
             //Set ConsoleTextLoadingAnimaiton animationObject to the same as the others
-            this.loadingAnimationObject.animationObject = this.animationObject;
+            this.#loadingAnimationObject.animationObject = this.#animationObject;
            //Check if animation is stopped at typing
-         }else if(this.animationObject.textContent.length > 0 && this.typingAnimationObject.animationText.length >= this.typingAnimationObject.currentAnimationCharIndex) {
-            this.typingAnimationObject.start();
+         }else if(this.#animationObject.textContent.length > 0 && this.#typingAnimationObject.animationText.length >= this.#typingAnimationObject.currentAnimationCharIndex) {
+            this.#typingAnimationObject.start();
          }
 
          //Set animation on running;
@@ -677,8 +685,8 @@ start(){
         //Start next step after Typing animation is finished
         var prevThis = this;
         //Set millis
-        this.animationMilliseconds = performance.now();
-        setTimeout(function () { prevThis.animationStep(); }, 0);
+        this.#animationMilliseconds = performance.now();
+        setTimeout(function () { prevThis.#animationStep(); }, 0);
         //If playtime is set then set timout on stop
         if(this.animationPlayTime > 0){
         setTimeout(function () { prevThis.stop(); }, this.animationPlayTime);
@@ -693,49 +701,49 @@ stop(){
      if(this.animationRunning){
         this.setAnimationState(false);
         //Stop Typing animation;
-        this.typingAnimationObject.stop();
+        this.#typingAnimationObject.stop();
         //Stop Loading animation
-        this.loadingAnimationObject.stop();
+        this.#loadingAnimationObject.stop();
      }
 }
 
 /**
 **/
-animationStep(){
+#animationStep(){
   //Get current Milliseconds
-  var millisSinceLastExecution = performance.now() - this.animationMilliseconds;
+  var millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
   //Check if Step can be performed
      if(millisSinceLastExecution >= this.animationStepTime){
 
 
       //Check if Object does still exists
-      if(this.animationObject == null){
+      if(this.#animationObject == null){
          //leave function and Stop animation
-         this.stop
+         this.stop();
          return;
       }
 
      //Start Typing animation if no text is in Element
-     if(this.animationObject.textContent.length  == 0){
+     if(this.#animationObject.textContent.length  == 0){
         //Start Typing function
-        this.typingAnimationObject.start();
+        this.#typingAnimationObject.start();
      }
 
      //Only Start normal loading animation if typing is done
-     if(!this.typingAnimationObject.animationRunning){
+     if(!this.#typingAnimationObject.animationRunning){
         //Check if loading Animation is running
-        if(!this.loadingAnimationObject.animationRunning){
+        if(!this.#loadingAnimationObject.animationRunning){
            //Start loading animation
-           this.loadingAnimationObject.start();
+           this.#loadingAnimationObject.start();
         }else{
            //Check if Animation needs to be reset after Hitting max points
-           if(!this.onlyConstantDotAnimation){
+           if(!this.#onlyConstantDotAnimation){
                //Check if all dots are displayed
-                if(this.loadingAnimationObject.currentAnimationDotCount >= this.loadingAnimationObject.maxDotCount){
+                if(this.#loadingAnimationObject.currentAnimationDotCount >= this.#loadingAnimationObject.maxDotCount){
                   //Reset Loading Animation
-                  this.loadingAnimationObject.reset();
+                  this.#loadingAnimationObject.reset();
                   //Reset Typing animation
-                  this.typingAnimationObject.reset();
+                  this.#typingAnimationObject.reset();
                 }
            }
         }
@@ -748,7 +756,7 @@ animationStep(){
 
     //If Animation is running rerun this function
     if(this.animationRunning){
-        setTimeout(function () { prevThis.animationStep(); }, 0)
+        setTimeout(function () { prevThis.#animationStep(); }, 0)
     }
 
 }
@@ -757,14 +765,14 @@ animationStep(){
 **/
 reset(){
     //Check if Text needs to be reset
-    if(this.onlyConstantDotAnimation == false){
+    if(this.#onlyConstantDotAnimation == false){
       //Reset loading animation
-      this.loadingAnimationObject.reset();
+      this.#loadingAnimationObject.reset();
       //Reset typing Animation
-      this.typingAnimationObject.reset();
+      this.#typingAnimationObject.reset();
     }else{
       //Only reset Dots
-      this.loadingAnimationObject.reset();
+      this.#loadingAnimationObject.reset();
     }
 }
 
@@ -776,9 +784,9 @@ deleteDomElement(){
   //Reset Animation
   this.reset();
   //Call Delete of Typing animation
-  this.typingAnimationObject.deleteDomElement();
-  this.loadingAnimationObject.deleteDomElement();
-  this.animationObject = null;
+  this.#typingAnimationObject.deleteDomElement();
+  this.#loadingAnimationObject.deleteDomElement();
+  this.#animationObject = null;
 }
 
 
