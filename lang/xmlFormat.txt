@@ -27,6 +27,7 @@ Conditions:
 - Not set Conditions are treated as !true by default
 - Conditions can also be set through a Method of the communicator-Reader-Module
 - To set a Condition for the whole communication, add the checkCondition = [ConditionName] or checkNotCondition = [ConditionName] Attribute to the <communicatorChat> Tag
+- To set multiple conditions, seperate them with a white space
 
 Info:
 - All conditions will be stored in the save file

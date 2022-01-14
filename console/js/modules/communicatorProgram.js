@@ -27,7 +27,9 @@ export function getLatestMessage(chatName){
   //Check if offline xml is loaded
   if(isInOfflineMode()){
     //Choose First Branch if none has been chosen
+    if(currentParserBranchPosition.length == 0){
 
+    }
 
     //load latest Message from offline XML
 
@@ -126,9 +128,16 @@ if(!isInOfflineMode()){
   return null;
 }
 
-//all branch ELements in the Scope of the current branch
-  //let newBranchList = xmlFile.getElementsByTagName("branch")[currentParserBranchPosition].querySelectorAll(':scope > branch');
-  return xmlFile.getElementsByTagName("branch")[0].querySelectorAll(':scope > branch');
+//get Current Branch value
+let currentBranch = getCurrentOfflineBranch();
+
+//return null if no branch is found
+if(currentBranch == null){
+  return null;
+}
+
+//return all branch ELements in the Scope of the current branch
+  return currentBranch.querySelectorAll(':scope > branch');
 }
 
 /**
@@ -151,6 +160,54 @@ function getCurrentOfflineBranch(){
 
   //return branch
   return currentBranchContext;
+}
+
+/**
+* Function returns the first new available branch of which all conditions have been fullfilled (or null if none was found)
+* @return {Dom-Element|null} Dom-Element of the fitting Branch or null if none are available
+**/
+function getCurrentFirstConditionMatchingBranch(){
+  //if in online Mode return null
+  if(!isInOfflineMode()){
+    return null;
+  }
+
+  //get and temporaly store all optional subBranches if new options are available
+  if(newBranchesAvailable()){
+  let currentOfflineBranchOptions = getCurrentOfflineBranchOptions();
+
+  //Check conditions for each Branch and return the first branch which matches
+  for(let i = 0; i < currentOfflineBranchOptions.length; i++){
+    //get currentBranch checkConditions
+    let currentCheckConditionString = currentOfflineBranchOptions[i].getAttribute("checkCondition");
+    //get currentBranch checkNotConditions
+    let currentCheckNotConditionString = currentOfflineBranchOptions[i].getAttribute("checkNotCondition");
+
+    
+
+  }
+
+}else{
+  //else: Return null
+  return null;
+}
+
+
+}
+
+/**
+* Returns bool if new branches inside of the current Branch are available or if we have reached the end of the chat
+* @return {Boolean} True if newBranches are available
+**/
+function newBranchesAvailable(){
+  let currentOptions = getCurrentOfflineBranchOptions();
+
+  if(currentOptions == null || currentOptions.length == 0){
+    return false;
+  }
+
+  //else
+  return true;
 }
 
 //-----Online-----
