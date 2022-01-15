@@ -164,7 +164,7 @@ function getCurrentOfflineBranch(){
 
 /**
 * Function returns the first new available branch of which all conditions have been fullfilled (or null if none was found)
-* @return {Dom-Element|null} Dom-Element of the fitting Branch or null if none are available
+* @return {Dom-Element|null} Dom-Element of the fitting Branch or null if none are available or found
 **/
 function getCurrentFirstConditionMatchingBranch(){
   //if in online Mode return null
@@ -179,13 +179,46 @@ function getCurrentFirstConditionMatchingBranch(){
   //Check conditions for each Branch and return the first branch which matches
   for(let i = 0; i < currentOfflineBranchOptions.length; i++){
     //get currentBranch checkConditions
-    let currentCheckConditionString = currentOfflineBranchOptions[i].getAttribute("checkCondition");
+    let currentCheckCondition = currentOfflineBranchOptions[i].getAttribute("checkCondition").trim();
     //get currentBranch checkNotConditions
-    let currentCheckNotConditionString = currentOfflineBranchOptions[i].getAttribute("checkNotCondition");
+    let currentCheckNotCondition = currentOfflineBranchOptions[i].getAttribute("checkNotCondition").trim();
 
-    
+    //split Strings into condition names
+    currentCheckCondition = currentCheckCondition.split(' ');
+    currentCheckNotCondition = currentCheckNotCondition.split(' ');
+
+    //Check each condition
+    let falseConditionFound = false;
+      //Check true Conditions
+      for(let a = 0; a < currentCheckCondition.length; a++){
+        if(!getOfflineConditionState(currentCheckCondition[a]){
+          //If found then set the variable and leave loop
+          falseConditionFound = true;
+          break;
+        }
+      }
+
+      //Check false conditions if neccessary
+      if(!falseConditionFound){
+        //Check false Conditions
+        for(let a = 0; a < currentCheckNotCondition.length; a++){
+          if(getOfflineConditionState(currentCheckNotCondition[a])){
+            //If found then set the variable and leave loop
+            falseConditionFound = true;
+            break;
+          }
+        }
+      }
+
+      //If branch fits all conditions return it
+      if(!falseConditionFound){
+        return currentOfflineBranchOptions[i];
+      }
 
   }
+
+  //If here: No Branches had matching conditions --> Return null
+  return null;
 
 }else{
   //else: Return null
@@ -193,6 +226,22 @@ function getCurrentFirstConditionMatchingBranch(){
 }
 
 
+}
+
+/**
+* Returns the State of the condition. Returns false if the condition is not found
+* @param {String} conditionName Name of the condition
+* @return {Boolean} value of the Condition. False if none found
+**/
+function getOfflineConditionState(conditionName){
+  //Check if condition exits
+  if(typeof offlineXMLConditions[conditionName] === "undefined"){
+    //default return false
+    return false;
+  }
+
+  //return condition Value
+  return offlineXMLConditions[conditionName];
 }
 
 /**
