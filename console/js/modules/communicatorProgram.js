@@ -130,14 +130,24 @@ if(!isInOfflineMode()){
 
 //get Current Branch value
 let currentBranch = getCurrentOfflineBranch();
+let branchOptions;
 
-//return null if no branch is found
+//get all options of the xmlFile if no branch is active
 if(currentBranch == null){
+  branchOptions = xmlFile.querySelectorAll(':scope > branch');
+}else{
+//get all branch ELements in the Scope of the current branch
+  branchOptions = currentBranch.querySelectorAll(':scope > branch');
+}
+
+//Return branch options or null if no are found
+if(branchOptions.length == 0){
   return null;
 }
 
-//return all branch ELements in the Scope of the current branch
-  return currentBranch.querySelectorAll(':scope > branch');
+//else
+return branchOptions;
+
 }
 
 /**
@@ -179,19 +189,23 @@ function getCurrentFirstConditionMatchingBranch(){
   //Check conditions for each Branch and return the first branch which matches
   for(let i = 0; i < currentOfflineBranchOptions.length; i++){
     //get currentBranch checkConditions
-    let currentCheckCondition = currentOfflineBranchOptions[i].getAttribute("checkCondition").trim();
+    let currentCheckCondition = currentOfflineBranchOptions[i].getAttribute("checkCondition");
     //get currentBranch checkNotConditions
-    let currentCheckNotCondition = currentOfflineBranchOptions[i].getAttribute("checkNotCondition").trim();
+    let currentCheckNotCondition = currentOfflineBranchOptions[i].getAttribute("checkNotCondition");
 
-    //split Strings into condition names
-    currentCheckCondition = currentCheckCondition.split(' ');
-    currentCheckNotCondition = currentCheckNotCondition.split(' ');
+    //Change conditions to empty string if none were found and if there are: trim
+    currentCheckCondition = currentCheckCondition == null ? "" : currentCheckCondition.trim();
+    currentCheckNotCondition = currentCheckNotCondition == null ? "" : currentCheckNotCondition.trim();
+
+    //split Strings into condition names in an array if any are available
+    currentCheckCondition = currentCheckCondition.length == 0 ? [] : currentCheckCondition.split(' ');
+    currentCheckNotCondition = currentCheckNotCondition.length == 0 ? [] : currentCheckNotCondition.split(' ');
 
     //Check each condition
     let falseConditionFound = false;
       //Check true Conditions
       for(let a = 0; a < currentCheckCondition.length; a++){
-        if(!getOfflineConditionState(currentCheckCondition[a]){
+        if(!getOfflineConditionState(currentCheckCondition[a])){
           //If found then set the variable and leave loop
           falseConditionFound = true;
           break;
