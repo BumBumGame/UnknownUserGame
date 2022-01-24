@@ -16,6 +16,11 @@ var offlineXMLConditions = [];
 var currentParserBranchPosition = []; //Holds the indexes of which branches were taken as an Array (each level is a new index)
 var currentParserMessagePosition = 0; //Index of the current Message inside the branch
 
+//Message Type Constants
+const MESSAGERSTATEMENT = 0;
+const QUESTION = 1;
+const MESSAGE = 2;
+
 /**
 * This Function request the latest Message in a specific Chat or the offlineXml Chat
 * @async
@@ -107,7 +112,7 @@ export function isInOfflineMode(){
 * Returns Neweset Message of the offline XML
 * @return {String|null} Returns the newest Message as String or null if in online Mode
 **/
-function getLatestOfflineXMLMessageContent(){
+function getCurrentParserOfflineXMLMessageContent(){
 //if in online Mode return null
 if(!isInOfflineMode()){
   return null;
@@ -115,12 +120,56 @@ if(!isInOfflineMode()){
 
 //Parse to latest Message
 
+//Get Current branch
+let currentBranch = getCurrentOfflineBranch();
+
+//Get latest Message of that branch
+let currentMessage = currentBranch.querySelectorAll(':scope > communicatorChatMessage')[currentParserMessagePosition];
+
+return currentMessage.querySelectorAll(':scope > messageContent')[0].textContent;
+}
+
+/**
+* Method which returns the message type of the current parser
+* @return {Number|null} Number which represents the type of the message or null if in Online Mode
+**/
+function getCurrentParserMessageType(){
+  //if in online Mode return null
+  if(!isInOfflineMode()){
+    return null;
+  }
+
+  //get current Branch
+  let currentBranch = getCurrentOfflineBranch();
+
+  //get Message
+  let message = currentBranch.querySelectorAll(':scope > communicatorChatMessage')[currentParserMessagePosition];
+
+  let type = message.getAttribute("type");
+
+  switch(type != null ? type.toLowerCase().trim() : 0){
+      case "question":
+          return QUESTION;
+        break;
+
+      case "messagerstatement":
+          return MESSAGERSTATEMENT;
+        break;
+
+      case "message":
+          return MESSAGE;
+        break;
+
+      default:
+          return MESSAGE;
+        break;
+  }
 }
 
 
 /**
 * Returns all new branch options of the current offline branch as a NodeList (or null if none exist)
-* @return {NodeList|null} Returns branchoptions as Nodelist or null if in onlineMode or no branch options were found.
+* @return {NodeList|null} Returns branchoptions as Nodelist or null if in onlineMode
 **/
 function getCurrentOfflineBranchOptions(){
 //if in online Mode return null
@@ -141,8 +190,8 @@ if(currentBranch == null){
 }
 
 //Return branch options or null if no are found
-if(branchOptions.length == 0){
-  return null;
+if(branchOptions == null){
+  return [];
 }
 
 //else
