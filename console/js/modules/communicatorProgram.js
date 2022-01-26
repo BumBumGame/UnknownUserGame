@@ -14,7 +14,11 @@ var offlineXMLConditions = [];
 
 //Global Variables which hold the current xmlParser Position
 var currentParserBranchPosition = []; //Holds the indexes of which branches were taken as an Array (each level is a new index)
-var currentParserMessagePosition = 0; //Index of the current Message inside the branch
+var currentParserMessagePosition = -1; //Index of the current Message inside the branch
+
+var awaitingQuestionReply = false;//Variable holds the Satus after a question has been read
+
+var offlineChatReachedEnd = false;
 
 //Message Type Constants
 const MESSAGERSTATEMENT = 0;
@@ -22,24 +26,124 @@ const QUESTION = 1;
 const MESSAGE = 2;
 
 /**
-* This Function request the latest Message in a specific Chat or the offlineXml Chat
+* This Function request the latest Message in a specific Chat or the offlineXml Chat and automatically goes to next one if available
+* Note: This is supposed to be the main function for getting new Messages. It handles all conditions and chooses the first matching options automatically
 * @async
 * @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
-* @return {String} Next newest unread message or the last read one if no new ones are available
+* @return {String|null} Next newest unread message or the last read one if no new ones are available (or null if no message can be read)
 **/
 export function getLatestMessage(chatName){
 
   //Check if offline xml is loaded
   if(isInOfflineMode()){
-    //Choose First Branch if none has been chosen
-    if(currentParserBranchPosition.length == 0){
-
-    }
 
     //load latest Message from offline XML
+    //Check if new message is available
+    if (!isNewMessageAvailable(chatName)) {
+      //Repeat old Message (if exist)
+      if(currentParserMessagePosition == -1){
+        if(currentParserBranchPosition.length == 0){
+        return null;
+      }else{
+        //Get the last message of previous branch
+        let currentTempBranchParser = currentParserBranchPosition;
+        //Remove last element from tempParser
+        currentTempBranchParser.pop();
+        let previousBranch = getOfflineBranch(currentTempBranchParser);
+        let previousMessages = previousBranch.querySelectorAll(':scope > communicatorChatMessage');
+        return previousMessages[previousMessages.length - 1].querySelectorAll(':scope > messageContent')[0].textContent.trim();
+      }
+
+      }
+
+    //check if end of branch has been reached and there are no more branches
+      if(endOfCurrentOfflineBranchReached()){
+        let branchOptions = getCurrentOfflineBranchOptions();
+        if(branchOptions.length == 0){
+          offlineChatReachedEnd = true;
+        }
+
+      }
+
+      //Repeat current Message
+      return getCurrentParserOfflineXMLMessageContent();
+    }
+
+    //else:
+
+    currentParserMessagePosition++;
+    let nextMessageXMLContent = getCurrentParserOfflineXMLMessageContent();
+
+    //Check if end of current branch has been reached
+    if(endOfCurrentOfflineBranchReached()){
+      //Switch to next Branch if possible
+      let currentOfflineBranchOption = getCurrentFirstConditionMatchingBranchIndex();
+
+      if(currentOfflineBranchOption != null){
+        currentParserBranchPosition.push(currentOfflineBranchOption);
+        currentParserMessagePosition = -1;
+      }
+    }
+
+    //return next message
+    return nextMessageXMLContent;
 
   }else{
     //request latest message from Server for chatName
+  }
+
+}
+
+/**
+* Checks wether there is a new method available to read on the current Path
+* @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
+* @return {Boolean} Returns true or false whether a new Message is available on the given Chat
+**/
+export function isNewMessageAvailable(chatName){
+  //Check if Module is awaiting a question Answer
+  if(awaitingQuestionReply){
+    return false;
+  }
+
+  //Check if offline xml is loaded
+  if(isInOfflineMode()){
+    //Check if end of branch is reached
+    if(endOfCurrentOfflineBranchReached()){
+      return false;
+    }
+
+    //Check Offline XML
+    let currentBranch = getCurrentOfflineBranch();
+    let currentMessages = currentBranch.querySelectorAll(':scope > communicatorChatMessage');
+
+    //else Check if condition for next message is met
+     //get next message condition
+    let messageCheckCondition = currentMessages[currentParserMessagePosition + 1].getAttribute("checkCondition");
+    let messageCheckNotCondition = currentMessages[currentParserMessagePosition + 1].getAttribute("checkNotCondition");
+
+    //Check if condition were found
+    if(messageCheckCondition == null && messageCheckNotCondition == null){
+      return true;
+    }
+
+    //Check conditions
+    if(messageCheckCondition != null){
+      if(!getOfflineConditionState(messageCheckCondition.trim())){
+        return false;
+      }
+    }
+
+    if(messageCheckNotCondition != null){
+      if(getOfflineConditionState(messageCheckNotCondition.trim())){
+        return false;
+      }
+    }
+
+    //If all conditions are matched: Return true
+    return true;
+
+  }else{
+    //Check on Server
   }
 
 }
@@ -68,10 +172,21 @@ export async function setOfflineXML(pathToXML){
   //Reset values of last xml
   offlineXMLConditions = [];
   currentParserBranchPosition = [];
-  currentParserMessagePosition = 0;
+  currentParserMessagePosition = -1;
 
   //Save xml in variable
   xmlFile = loadedXmlFile;
+
+  //Set first brach
+  if(currentParserBranchPosition.length == 0){
+    let newBranchIndex = getCurrentFirstConditionMatchingBranchIndex();
+    //If not possible:
+    if(newBranchIndex == null){
+     throw new Error("No First Branch found!")
+    }
+    //else
+    currentParserBranchPosition.push(newBranchIndex);
+  }
 
   //return true
   return true;
@@ -92,7 +207,7 @@ export function setToOnlineMode(){
   xmlFile = null;
   offlineXMLConditions = [];
   currentParserBranchPosition = [];
-  currentParserMessagePosition = 0;
+  currentParserMessagePosition = -1;
 }
 
 /**
@@ -108,6 +223,25 @@ export function isInOfflineMode(){
 //---------------------------------------------------
 
 //---Offline-----
+/**
+* Checks if the end of the current Offline Branch has been reached
+* @return {Boolean|null} Returns null if in Online Mode and true or false wheter endOffCurrentofflineBRanch is reached
+**/
+function endOfCurrentOfflineBranchReached(){
+  if(!isInOfflineMode()){
+    return null;
+  }
+
+  let currentBranch = getCurrentOfflineBranch();
+
+  if(currentBranch.querySelectorAll(':scope > communicatorChatMessage')[currentParserMessagePosition + 1] !== undefined){
+    return false;
+  }
+
+  //else
+    return true;
+}
+
 /**
 * Returns Neweset Message of the offline XML
 * @return {String|null} Returns the newest Message as String or null if in online Mode
@@ -126,7 +260,7 @@ let currentBranch = getCurrentOfflineBranch();
 //Get latest Message of that branch
 let currentMessage = currentBranch.querySelectorAll(':scope > communicatorChatMessage')[currentParserMessagePosition];
 
-return currentMessage.querySelectorAll(':scope > messageContent')[0].textContent;
+return currentMessage.querySelectorAll(':scope > messageContent')[0].textContent.trim();
 }
 
 /**
@@ -222,10 +356,31 @@ function getCurrentOfflineBranch(){
 }
 
 /**
-* Function returns the first new available branch of which all conditions have been fullfilled (or null if none was found)
-* @return {Dom-Element|null} Dom-Element of the fitting Branch or null if none are available or found
+* Returns the branch at the chosen parser and returns it or null if branch doesnt exist
+* @param {Number[]} branchParserPosition The Parser-PositionArray at which the branch is
+* @return {DOM-Element|null} Null if there is no active branch, onlineModeActive,branch is not found or the xmlElement of the branch
 **/
-function getCurrentFirstConditionMatchingBranch(){
+function getOfflineBranch(branchParserPosition){
+  if(branchParserPosition.length == 0 || !isInOfflineMode()) {
+    return null;
+  }
+
+  let currentBranchContext = xmlFile.querySelectorAll(':scope > branch')[branchParserPosition[0]];
+  for(let i = 1; i < branchParserPosition.length; i++){
+    currentBranchContext = currentBranchContext.querySelectorAll(':scope > branch')[branchParserPosition[i]];
+    //If branch cannot be found return null
+    if(currentBranchContext == null){return null;}
+   }
+
+  //return branch
+  return currentBranchContext;
+}
+
+/**
+* Function returns the first new available branch of which all conditions have been fullfilled (or null if none was found)
+* @return {Number|null} Index of the fitting Branch inside the current active Branch or null if none are available or found
+**/
+function getCurrentFirstConditionMatchingBranchIndex(){
   //if in online Mode return null
   if(!isInOfflineMode()){
     return null;
@@ -275,7 +430,7 @@ function getCurrentFirstConditionMatchingBranch(){
 
       //If branch fits all conditions return it
       if(!falseConditionFound){
-        return currentOfflineBranchOptions[i];
+        return i;
       }
 
   }
@@ -298,7 +453,7 @@ function getCurrentFirstConditionMatchingBranch(){
 **/
 function getOfflineConditionState(conditionName){
   //Check if condition exits
-  if(typeof offlineXMLConditions[conditionName] === "undefined"){
+  if(typeof offlineXMLConditions[conditionName] === undefined){
     //default return false
     return false;
   }
