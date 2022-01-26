@@ -26,6 +26,16 @@
         Dein Spiegel.
       </Answer>
   </communicatorChatMessage>
+
+  <branch>
+    <communicatorChatMessage type="messagerStatement" checkCondition="lol">
+      <messageContent>
+        Branch2Test
+      </messageContent>
+    </communicatorChatMessage>
+  </branch>
 </branch>
 
+<branch>
+</branch>
 </communicatorChat>
