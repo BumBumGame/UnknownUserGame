@@ -68,6 +68,7 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
   this.#adjustInputCommandWidth();
   window.addEventListener("resize", this.#adjustInputCommandWidth.bind(this));
 
+  this.onKeyPress = this.onKeyPress.bind(this);
   //Set event listener
   //Add Eventlistener for KeyboardInput
   this.addActiveEventListenerForConsole();
@@ -515,7 +516,7 @@ disableInputAutoExectution(){
 * @param {event} e The Fired keyboard event
 * @private
 **/
-#onKeyPress(e){
+onKeyPress(e){
     switch(e.keyCode){
       case 13: //If Enter is pressed
       this.#onEnterPress();
@@ -547,14 +548,14 @@ disableInputAutoExectution(){
 **/
 addActiveEventListenerForConsole(){
   //Add Eventlistener for KeyboardInput
-  document.addEventListener("keydown", this.#onKeyPress.bind(this));
+  document.addEventListener("keydown", this.onKeyPress);
 }
 
 /**
 * Removes eventlistener for automatic focusing of input on any keypress
 **/
 removeActiveEventListenerForConsole(){
-  document.removeEventListener("keydown", this.#onKeyPress.bind(this));
+  document.removeEventListener("keydown", this.onKeyPress);
 }
 
 }
