@@ -197,13 +197,19 @@ export function isNewMessageAvailable(chatName){
 * Gets all answer Options for current Question
 * @return {String[]|null} String Array with each index being one answer or null if no question is currently active
 **/
-export function getCurrentAnswerOptions(){
-
-  if (getCurrentMessageType() != QUESTION) {
-     return null;
+export function getCurrentAnswerOptionsAsString(){
+  //Return null if not awaiting Question Replay
+  if(!awaitingQuestionReply){
+    return null;
   }
 
-  //Get Answer Options
+if(isInOfflineMode()){
+  //Get Answer Options from offline Parser and return them
+  return getCurrentOfflineAnswerOptionsAsString();
+
+}else{
+  //Get Answer from Server
+}
 
 }
 
@@ -307,6 +313,41 @@ function endOfCurrentOfflineBranchReached(){
 
   //else
     return true;
+}
+
+/**
+* Gets all answer Options for current Question
+* @return {DOM-Element[]|null} String Array with each index being one answer or null if no question is currently active
+**/
+function getCurrentOfflineAnswerOptions(){
+  if(!awaitingQuestionReply){
+    return null;
+  }
+
+if(isInOfflineMode()){
+  //Get Answer Options from offline Parser
+  let currentMessage = getCurrentParserOfflineXMLMessage();
+
+  let answers = [];
+
+  return currentMessage.querySelectorAll(':scope > Answer');
+}
+
+}
+
+/**
+* Gets all answer Options for current Question
+* @return {String[]|null} String Array with each index being one answer or null if no question is currently active
+**/
+function getCurrentOfflineAnswerOptionsAsString(){
+  let answerTags = getCurrentOfflineAnswerOptions();
+  let stringAnswers = [];
+
+  for(let i = 0; i < answerTags.length; i++){
+    stringAnswers.push(answerTags[i].textContent.trim());
+  }
+
+  return stringAnswers;
 }
 
 /**
