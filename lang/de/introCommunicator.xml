@@ -28,7 +28,7 @@
   </communicatorChatMessage>
 
   <branch>
-    <communicatorChatMessage type="messagerStatement" checkCondition="lol">
+    <communicatorChatMessage type="messagerStatement">
       <messageContent>
         Branch2Test
       </messageContent>

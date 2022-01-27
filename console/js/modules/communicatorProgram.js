@@ -16,7 +16,7 @@ var offlineXMLConditions = [];
 var currentParserBranchPosition = []; //Holds the indexes of which branches were taken as an Array (each level is a new index)
 var currentParserMessagePosition = -1; //Index of the current Message inside the branch
 
-var awaitingQuestionReply = false;//Variable holds the Satus after a question has been read
+var awaitingQuestionReply = false; //Variable holds the Satus after a question has been read
 
 var offlineChatReachedEnd = false;
 
@@ -98,6 +98,12 @@ export function getLatestMessage(chatName){
 
     currentParserMessagePosition++;
     let nextMessageXMLContent = getCurrentParserOfflineXMLMessageContent();
+
+    //Check if current message is a question
+    if(getCurrentOfflineParserMessageType() == QUESTION){
+      	//set to awaiting question answer mode
+        awaitingQuestionReply = true;
+    }
 
     //Check if end of current branch has been reached
     if(endOfCurrentOfflineBranchReached()){
