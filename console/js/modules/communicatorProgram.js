@@ -120,6 +120,20 @@ export function getLatestMessage(chatName){
 }
 
 /**
+* Request the type of the last message that has been request through getLatestMessage()
+* @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
+* @return {Number|null} Returns Message Type id as referenced by constant or null if no message can be referenced
+**/
+export function getCurrentMessageType(chatName){
+  //Check if offline xml is loaded
+  if(isInOfflineMode()){
+    return getCurrentOfflineParserMessageType();
+  }else{
+    //Request Type from Server
+  }
+}
+
+/**
 * Checks wether there is a new method available to read on the current Path
 * @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
 * @return {Boolean} Returns true or false whether a new Message is available on the given Chat
@@ -289,10 +303,10 @@ return currentMessage.querySelectorAll(':scope > messageContent')[0].textContent
 }
 
 /**
-* Method which returns the message type of the current parser
+* Method which returns the message type of the current offline Parser
 * @return {Number|null} Number which represents the type of the message or null if in Online Mode
 **/
-function getCurrentParserMessageType(){
+function getCurrentOfflineParserMessageType(){
   //if in online Mode return null
   if(!isInOfflineMode()){
     return null;
@@ -300,9 +314,13 @@ function getCurrentParserMessageType(){
 
   //get current Branch
   let currentBranch = getCurrentOfflineBranch();
+  //Return null if branch doesnt exist
+  if(currentBranch == null){return null;}
 
   //get Message
   let message = currentBranch.querySelectorAll(':scope > communicatorChatMessage')[currentParserMessagePosition];
+  //return null if massage doesnt exist
+  if(message == null){return null;}
 
   let type = message.getAttribute("type");
 
