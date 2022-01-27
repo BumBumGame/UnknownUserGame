@@ -338,21 +338,8 @@ return branchOptions;
 * @return {DOM-Element|null} Null if there is no active branch, onlineModeActive,branch is not found or the xmlElement of the branch
 **/
 function getCurrentOfflineBranch(){
-  if(currentParserBranchPosition.length == 0 || !isInOfflineMode()) {
-    return null;
-  }
-
-  //Find and return branch
-  //init currentBranchContext with xmlFile
-  let currentBranchContext = xmlFile.querySelectorAll(':scope > branch')[currentParserBranchPosition[0]];
-  for(let i = 1; i < currentParserBranchPosition.length; i++){
-    currentBranchContext = currentBranchContext.querySelectorAll(':scope > branch')[currentParserBranchPosition[i]];
-    //If branch cannot be found return null
-    if(currentBranchContext == null){return null;}
-   }
-
   //return branch
-  return currentBranchContext;
+  return getOfflineBranch(currentParserBranchPosition);
 }
 
 /**
