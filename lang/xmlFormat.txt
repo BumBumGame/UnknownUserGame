@@ -3,7 +3,7 @@
 - A chatname needs to be added as Attribute chatName = [ChatName] inside of the Maintag
   - The filename needs to be the chatName (exception: This is not needed if a chat is only loaded as OfflineXML)
 - Every Message or Question will have the Tag <communicatorChatMessage>
-  - As Types there can currently be used: messagerStatement, question, messagerWarning
+  - As Types there can currently be used: messagerStatement, question, messagerWarning, message
 - The Content of every message will be defined with a <messageContent> Tag inside of <communicatorChatMessage>
   - In Questions every possible Answer can be defined with a new <Answer> Tag
     - To save a condition if a certain Answer has been chosen, put a setCondition=[ConditionName] Attribute in the Answer Tag
