@@ -20,10 +20,36 @@ var awaitingQuestionReply = false;//Variable holds the Satus after a question ha
 
 var offlineChatReachedEnd = false;
 
-//Message Type Constants
-const MESSAGERSTATEMENT = 0;
-const QUESTION = 1;
-const MESSAGE = 2;
+//Message Type Constants---------
+/**
+* Message type identifier
+* @constant
+* @type{Number}
+* @default 0
+**/
+export const MESSAGER_STATEMENT = 0;
+/**
+* Message type identifier
+* @constant
+* @type{Number}
+* @default 3
+**/
+export const MESSAGER_WARNING = 3;
+/**
+* Message type identifier
+* @constant
+* @type{Number}
+* @default 1
+**/
+export const QUESTION = 1;
+/**
+* Message type identifier
+* @constant
+* @type{Number}
+* @default 2
+**/
+export const MESSAGE = 2;
+//------------------------------
 
 /**
 * This Function request the latest Message in a specific Chat or the offlineXml Chat and automatically goes to next one if available
@@ -286,8 +312,12 @@ function getCurrentParserMessageType(){
         break;
 
       case "messagerstatement":
-          return MESSAGERSTATEMENT;
+          return MESSAGER_STATEMENT;
         break;
+
+      case "messagerwarning":
+          return MESSAGER_WARNING;
+      break;
 
       case "message":
           return MESSAGE;
