@@ -194,6 +194,22 @@ export function isNewMessageAvailable(chatName){
 }
 
 /**
+* Gets all answer Options for current Question
+* @return {String[]|null} String Array with each index being one answer or null if no question is currently active
+**/
+export function getAnswerOptions(){
+
+}
+
+/**
+* send answer to current Question (Doesnt have any effect if no question is active)
+* @param {Number} answerIndex Index of the chosen Answer (Same index as in output array)
+**/
+export function sendCurrentQuestionAnswer(answerIndex){
+  
+}
+
+/**
 * Downloads the xml on the path and sets the module into offline mode with downloaded xml
 * @async
 * @param {String} pathToXML Path to the xml File to be used
