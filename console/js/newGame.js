@@ -267,13 +267,18 @@ let testModule = await import("./modules/communicatorProgram.js");
 let answer = await testModule.setOfflineXML("../lang/de/introCommunicator.xml");
 console.log(answer);
 console.log(testModule.isNewMessageAvailable("lol"));
+console.log(testModule.getCurrentMessageType("lol"));
 console.log(testModule.getLatestMessage("lol"));
+console.log(testModule.getCurrentMessageType("lol"));
 console.log(testModule.isNewMessageAvailable("lol"));
 console.log(testModule.getLatestMessage("lol"));
+console.log(testModule.getCurrentMessageType("lol"));
 console.log(testModule.isNewMessageAvailable("lol"));
 console.log(testModule.getLatestMessage("lol"));
+console.log(testModule.getCurrentMessageType("lol"));
 console.log(testModule.isNewMessageAvailable("lol"));
 console.log(testModule.getLatestMessage("lol"));
+console.log(testModule.getCurrentMessageType("lol"));
 }
 
 testModule();

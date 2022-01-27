@@ -18,8 +18,9 @@ var currentParserMessagePosition = -1; //Index of the current Message inside the
 
 var awaitingQuestionReply = false; //Variable holds the Satus after a question has been read
 
-var offlineChatReachedEnd = false;
+var offlineChatReachedEnd = false; //Varialbe holds the Status if a Conversation has reached its end
 
+var latestMassageType = null;
 //Message Type Constants---------
 /**
 * Message type identifier
@@ -99,11 +100,15 @@ export function getLatestMessage(chatName){
     currentParserMessagePosition++;
     let nextMessageXMLContent = getCurrentParserOfflineXMLMessageContent();
 
+    //Save latest message Type
+    latestMassageType = getCurrentOfflineParserMessageType();
+
     //Check if current message is a question
-    if(getCurrentOfflineParserMessageType() == QUESTION){
+    if(latestMassageType == QUESTION){
       	//set to awaiting question answer mode
         awaitingQuestionReply = true;
     }
+
 
     //Check if end of current branch has been reached
     if(endOfCurrentOfflineBranchReached()){
@@ -131,12 +136,7 @@ export function getLatestMessage(chatName){
 * @return {Number|null} Returns Message Type id as referenced by constant or null if no message can be referenced
 **/
 export function getCurrentMessageType(chatName){
-  //Check if offline xml is loaded
-  if(isInOfflineMode()){
-    return getCurrentOfflineParserMessageType();
-  }else{
-    //Request Type from Server
-  }
+   return latestMassageType;
 }
 
 /**
