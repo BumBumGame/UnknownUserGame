@@ -197,7 +197,13 @@ export function isNewMessageAvailable(chatName){
 * Gets all answer Options for current Question
 * @return {String[]|null} String Array with each index being one answer or null if no question is currently active
 **/
-export function getAnswerOptions(){
+export function getCurrentAnswerOptions(){
+
+  if (getCurrentMessageType() != QUESTION) {
+     return null;
+  }
+
+  //Get Answer Options
 
 }
 
@@ -206,7 +212,7 @@ export function getAnswerOptions(){
 * @param {Number} answerIndex Index of the chosen Answer (Same index as in output array)
 **/
 export function sendCurrentQuestionAnswer(answerIndex){
-  
+
 }
 
 /**
@@ -305,22 +311,36 @@ function endOfCurrentOfflineBranchReached(){
 
 /**
 * Returns Neweset Message of the offline XML
+* @return {DOM-Element|null} Returns the newest Message as Dom-Element or null if in online Mode
+**/
+function getCurrentParserOfflineXMLMessage(){
+  //if in online Mode return null
+  if(!isInOfflineMode()){
+    return null;
+  }
+
+  //Parse to latest Message
+
+  //Get Current branch
+  let currentBranch = getCurrentOfflineBranch();
+
+  //Get latest Message of that branch and return it
+  return currentBranch.querySelectorAll(':scope > communicatorChatMessage')[currentParserMessagePosition];
+}
+
+/**
+* Returns Neweset Message Content of the offline XML
 * @return {String|null} Returns the newest Message as String or null if in online Mode
 **/
 function getCurrentParserOfflineXMLMessageContent(){
-//if in online Mode return null
-if(!isInOfflineMode()){
+//Get current Message element
+let currentMessage = getCurrentParserOfflineXMLMessage();
+//if null return null
+if(currentMessage == null){
   return null;
 }
 
-//Parse to latest Message
-
-//Get Current branch
-let currentBranch = getCurrentOfflineBranch();
-
-//Get latest Message of that branch
-let currentMessage = currentBranch.querySelectorAll(':scope > communicatorChatMessage')[currentParserMessagePosition];
-
+//Parse Message Content and return it
 return currentMessage.querySelectorAll(':scope > messageContent')[0].textContent.trim();
 }
 
