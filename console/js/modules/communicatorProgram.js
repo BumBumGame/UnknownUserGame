@@ -28,7 +28,6 @@ const MESSAGE = 2;
 /**
 * This Function request the latest Message in a specific Chat or the offlineXml Chat and automatically goes to next one if available
 * Note: This is supposed to be the main function for getting new Messages. It handles all conditions and chooses the first matching options automatically
-* @async
 * @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
 * @return {String|null} Next newest unread message or the last read one if no new ones are available (or null if no message can be read)
 **/
