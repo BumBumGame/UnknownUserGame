@@ -218,6 +218,32 @@ if(isInOfflineMode()){
 * @param {Number} answerIndex Index of the chosen Answer (Same index as in output array)
 **/
 export function sendCurrentQuestionAnswer(answerIndex){
+//Only do stuff if awaiting a reply
+if(!awaitingQuestionReply){
+  return;
+}
+
+//Get Current answer possiblitys
+let currentAnswerOptions = getCurrentOfflineAnswerOptions();
+
+//Check if answer index is valid
+if(typeof currentAnswerOptions[answerIndex] === "undefined"){
+  throw new Error("Error: Answer Index doe not exist!");
+}
+
+//Parse the chosen Answer
+let chosenAnswer = currentAnswerOptions[answerIndex];
+
+//check instructions of chosen answer
+let setCondition = chosenAnswer.getAttribute("setCondition");
+let setNotCondition = chosenAnswer.getAttribute("setNotCondition");
+let jumpToBranch = chosenAnswer.getAttribute("jumpToBranch");
+let jumpToBranchName = chosenAnswer.getAttribute("jumpToBranchName");
+
+//checck for conditions
+if(setCondition != null){
+
+}
 
 }
 
@@ -570,7 +596,7 @@ function getCurrentFirstConditionMatchingBranchIndex(){
 **/
 function getOfflineConditionState(conditionName){
   //Check if condition exits
-  if(typeof offlineXMLConditions[conditionName] === undefined){
+  if(typeof offlineXMLConditions[conditionName] === "undefined"){
     //default return false
     return false;
   }
