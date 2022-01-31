@@ -275,7 +275,7 @@ let setNotCondition = chosenAnswer.getAttribute("setNotCondition");
 let jumpToBranch = chosenAnswer.getAttribute("jumpToBranch");
 let jumpToBranchName = chosenAnswer.getAttribute("jumpToBranchName");
 
-//checck for conditions
+//checck for setConditions
 if(setCondition != null){
 
 }
@@ -403,6 +403,8 @@ if(isInOfflineMode()){
 function getCurrentOfflineAnswerOptionsAsString(){
   let answerTags = getCurrentOfflineAnswerOptions();
   let stringAnswers = [];
+
+  //TODO: CONDITIONS NEED TO BE CHECKED
 
   for(let i = 0; i < answerTags.length; i++){
     stringAnswers.push(answerTags[i].textContent.trim());
