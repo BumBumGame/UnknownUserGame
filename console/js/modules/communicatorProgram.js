@@ -1,5 +1,6 @@
 /**
 * Communicator module (uses server Connection as default, can be set to use a local xml file)
+* Used to parse the content of a chat xmlFile
 * @module Communicator
 **/
 
