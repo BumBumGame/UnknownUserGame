@@ -6,7 +6,7 @@
   - As Types there can currently be used: messagerStatement, question, messagerWarning, message
 - The Content of every message will be defined with a <messageContent> Tag inside of <communicatorChatMessage>
   - In Questions every possible Answer can be defined with a new <Answer> Tag
-    - To save a condition if a certain Answer has been chosen, put a setCondition=[ConditionName] Attribute in the Answer Tag
+    - To save a condition if a certain Answer has been chosen, put a setCondition=[ConditionName] Attribute in the Answer Tag (multiple can be set divided by [,])
     - To set a false condition put a setNotCondition=[conditionName] Attribute in the Answer Tag
 - To check for a condition at any communicatorChatMessage or Answer then just put a checkCondition = [ConditionName] or checkNotCondition = [ConditionName] Attribute in the according Tag
 - To end a communicator chat put a empty <endCommunication> tag at the corresponding Spot

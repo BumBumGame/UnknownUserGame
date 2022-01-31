@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <communicatorChat chatName="???">
   <branch>
-  <communicatorChatMessage type="messagerStatement">
+  <communicatorChatMessage type="messagerStatement" setCondition="lol1,lol2">
     <messageContent>
       Warnung: Speech-to-Text auf diesem Gerät nicht verfügbar!
     </messageContent>
   </communicatorChatMessage>
 
-  <communicatorChatMessage type="messagerStatement">
+  <communicatorChatMessage type="messagerStatement" checkCondition="lol1,lol2">
     <messageContent>
       Info: Text-To-Speech aktiviert.
     </messageContent>

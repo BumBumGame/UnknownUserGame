@@ -11,6 +11,7 @@ var xmlFile = null;
 
 //Global Variable for saving OfflineXML Conditions
 var offlineXMLConditions = [];
+const multipleConditionDivider = ','
 
 //Global Variables which hold the current xmlParser Position
 var currentParserBranchPosition = []; //Holds the indexes of which branches were taken as an Array (each level is a new index)
@@ -98,7 +99,10 @@ export function getLatestMessage(chatName){
     //else:
 
     currentParserMessagePosition++;
-    let nextMessageXMLContent = getCurrentParserOfflineXMLMessageContent();
+    //Get Next message
+    let nextMessage = getCurrentParserOfflineXMLMessage();
+    //Get Content from Message to improve performance
+    let nextMessageXMLContent = nextMessage.querySelectorAll(':scope > messageContent')[0].textContent.trim();
 
     //Save latest message Type
     latestMassageType = getCurrentOfflineParserMessageType();
@@ -107,6 +111,24 @@ export function getLatestMessage(chatName){
     if(latestMassageType == QUESTION){
       	//set to awaiting question answer mode
         awaitingQuestionReply = true;
+    }
+
+    //Check if a new condition has to be set
+    let setConditionAttribute = nextMessage.getAttribute("setCondition");
+    let setNotConditionAttribute = nextMessage.getAttribute("setNotCondition");
+    if(setConditionAttribute != null){
+      //set true conditions and parse them
+      let setConditionArray = setConditionAttribute.trim().split(multipleConditionDivider);
+      for(let i = 0; i < setConditionArray.length; i++){
+          setOfflineConditionState(setConditionArray[i].trim(), true);
+      }
+    }
+
+    if(setNotConditionAttribute != null){
+      let setNotConditionArray = setNotConditionAttribute.split(multipleConditionDivider);
+      for(let i = 0; i < setNotConditionArray.length; i++){
+          setOfflineConditionState(setNotConditionArray[i].trim(),false);
+      }
     }
 
 
@@ -173,15 +195,27 @@ export function isNewMessageAvailable(chatName){
 
     //Check conditions
     if(messageCheckCondition != null){
-      if(!getOfflineConditionState(messageCheckCondition.trim())){
+      //extract and check each Condition
+      let checkConditionArray = messageCheckCondition.split(multipleConditionDivider);
+
+      for(let i = 0; i < checkConditionArray.length; i++){
+        if(!getOfflineConditionState(checkConditionArray[i].trim())){
+          return false;
+        }
+      }
+
+    }
+
+    if(messageCheckNotCondition != null){
+      //extract and check each Condition
+      let checkNotConditionArray = messageCheckNotCondition.split(multipleConditionDivider);
+
+      for(let i = 0; i < checkNotConditionArray.length; i++){
+      if(getOfflineConditionState(checkNotConditionArray[i].trim())){
         return false;
       }
     }
 
-    if(messageCheckNotCondition != null){
-      if(getOfflineConditionState(messageCheckNotCondition.trim())){
-        return false;
-      }
     }
 
     //If all conditions are matched: Return true
@@ -545,8 +579,8 @@ function getCurrentFirstConditionMatchingBranchIndex(){
     currentCheckNotCondition = currentCheckNotCondition == null ? "" : currentCheckNotCondition.trim();
 
     //split Strings into condition names in an array if any are available
-    currentCheckCondition = currentCheckCondition.length == 0 ? [] : currentCheckCondition.split(' ');
-    currentCheckNotCondition = currentCheckNotCondition.length == 0 ? [] : currentCheckNotCondition.split(' ');
+    currentCheckCondition = currentCheckCondition.length == 0 ? [] : currentCheckCondition.split(multipleConditionDivider);
+    currentCheckNotCondition = currentCheckNotCondition.length == 0 ? [] : currentCheckNotCondition.split(multipleConditionDivider);
 
     //Check each condition
     let falseConditionFound = false;
