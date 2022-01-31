@@ -606,6 +606,16 @@ function getOfflineConditionState(conditionName){
 }
 
 /**
+* adds a offlineConditionState or sets the value of an existing one
+* @param {String} conditionName the referecne Name of the condition to be set
+* @param {Boolean} conditionValue The value(true|false) which the condition will be set to
+**/
+function setOfflineConditionState(conditionName, conditionValue){
+    //set condition
+    offlineXMLConditions[conditionName] = conditionValue;
+}
+
+/**
 * Returns bool if new branches inside of the current Branch are available or if we have reached the end of the chat
 * @return {Boolean} True if newBranches are available
 **/
