@@ -279,6 +279,7 @@ console.log(testModule.getCurrentMessageType("lol"));
 console.log(testModule.isNewMessageAvailable("lol"));
 console.log(testModule.getLatestMessage("lol"));
 console.log(testModule.getCurrentMessageType("lol"));
+console.log(testModule.getCurrentAnswerOptionsAsString("lol"));
 }
 
 testModule();

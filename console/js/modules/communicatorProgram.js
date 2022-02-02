@@ -69,19 +69,8 @@ export function getLatestMessage(chatName){
     //Check if new message is available
     if (!isNewMessageAvailable(chatName)) {
       //Repeat old Message (if exist)
-      if(currentParserMessagePosition == -1){
-        if(currentParserBranchPosition.length == 0){
+        if(currentParserBranchPosition.length == 0 && currentParserMessagePosition == -1){
         return null;
-      }else{
-        //Get the last message of previous branch
-        let currentTempBranchParser = currentParserBranchPosition;
-        //Remove last element from tempParser
-        currentTempBranchParser.pop();
-        let previousBranch = getOfflineBranch(currentTempBranchParser);
-        let previousMessages = previousBranch.querySelectorAll(':scope > communicatorChatMessage');
-        return previousMessages[previousMessages.length - 1].querySelectorAll(':scope > messageContent')[0].textContent.trim();
-      }
-
       }
 
     //check if end of branch has been reached and there are no more branches
@@ -230,9 +219,10 @@ export function isNewMessageAvailable(chatName){
 
 /**
 * Gets all answer Options for current Question
+* @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
 * @return {String[]|null} String Array with each index being one answer or null if no question is currently active
 **/
-export function getCurrentAnswerOptionsAsString(){
+export function getCurrentAnswerOptionsAsString(chatName){
   //Return null if not awaiting Question Replay
   if(!awaitingQuestionReply){
     return null;
@@ -389,16 +379,15 @@ if(isInOfflineMode()){
   //Get Answer Options from offline Parser
   let currentMessage = getCurrentParserOfflineXMLMessage();
 
-  let answers = [];
-
   return currentMessage.querySelectorAll(':scope > Answer');
 }
 
+return null;
 }
 
 /**
 * Gets all answer Options for current Question
-* @return {String[]|null} String Array with each index being one answer or null if no question is currently active
+* @return {String[][]|null} 2dim String Array first Index of each entry holds the index of the answer, second entry the text Value of the Answer
 **/
 function getCurrentOfflineAnswerOptionsAsString(){
   let answerTags = getCurrentOfflineAnswerOptions();
@@ -407,10 +396,56 @@ function getCurrentOfflineAnswerOptionsAsString(){
   //TODO: CONDITIONS NEED TO BE CHECKED
 
   for(let i = 0; i < answerTags.length; i++){
+    //Check if Answer Condition is fullfilled
+    let answerTagCondition = answerTags[i].getAttribute("checkCondition");
+    let answerTagNotCondition = answerTags[i].getAttribute("checkNotCondition");
+    //Check conditions
+    let falseConditionFound = false;
+
+    if(answerTagCondition != null){
+      //split conditions
+      let checkConditions = answerTagCondition.split(multipleConditionDivider);
+      //Check Conditions
+      for(let i = 0; i < checkConditions.length; i++){
+         if(!getOfflineConditionState(checkConditions[i].trim())){
+           falseConditionFound = true;
+           break;
+         }
+      }
+    }
+
+      //Check Not Conditions
+      if(!falseConditionFound && answerTagNotCondition != null){
+        let checkConditions = answerTagNotCondition.split(multipleConditionDivider);
+        //Check Conditions
+        for(let i = 0; i < checkConditions.length; i++){
+            if(getOfflineConditionState(checkConditions[i].trim())){
+            falseConditionFound = true;
+            break;
+            }
+        }
+
+      }
+
+    //Add Answer to output if all conditions are matched or else add null
+    if(!falseConditionFound){
     stringAnswers.push(answerTags[i].textContent.trim());
+    }else{
+    stringAnswers.push(null);
+    }
   }
 
-  return stringAnswers;
+  //Parse data into 2dim Array
+  let outputArray = [];
+
+  for(let i = 0; i < stringAnswers.length; i++){
+    if(stringAnswers[i] != null){
+      outputArray.push([i, stringAnswers[i]]);
+    }
+
+  }
+
+  return outputArray;
 }
 
 /**
@@ -427,9 +462,21 @@ function getCurrentParserOfflineXMLMessage(){
 
   //Get Current branch
   let currentBranch = getCurrentOfflineBranch();
-
+  //PROBLEM WITH MESSAGEPOSITION -1 : NEEDS TO BE SOLVED
+  //Check if current branch has message
+  if(currentParserMessagePosition > -1 && currentParserBranchPosition.length > 0){
   //Get latest Message of that branch and return it
   return currentBranch.querySelectorAll(':scope > communicatorChatMessage')[currentParserMessagePosition];
+}else{
+  //Get the last message of previous branch
+  let currentTempBranchParser = currentParserBranchPosition.slice();
+  //Remove last element from tempParser
+  currentTempBranchParser.pop();
+  let previousBranch = getOfflineBranch(currentTempBranchParser);
+  let previousMessages = previousBranch.querySelectorAll(':scope > communicatorChatMessage');
+  return previousMessages[previousMessages.length - 1];
+}
+
 }
 
 /**

@@ -25,6 +25,10 @@
       <Answer>
         Dein Spiegel.
       </Answer>
+
+      <Answer checkCondition="notSet">
+          Test
+      </Answer>
   </communicatorChatMessage>
 
   <branch>
