@@ -208,19 +208,41 @@ if(typeof currentAnswerOptions[answerIndex] === "undefined"){
 //Parse the chosen Answer
 let chosenAnswer = currentAnswerOptions[answerIndex];
 
-//check instructions of chosen answer
-let setCondition = chosenAnswer.getAttribute("setCondition");
-let setNotCondition = chosenAnswer.getAttribute("setNotCondition");
-let jumpToBranch = chosenAnswer.getAttribute("jumpToBranch");
-let jumpToBranchName = chosenAnswer.getAttribute("jumpToBranchName");
-
-//check for setConditions
-if(setCondition != null){
-  let setConditionArray = setCondition.trim().split(multipleConditionDivider);
-
-  //set each condition
-
+//Check if all conditions for the chosen Answer are Matched (if not leave function)
+if(!offlineXMLelementsConditionsMatched(chosenAnswer)){
+    return;
 }
+
+//Parse set instructions of chosen Answer
+offlineXMLParseElementsSetAttributes(chosenAnswer);
+
+//Parse a possible jumpToBranch Attribute
+let jumpToBranchAttribute = chosenAnswer.getAttribute("jumpToBranch");
+let jumpToBranchNameAttribute = chosenAnswer.getAttribute("jumpToBranchName");
+
+//get currentBranch Options to check index and find BranchName
+let branchOptions = getCurrentOfflineBranchOptions();
+
+//Try branchId Jump first
+if(jumpToBranchAttribute != null){
+  //parse parserIndex
+  let newBranchIndex = parseInt(jumpToBranchAttribute);
+
+  //Check if index is valid (else throw error)
+  if(newBrancheIndex < 0 || newBranchIndex >= branchOptions.length){
+    throw new Error("Branch to jump to does not exist!");
+  }
+
+  //Set Parser to new branch Position
+  currentParserBranchPosition.push(newBranchIndex);
+  //Set Message Parser to -1 (start of branch)
+  currentParserMessagePosition = -1;
+  //leave
+  return;
+}
+
+//Try branchName
+
 
 }
 
