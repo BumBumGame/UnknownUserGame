@@ -104,22 +104,7 @@ export function getLatestMessage(chatName){
     }
 
     //Check if a new condition has to be set
-    let setConditionAttribute = nextMessage.getAttribute("setCondition");
-    let setNotConditionAttribute = nextMessage.getAttribute("setNotCondition");
-    if(setConditionAttribute != null){
-      //set true conditions and parse them
-      let setConditionArray = setConditionAttribute.trim().split(multipleConditionDivider);
-      for(let i = 0; i < setConditionArray.length; i++){
-          setOfflineConditionState(setConditionArray[i].trim(), true);
-      }
-    }
-
-    if(setNotConditionAttribute != null){
-      let setNotConditionArray = setNotConditionAttribute.trim().split(multipleConditionDivider);
-      for(let i = 0; i < setNotConditionArray.length; i++){
-          setOfflineConditionState(setNotConditionArray[i].trim(),false);
-      }
-    }
+    offlineXMLParseElementsSetAttributes(nextMessage);
 
 
     //Check if end of current branch has been reached
@@ -588,7 +573,7 @@ function getOfflineConditionState(conditionName){
 }
 
 /**
-* Method chags a Dom-Elements condition attributes and returns if all conditions are matched or not
+* Method checks a Dom-Elements condition attributes and returns if all conditions are matched or not
 * @param {Dom-Element} domElement Dom-Element which Condition Attributes shall be checked
 * @return {Boolean} True or false whether all Conditions are met or not
 **/
@@ -632,7 +617,32 @@ function offlineXMLelementsConditionsMatched(domElement){
 }
 
 /**
-* adds a offlineConditionState or sets the value of an existing one
+* Method parses all setCondition Attributes of the Element and save them offline
+* @param {Dom-Element} domElement Dom-Element of which the set-Attributes shall be processed
+**/
+function offlineXMLParseElementsSetAttributes(domElement){
+  //Check if a new condition has to be set
+  let setConditionAttribute = domElement.getAttribute("setCondition");
+  let setNotConditionAttribute = domElement.getAttribute("setNotCondition");
+
+  if(setConditionAttribute != null){
+    //set true conditions and parse them
+    let setConditionArray = setConditionAttribute.trim().split(multipleConditionDivider);
+    for(let i = 0; i < setConditionArray.length; i++){
+        setOfflineConditionState(setConditionArray[i].trim(), true);
+    }
+  }
+
+  if(setNotConditionAttribute != null){
+    let setNotConditionArray = setNotConditionAttribute.trim().split(multipleConditionDivider);
+    for(let i = 0; i < setNotConditionArray.length; i++){
+        setOfflineConditionState(setNotConditionArray[i].trim(),false);
+    }
+  }
+}
+
+/**
+* Adds a offlineConditionState or sets the value of an existing one
 * @param {String} conditionName the referecne Name of the condition to be set
 * @param {Boolean} conditionValue The value(true|false) which the condition will be set to
 **/
