@@ -115,7 +115,7 @@ export function getLatestMessage(chatName){
     }
 
     if(setNotConditionAttribute != null){
-      let setNotConditionArray = setNotConditionAttribute.split(multipleConditionDivider);
+      let setNotConditionArray = setNotConditionAttribute.trim().split(multipleConditionDivider);
       for(let i = 0; i < setNotConditionArray.length; i++){
           setOfflineConditionState(setNotConditionArray[i].trim(),false);
       }
@@ -173,44 +173,8 @@ export function isNewMessageAvailable(chatName){
     let currentBranch = getCurrentOfflineBranch();
     let currentMessages = currentBranch.querySelectorAll(':scope > communicatorChatMessage');
 
-    //else Check if condition for next message is met
-     //get next message condition
-    let messageCheckCondition = currentMessages[currentParserMessagePosition + 1].getAttribute("checkCondition");
-    let messageCheckNotCondition = currentMessages[currentParserMessagePosition + 1].getAttribute("checkNotCondition");
-
-    //Check if condition were found
-    if(messageCheckCondition == null && messageCheckNotCondition == null){
-      return true;
-    }
-
-    //Check conditions
-    if(messageCheckCondition != null){
-      //extract and check each Condition
-      let checkConditionArray = messageCheckCondition.split(multipleConditionDivider);
-
-      for(let i = 0; i < checkConditionArray.length; i++){
-        if(!getOfflineConditionState(checkConditionArray[i].trim())){
-          return false;
-        }
-      }
-
-    }
-
-    if(messageCheckNotCondition != null){
-      //extract and check each Condition
-      let checkNotConditionArray = messageCheckNotCondition.split(multipleConditionDivider);
-
-      for(let i = 0; i < checkNotConditionArray.length; i++){
-      if(getOfflineConditionState(checkNotConditionArray[i].trim())){
-        return false;
-      }
-    }
-
-    }
-
-    //If all conditions are matched: Return true
-    return true;
-
+    //else Check if condition for next message is met and return status
+    return offlineXMLelementsConditionsMatched(currentMessages[currentParserMessagePosition + 1]);
   }else{
     //Check on Server
   }
@@ -265,8 +229,11 @@ let setNotCondition = chosenAnswer.getAttribute("setNotCondition");
 let jumpToBranch = chosenAnswer.getAttribute("jumpToBranch");
 let jumpToBranchName = chosenAnswer.getAttribute("jumpToBranchName");
 
-//checck for setConditions
+//check for setConditions
 if(setCondition != null){
+  let setConditionArray = setCondition.trim().split(multipleConditionDivider);
+
+  //set each condition
 
 }
 
@@ -393,42 +360,9 @@ function getCurrentOfflineAnswerOptionsAsString(){
   let answerTags = getCurrentOfflineAnswerOptions();
   let stringAnswers = [];
 
-  //TODO: CONDITIONS NEED TO BE CHECKED
-
   for(let i = 0; i < answerTags.length; i++){
-    //Check if Answer Condition is fullfilled
-    let answerTagCondition = answerTags[i].getAttribute("checkCondition");
-    let answerTagNotCondition = answerTags[i].getAttribute("checkNotCondition");
-    //Check conditions
-    let falseConditionFound = false;
-
-    if(answerTagCondition != null){
-      //split conditions
-      let checkConditions = answerTagCondition.split(multipleConditionDivider);
-      //Check Conditions
-      for(let i = 0; i < checkConditions.length; i++){
-         if(!getOfflineConditionState(checkConditions[i].trim())){
-           falseConditionFound = true;
-           break;
-         }
-      }
-    }
-
-      //Check Not Conditions
-      if(!falseConditionFound && answerTagNotCondition != null){
-        let checkConditions = answerTagNotCondition.split(multipleConditionDivider);
-        //Check Conditions
-        for(let i = 0; i < checkConditions.length; i++){
-            if(getOfflineConditionState(checkConditions[i].trim())){
-            falseConditionFound = true;
-            break;
-            }
-        }
-
-      }
-
     //Add Answer to output if all conditions are matched or else add null
-    if(!falseConditionFound){
+    if(offlineXMLelementsConditionsMatched(answerTags[i])){
     stringAnswers.push(answerTags[i].textContent.trim());
     }else{
     stringAnswers.push(null);
@@ -619,44 +553,8 @@ function getCurrentFirstConditionMatchingBranchIndex(){
 
   //Check conditions for each Branch and return the first branch which matches
   for(let i = 0; i < currentOfflineBranchOptions.length; i++){
-    //get currentBranch checkConditions
-    let currentCheckCondition = currentOfflineBranchOptions[i].getAttribute("checkCondition");
-    //get currentBranch checkNotConditions
-    let currentCheckNotCondition = currentOfflineBranchOptions[i].getAttribute("checkNotCondition");
 
-    //Change conditions to empty string if none were found and if there are: trim
-    currentCheckCondition = currentCheckCondition == null ? "" : currentCheckCondition.trim();
-    currentCheckNotCondition = currentCheckNotCondition == null ? "" : currentCheckNotCondition.trim();
-
-    //split Strings into condition names in an array if any are available
-    currentCheckCondition = currentCheckCondition.length == 0 ? [] : currentCheckCondition.split(multipleConditionDivider);
-    currentCheckNotCondition = currentCheckNotCondition.length == 0 ? [] : currentCheckNotCondition.split(multipleConditionDivider);
-
-    //Check each condition
-    let falseConditionFound = false;
-      //Check true Conditions
-      for(let a = 0; a < currentCheckCondition.length; a++){
-        if(!getOfflineConditionState(currentCheckCondition[a])){
-          //If found then set the variable and leave loop
-          falseConditionFound = true;
-          break;
-        }
-      }
-
-      //Check false conditions if neccessary
-      if(!falseConditionFound){
-        //Check false Conditions
-        for(let a = 0; a < currentCheckNotCondition.length; a++){
-          if(getOfflineConditionState(currentCheckNotCondition[a])){
-            //If found then set the variable and leave loop
-            falseConditionFound = true;
-            break;
-          }
-        }
-      }
-
-      //If branch fits all conditions return it
-      if(!falseConditionFound){
+      if(offlineXMLelementsConditionsMatched(currentOfflineBranchOptions[i])){
         return i;
       }
 
@@ -687,6 +585,50 @@ function getOfflineConditionState(conditionName){
 
   //return condition Value
   return offlineXMLConditions[conditionName];
+}
+
+/**
+* Method chags a Dom-Elements condition attributes and returns if all conditions are matched or not
+* @param {Dom-Element} domElement Dom-Element which Condition Attributes shall be checked
+* @return {Boolean} True or false whether all Conditions are met or not
+**/
+function offlineXMLelementsConditionsMatched(domElement){
+  //get currentBranch checkConditions
+  let currentCheckCondition = domElement.getAttribute("checkCondition");
+  //get currentBranch checkNotConditions
+  let currentCheckNotCondition = domElement.getAttribute("checkNotCondition");
+
+  //Check if any condition were found
+  if(currentCheckCondition == null && currentCheckNotCondition == null){
+    return true;
+  }
+
+    //Check true Conditions (if neccessary)
+      if(currentCheckCondition != null){
+        let currentCheckConditionArray = currentCheckCondition.trim().split(multipleConditionDivider);
+
+    for(let a = 0; a < currentCheckConditionArray.length; a++){
+      if(!getOfflineConditionState(currentCheckConditionArray[a])){
+        //If one not matching Condition found return false
+        return false;
+      }
+    }
+  }
+
+      //Check false Conditions (if neccessary)
+        if(currentCheckNotCondition != null){
+          let currentCheckNotConditionArray = currentCheckNotCondition.trim().split(multipleConditionDivider);
+
+      for(let a = 0; a < currentCheckNotConditionArray.length; a++){
+        if(getOfflineConditionState(currentCheckNotConditionArray[a])){
+          //If one not matching Condition found return false
+          return false;
+        }
+      }
+    }
+
+    //If element fits all conditions return true
+    return true;
 }
 
 /**
