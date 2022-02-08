@@ -220,7 +220,7 @@ export function isNewMessageAvailable(chatName){
 /**
 * Gets all answer Options for current Question
 * @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
-* @return {String[]|null} String Array with each index being one answer or null if no question is currently active
+* @return {String[][]|null} 2dim String Array with each entry containing the answer id as the first index and the answer TextContent as the second
 **/
 export function getCurrentAnswerOptionsAsString(chatName){
   //Return null if not awaiting Question Replay
