@@ -113,8 +113,7 @@ export function getLatestMessage(chatName){
       let currentOfflineBranchOption = getCurrentFirstConditionMatchingBranchIndex();
 
       if(currentOfflineBranchOption != null){
-        currentParserBranchPosition.push(currentOfflineBranchOption);
-        currentParserMessagePosition = -1;
+        addNextBranchToParser(currentOfflineBranchOption);
       }
     }
 
@@ -189,9 +188,14 @@ if(isInOfflineMode()){
 
 /**
 * send answer to current Question (Doesnt have any effect if no question is active)
+* @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
 * @param {Number} answerIndex Index of the chosen Answer (Same index as in output array)
 **/
-export function sendCurrentQuestionAnswer(answerIndex){
+export function sendCurrentQuestionAnswer(chatName, answerIndex){
+
+//Check for offline or Online Mode
+if(isInOfflineMode()){
+
 //Only do stuff if awaiting a reply
 if(!awaitingQuestionReply){
   return;
@@ -210,11 +214,14 @@ let chosenAnswer = currentAnswerOptions[answerIndex];
 
 //Check if all conditions for the chosen Answer are Matched (if not leave function)
 if(!offlineXMLelementsConditionsMatched(chosenAnswer)){
-    return;
+      throw new Error("Error: Not all condition for chosen Answer are Matched!");
 }
 
 //Parse set instructions of chosen Answer
 offlineXMLParseElementsSetAttributes(chosenAnswer);
+
+//Set Question status to answered
+awaitingQuestionReply = false;
 
 //Parse a possible jumpToBranch Attribute
 let jumpToBranchAttribute = chosenAnswer.getAttribute("jumpToBranch");
@@ -229,20 +236,40 @@ if(jumpToBranchAttribute != null){
   let newBranchIndex = parseInt(jumpToBranchAttribute);
 
   //Check if index is valid (else throw error)
-  if(newBrancheIndex < 0 || newBranchIndex >= branchOptions.length){
+  if(newBranchIndex < 0 || newBranchIndex >= branchOptions.length){
     throw new Error("Branch to jump to does not exist!");
   }
 
   //Set Parser to new branch Position
-  currentParserBranchPosition.push(newBranchIndex);
-  //Set Message Parser to -1 (start of branch)
-  currentParserMessagePosition = -1;
+  addNextBranchToParser(newBranchIndex);
   //leave
   return;
 }
 
 //Try branchName
+if (jumpToBranchNameAttribute != null) {
+  //Check available Branches for name
+  for(let i = 0; i < branchOptions.length; i++){
+    let branchNameAttribute = branchOptions[i].getAttribute("name");
 
+    //Continue if attribute doesnt exist on branch
+    if(branchNameAttribute == null){
+      continue;
+    }
+
+    //else check if Branchname is equal
+    if(branchNameAttribute.trim() == jumpToBranchNameAttribute.trim()){
+      //Set Parser to branch and break
+      addNextBranchToParser(i);
+      break;
+    }
+
+  }
+}
+
+}else{
+  //send Request to Server
+}
 
 }
 
@@ -283,7 +310,7 @@ export async function setOfflineXML(pathToXML){
      throw new Error("No First Branch found!")
     }
     //else
-    currentParserBranchPosition.push(newBranchIndex);
+    addNextBranchToParser(newBranchIndex);
   }
 
   //return true
@@ -418,6 +445,17 @@ function getCurrentParserOfflineXMLMessage(){
   return previousMessages[previousMessages.length - 1];
 }
 
+}
+
+/**
+* Sets parser to the next branch Index (Warning: It will not be checked if the Index exists!)
+* @param {Number} branchIndex Index of the new branch to go to
+**/
+function addNextBranchToParser(branchIndex){
+  //Set Parser to new branch Position
+  currentParserBranchPosition.push(branchIndex);
+  //Set Message Parser to -1 (start of branch)
+  currentParserMessagePosition = -1;
 }
 
 /**
