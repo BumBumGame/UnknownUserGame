@@ -4,6 +4,12 @@
 **/
 
 /**
+* Array containing all default commands which will be added on program creation
+* @type{Command}
+**/
+var defaultCommands = [];
+
+/**
 * Class that represents an Command
 **/
 class Command{
@@ -49,13 +55,13 @@ constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionR
        if(exitable){
          commandExecutionReference.addCommand("exit", "Exists the current Program", exitProgram);
        }
-        //Add basic Commands
-        //Help
-        commandExecutionReference.addCommand("help", "Zeigt eine Liste der Verfügbaren Commands mit ihrer Beschreibung an. \n"
-                           + "Um genauere Informationen über einen Befehl zu erhalten schreiben sie: help [Befehl].", showHelpDialog);
-
-        //clear
-        commandExecutionReference.addCommand("clear", "Löscht den Kompletten Kommando-Log.", executeClearConsole);
+        //Add default Commands
+        for(let i = 0; i < defaultCommands.length; i++){
+          //Only add Commands which are of type Command
+          if(defaultCommands[i] instanceof Command){
+          commandExecutionReference.addCommandObject(defaultCommands[i]);
+          }
+        }
 
   }
 
@@ -413,63 +419,6 @@ function exitProgram(command, executingConsole){
 
   return null;
 }
-
-/**
-* Function that displays help Dialog
-* @param {String} command command which has been put in the console
-* @param {InGameConsole} executingConsole console Object which the command has been executed on
-**/
-function showHelpDialog(command, executingConsole){
-  //Split Command into Parameters
-  let commandParameters = command.split(" ");
-  //Define Output array
-  let outputArray = [];
-
-  //Print Command list if no Argument is given
-  if(commandParameters.length <= 1){
-  //define normal Start output
-   outputArray = executingConsole.currentActiveCommandDefinition.getCommandDescription(executingConsole.currentActiveCommandDefinition.getCommandIndex("help"));
-   outputArray.push("");//Empty line
-
-   //Print each first line
-   //First print local commands
-    for(var i = 0; i < executingConsole.currentActiveCommandDefinition.length; i++){
-      outputArray.push(executingConsole.currentActiveCommandDefinition.getCommandAlias(i) + ": ");
-      outputArray.push("    " + executingConsole.currentActiveCommandDefinition.getFirstLineOfCommandDescription(i));
-      //Push Empty line
-      outputArray.push("");
-    }
-
-    //Second Print ServerCommands
-
-  }else{
-    //Take second Command and try to identify command and show Full description
-    //First Check local Commands
-    var secondCommandIndex = executingConsole.currentActiveCommandDefinition.getCommandIndex(commandParameters[1]);
-
-    if(secondCommandIndex != -1){
-       //Second command found locally
-       outputArray = executingConsole.currentActiveCommandDefinition.getCommandDescription(secondCommandIndex);
-    }else{
-      //Check Server Commands
-      outputArray = ["Befehl '"+ commandParameters[1] +"' nicht gefunden!"];
-    }
-
-  }
-
-   //return Console output
-   return outputArray;
-}
-
-/**
-* Command functions which clears the consoleLog
-* @param {String} command command which has been put in the console
-* @param {InGameConsole} executingConsole console Object which the command has been executed on
-**/
-function executeClearConsole(command, executingConsole){
-   executingConsole.clearCommandLog();
-   return null;
-}
 //--------------------------------------------
 
 //-------------------------------------------------
@@ -533,4 +482,29 @@ get commandResponse(){
     return this.#currentCommandAnswer;
 }
 
+}
+
+//---Manage Default Command Methods---------------------------------
+
+/**
+* Adds a command to the default Command list
+* @param {Command} commandObject Reference to the commandObject of the Command that is going to be added
+**/
+function addCommandToDefaults(commandObject){
+  defaultCommands.push(commandObject);
+}
+
+/**
+* Removes a command from the default Command list
+* @param {Number} commandObject Reference to the commandObject of the Command that is going to be removed
+**/
+function removeCommandFromDefaults(commandIndex){
+  defaultCommands.splice(commandIndex, 1);
+}
+
+/**
+* Clears all default Commands
+**/
+function clearCommandDefaults(){
+  defaultCommands = [];
 }
