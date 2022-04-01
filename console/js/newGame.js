@@ -259,27 +259,3 @@ testProgramCommandDefinition.addCommand("test1", "lol im test 1", printForTestPr
 testProgramCommandDefinition.addCommand("test2", "lol bim test2", printForTestProgram2);
 
 localCommands.addProgram("TestProgram", "lol ich bin ein test", testProgramCommandDefinition);
-
-//Test Module!!!
-async function testModule(){
-let testModule = await import("./modules/communicatorProgram.js");
-
-let answer = await testModule.setOfflineXML("../lang/de/introCommunicator.xml");
-console.log(answer);
-console.log(testModule.isNewMessageAvailable("lol"));
-console.log(testModule.getCurrentMessageType("lol"));
-console.log(testModule.getLatestMessage("lol"));
-console.log(testModule.getCurrentMessageType("lol"));
-console.log(testModule.isNewMessageAvailable("lol"));
-console.log(testModule.getLatestMessage("lol"));
-console.log(testModule.getCurrentMessageType("lol"));
-console.log(testModule.isNewMessageAvailable("lol"));
-console.log(testModule.getLatestMessage("lol"));
-console.log(testModule.getCurrentMessageType("lol"));
-console.log(testModule.isNewMessageAvailable("lol"));
-console.log(testModule.getLatestMessage("lol"));
-console.log(testModule.getCurrentMessageType("lol"));
-console.log(testModule.getCurrentAnswerOptionsAsString("lol"));
-}
-
-testModule();
