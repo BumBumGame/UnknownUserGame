@@ -79,7 +79,7 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
 
   this.onKeyPress = this.onKeyPress.bind(this);
   //Set newly created Console to be active
-  this.setFocusOnConsole(this);
+  InGameConsole.setFocusOnConsole(this);
   //Add focus set EventListener
   this.#setFocusClickEventListener(consoleContainer);
 }
@@ -582,7 +582,7 @@ onKeyPress(e){
 * Sets the class Focus on this console
 **/
 #setFocusOnThisConsole(){
-  this.setFocusOnConsole(this);
+  InGameConsole.setFocusOnConsole(this);
 }
 
 /**
