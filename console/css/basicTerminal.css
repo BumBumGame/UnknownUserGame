@@ -11,7 +11,7 @@ body{
    margin-bottom: 0%;
    padding: 0.5%;
    width: 98%;
-   height: 98%;
+   max-height: 98%;
    font-size: 1.1em;
    overflow: auto;
 }
