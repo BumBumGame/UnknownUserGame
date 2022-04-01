@@ -38,9 +38,10 @@ static currentConsoleInFocus = null;
 * @param {htmlObject} consoleInputObject Html input=text element that the commands are being put in
 * @param {htmlObject} commandLineObject htmlelement that surrounds the consoleInput and the PathDisplay next to it
 * @param {CommandDefinition} commandDefinition CommandDefinition object that holds the information about all the commands available in this console
-* @param {String} currentPath Path that the console will be initialized with
+* @param {htmlObject} consoleContainer Reference to Dom element of the container around the console (Default: Uses the next parent element of console input as container)
+* @param {String} currentPath Path that the console will be initialized with (Default: ~)
 **/
-constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefinition, consoleContainer, isInProgramMode = false, currentPath = "~"){
+constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefinition, consoleContainer = null, currentPath = "~"){
   //Set console Log Object
   this.#consoleLog = consoleLogObject;
   //Set Console Input Object
@@ -60,6 +61,11 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
 
   //set currentpath to initialized
   this.#currentPath = currentPath;
+
+  //Check if consoleContainer needs to be set automaticly
+  if(consoleContainer === null){
+    consoleContainer = commandLineObject.parentElement;
+  }
 
   //Set Path to init
   this.setNewPath(currentPath);
