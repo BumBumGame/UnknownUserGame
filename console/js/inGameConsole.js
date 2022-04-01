@@ -29,6 +29,9 @@ class InGameConsole{
 //array with programs (last index is latest)
 #programs;
 
+//Static Variable which holds the currently focused Console
+static currentConsoleInFocus = null;
+
 /**
 * constructor for initialization of class
 * @param {htmlObject} consoleLogObject Object that holds a reference to the Element where the console Commands shall be locked
@@ -37,7 +40,7 @@ class InGameConsole{
 * @param {CommandDefinition} commandDefinition CommandDefinition object that holds the information about all the commands available in this console
 * @param {String} currentPath Path that the console will be initialized with
 **/
-constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefinition, isInProgramMode = false, currentPath = "~"){
+constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefinition, consoleContainer, isInProgramMode = false, currentPath = "~"){
   //Set console Log Object
   this.#consoleLog = consoleLogObject;
   //Set Console Input Object
@@ -69,9 +72,10 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
   window.addEventListener("resize", this.#adjustInputCommandWidth.bind(this));
 
   this.onKeyPress = this.onKeyPress.bind(this);
-  //Set event listener
-  //Add Eventlistener for KeyboardInput
-  this.addActiveEventListenerForConsole();
+  //Set newly created Console to be active
+  this.setFocusOnConsole(this);
+  //Add focus set EventListener
+  this.#setFocusClickEventListener(consoleContainer);
 }
 
 /**
@@ -175,7 +179,7 @@ clearCommandInput(){
 disableCommandInput(){
  this.clearCommandInput();
  this.#commandLine.style.display = "none";
- this.removeActiveEventListenerForConsole();
+ this.#removeActiveEventListenerForConsole();
  this.#consoleInput.disabled = true;
 }
 
@@ -186,7 +190,7 @@ enableCommandInput(){
   this.clearCommandInput();
   this.#commandLine.removeAttribute("style");
   this.#consoleInput.removeAttribute("disabled");
-  this.addActiveEventListenerForConsole();
+  this.#addActiveEventListenerForConsole();
   this.#consoleInput.focus();
 }
 
@@ -545,17 +549,52 @@ onKeyPress(e){
 
 /**
 * Adds eventlistener for automatic focusing of input on any keypress
+* @private
 **/
-addActiveEventListenerForConsole(){
+#addActiveEventListenerForConsole(){
   //Add Eventlistener for KeyboardInput
   document.addEventListener("keydown", this.onKeyPress);
 }
 
 /**
 * Removes eventlistener for automatic focusing of input on any keypress
+* @private
 **/
-removeActiveEventListenerForConsole(){
+#removeActiveEventListenerForConsole(){
   document.removeEventListener("keydown", this.onKeyPress);
+}
+
+/**
+* Adds a click eventListener to the consoles Body to set autofocus on click
+* @param {InGameConsole} consoleContainer Rereference to the consoleContainer of the Console
+**/
+#setFocusClickEventListener(consoleContainer){
+  consoleContainer.addEventListener("click", this.#setFocusOnThisConsole.bind(this));
+}
+
+/**
+* Sets the class Focus on this console
+**/
+#setFocusOnThisConsole(){
+  this.setFocusOnConsole(this);
+}
+
+/**
+* Sets all Event listeners for an active Console and deactivates all listeners on last focused Console
+* @param {InGameConsole|null} console Reference to the new console Object that shall be put to focus or null if no console shall be put to focus
+**/
+static setFocusOnConsole(console){
+  //Disable all EventListeners on old Console if possible
+  if(this.currentConsoleInFocus != null){
+    this.currentConsoleInFocus.#removeActiveEventListenerForConsole();
+  }
+
+  //Enable event listeners on new console if possible
+  if(console != null){
+  console.#addActiveEventListenerForConsole();
+  }
+  //Set datafield to current active Console
+  this.currentConsoleInFocus = console;
 }
 
 }
