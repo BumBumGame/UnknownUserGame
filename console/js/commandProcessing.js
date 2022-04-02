@@ -5,7 +5,7 @@
 
 /**
 * Array containing all default commands which will be added on program creation
-* @type{Command}
+* @type{Command[]}
 **/
 var defaultCommands = [];
 
