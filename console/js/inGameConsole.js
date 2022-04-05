@@ -404,11 +404,17 @@ get currentActiveCommandDefinition(){
 * Starts and injects a custom Program into the console (will be started over currentrunning program)
 * @param {String} programName Alias of the Program
 * @param {CommandDefinition} programCommandDefinition Command Definiton for the Program
-* @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
 * @param {String} [customProgramPath = null] OptionalParameter for adding a customProgramPath to a program (null = no CustomPath)
+* @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
 **/
-startCustomProgram(programName, programCommandDefinition, programExitable = true, customProgramPath = null){
+startCustomProgram(programName, programCommandDefinition, customProgramPath = null, programExitable = true){
+//Push a new Program into ProgramStack of the Console
+this.#programs.push(new Command(programName, "", true, programCommandDefinition, customProgramPath, programExitable));
 
+//Set path changed to true to let the console now that a new program is running
+this.#pathChanged = true;
+//Update Visible Path of the Console
+this.updateVisiblePath();
 }
 
 /**
