@@ -389,7 +389,6 @@ executeCommand(command){
 #onEnterPress(){
   //only execute if CommandInput has Focus and manual Execution is not disabled
   if(document.activeElement === this.#consoleInput && this.#manualExecutionEnabled){
-      console.log(this.#manualExecutionEnabled);
       this.#onCommandInput();
    }
   }
