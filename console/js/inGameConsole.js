@@ -17,19 +17,25 @@ class InGameConsole{
 //commandsTillDeactivation Counter
 #commandsTillDeactivation;
 //autoCompleteAutoExec Setting (Boolean)
+//Default: False
 #autoCompleteAutoExec;
 //commandDefinition Object
 #commandDefinition;
 //currentpath
 #currentPath;
 //Boolean if path has changed from shown
+//Default: False
 #pathChanged;
 //input status (if active or not)
+//Default: True
 #inputActive;
 //array with programs (last index is latest)
 #programs;
 //Holds the reference to the private method autoExec combined with the bind function
 #autoExecutionFunctionReference;
+//Stores a bool whether manual execution is enabled or not
+//Default: True
+#manualExecutionEnabled;
 
 //Static Variable which holds the currently focused Console
 static currentConsoleInFocus = null;
@@ -58,6 +64,8 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
   this.#commandDefinition = commandDefinition;
   //init isInputActive
   this.#inputActive = true;
+  //init manualExecutionEnabled
+  this.#manualExecutionEnabled = true;
   //init Program array
   this.#programs = [];
 
@@ -373,8 +381,9 @@ executeCommand(command){
 * @private
 **/
 #onEnterPress(){
-  //only execute if CommandInput has Focus
-  if(document.activeElement === this.#consoleInput){
+  //only execute if CommandInput has Focus and manual Execution is not disabled
+  if(document.activeElement === this.#consoleInput && this.#manualExecutionEnabled){
+      console.log(this.#manualExecutionEnabled);
       this.#onCommandInput();
    }
   }
@@ -568,6 +577,20 @@ setInputToAutoExecution(){
 **/
 disableInputAutoExecution(){
   this.#consoleInput.removeEventListener("input", this.#autoExecutionFunctionReference);
+}
+
+/**
+* Method which disables normal command sending by using Enter
+**/
+disableInputManualExecution(){
+  this.#manualExecutionEnabled = false;
+}
+
+/**
+* Method which enables normal command sending by using Enter
+**/
+enableInputManualExecution(){
+  this.#manualExecutionEnabled = true;
 }
 
 /**
