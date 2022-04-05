@@ -28,6 +28,8 @@ class InGameConsole{
 #inputActive;
 //array with programs (last index is latest)
 #programs;
+//Holds the reference to the private method autoExec combined with the bind function
+#autoExecutionFunctionReference;
 
 //Static Variable which holds the currently focused Console
 static currentConsoleInFocus = null;
@@ -77,7 +79,10 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
   this.#adjustInputCommandWidth();
   window.addEventListener("resize", this.#adjustInputCommandWidth.bind(this));
 
+  //Rewrite function refernces with bind so whe can refernce them over add EventListener
   this.onKeyPress = this.onKeyPress.bind(this);
+  this.#autoExecutionFunctionReference = this.#autoExecution.bind(this);
+
   //Set newly created Console to be active
   InGameConsole.setFocusOnConsole(this);
   //Add focus set EventListener
@@ -152,9 +157,19 @@ requestConfirm(statement){
   this.printOnConsole("\n");
   //print (Y/N) to clarify input
   this.printOnConsole("(Y/N)");
+  //Set Console to autoExecution
+  this.setInputToAutoExecution();
 
   //Save old CommandExecutionReference
   let oldCommandExecutionReference = this.currentActiveCommandDefinition;
+
+  //Define Reset after Confirm Method
+  let resetAfterConfirm = function () {
+    //Disable autoexecution
+    this.disableInputAutoExecution();
+    //Rewrite previously saved oldExecutionReferenz
+    this.#overwriteCurrentActiveExecutionReference(oldCommandExecutionReference);
+  }.bind(this);
 
   //replace Execution reference temporary with a reference that contains the yes and no answer
   let newTempCommandDefinition = new CommandDefinition();
@@ -162,12 +177,17 @@ requestConfirm(statement){
   let outputPromise = new Promise(function (resolve, reject) {
       //Add yes answer to new definition
       newTempCommandDefinition.addCommand("Y", "", function() {
+        resetAfterConfirm();
         resolve(true);
       });
       //Add no answer to new Definition
-      newTempCommandDefinition.addCommand("N", "", function () {
+      let onNoFunction = function () {
+        resetAfterConfirm();
         resolve(false);
-      });
+      };
+
+      newTempCommandDefinition.addCommand("N", "", onNoFunction);
+
       //Overwrite existing Definition with new Definition
       this.#overwriteCurrentActiveExecutionReference(newTempCommandDefinition);
   }.bind(this));
@@ -540,14 +560,14 @@ autoComplete(){
 **/
 setInputToAutoExecution(){
   //Set eventListener on input change
-  this.#consoleInput.addEventListener("input", this.#autoExecution.bind(this));
+  this.#consoleInput.addEventListener("input", this.#autoExecutionFunctionReference);
 }
 
 /**
 * Methods that disables Auto Execution for consoleInput
 **/
-disableInputAutoExectution(){
-  this.#consoleInput.removeEventListener("input", this.#autoExecution.bind(this));
+disableInputAutoExecution(){
+  this.#consoleInput.removeEventListener("input", this.#autoExecutionFunctionReference);
 }
 
 /**
