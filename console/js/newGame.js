@@ -94,7 +94,7 @@ function initConsoleConfirmInput(){
 //Function to reset ConfirmInput
 function resetConfirmInput(){
   //Reset input to manual
-  mainConsoleObject.disableInputAutoExectution();
+  mainConsoleObject.disableInputAutoExecution();
   //Clear added Commands
   localCommands.clearAllCommands();
 }
