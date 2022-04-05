@@ -141,6 +141,41 @@ printOnConsole(output, optionalPreID = ""){
 }
 
 /**
+* Method that prompts the user to confirm a Statement
+* @param {String} statement The Statement which will be prompted vor
+* @return {Promise} A Promise which whill be fullfilled with either true or false if the user has answered the prompt
+**/
+requestConfirm(statement){
+  //print Confirm Message on Console
+  this.printOnConsole(statement);
+  //Print a break
+  this.printOnConsole("\n");
+  //print (Y/N) to clarify input
+  this.printOnConsole("(Y/N)");
+
+  //Save old CommandExecutionReference
+  let oldCommandExecutionReference = this.currentActiveCommandDefinition;
+
+  //replace Execution reference temporary with a reference that contains the yes and no answer
+  let newTempCommandDefinition = new CommandDefinition();
+
+  let outputPromise = new Promise(function (resolve, reject) {
+      //Add yes answer to new definition
+      newTempCommandDefinition.addCommand("Y", "", function() {
+        resolve(true);
+      });
+      //Add no answer to new Definition
+      newTempCommandDefinition.addCommand("N", "", function () {
+        resolve(false);
+      });
+      //Overwrite existing Definition with new Definition
+      this.#overwriteCurrentActiveExecutionReference(newTempCommandDefinition);
+  }.bind(this));
+
+  return outputPromise;
+}
+
+/**
 * Logs ServerResponse in Command Log
 * @param {String:Array|String} responseToLog with each line
 * @param {String} additionalClass Adds an aditional class to the div object
@@ -198,6 +233,22 @@ enableCommandInput(){
   this.#consoleInput.removeAttribute("disabled");
   this.#addActiveEventListenerForConsole();
   this.#consoleInput.focus();
+}
+
+/**
+* Sets overwrites the current active execution reference
+* @private
+* @param {CommandDefinition} newExecutionReference Referernce to the new Eecutionreferenz
+**/
+#overwriteCurrentActiveExecutionReference(newExecutionReference){
+  if(this.#programs.length == 0){
+    //Overwrite current console ExecutionReference
+    this.#commandDefinition = newExecutionReference;
+    return;
+  }
+
+  //Overwrite currentProgram command definition
+  this.#programs[this.#programs.length - 1].overwriteCurrentCommandExecutionReferenceForProgram(newExecutionReference);
 }
 
 /**
