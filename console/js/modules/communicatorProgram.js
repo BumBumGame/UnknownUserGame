@@ -60,7 +60,7 @@ export const MESSAGE = 2;
 * @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
 * @return {String|null} Next newest unread message or the last read one if no new ones are available (or null if no message can be read)
 **/
-export function getLatestMessage(chatName){
+export async function getLatestMessage(chatName){
 
   //Check if offline xml is loaded
   if(isInOfflineMode()){
@@ -131,7 +131,7 @@ export function getLatestMessage(chatName){
 * @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
 * @return {Number|null} Returns Message Type id as referenced by constant or null if no message can be referenced
 **/
-export function getCurrentMessageType(chatName){
+export async function getCurrentMessageType(chatName){
    return latestMassageType;
 }
 
@@ -140,7 +140,7 @@ export function getCurrentMessageType(chatName){
 * @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
 * @return {Boolean} Returns true or false whether a new Message is available on the given Chat
 **/
-export function isNewMessageAvailable(chatName){
+export async function isNewMessageAvailable(chatName){
   //Check if Module is awaiting a question Answer
   if(awaitingQuestionReply){
     return false;
@@ -170,7 +170,7 @@ export function isNewMessageAvailable(chatName){
 * @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
 * @return {String[][]|null} 2dim String Array with each entry containing the answer id as the first index and the answer TextContent as the second
 **/
-export function getCurrentAnswerOptionsAsString(chatName){
+export async function getCurrentAnswerOptionsAsString(chatName){
   //Return null if not awaiting Question Replay
   if(!awaitingQuestionReply){
     return null;
