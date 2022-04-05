@@ -21,6 +21,8 @@ class Command{
 #commandDescritption;
 //Object of type commandExecutionType that holds either an commandDefinition or an Reference to a function
 #commandExecutionReference;
+//Object which holds a overwrite Value for the commandexecution reference
+#commandExecutionReferenceOverwrite;
 //Custom path that will be used for the program
 #customProgramPath;
 
@@ -34,6 +36,8 @@ class Command{
 * @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
 **/
 constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionReference, customProgramPath = null, exitable = true){
+  //Set default for overwriteCommandDefinition
+  this.#commandExecutionReferenceOverwrite = null;
 
   //Check and save commandExececutionReference
   if(typeof commandExecutionReference === "object"){
@@ -79,6 +83,29 @@ constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionR
 }
 
 /**
+* Overwrites the current Command executionreference (only works if this command is a program)
+* @param {CommandDefinition} newCommandExecutionReference Reference to the new CommandDefintion thall overwrites the old one
+**/
+overwriteCurrentCommandExecutionReferenceForProgram(newCommandExecutionReference){
+  if(!this.#isProgram){
+    throw new TypeError("Command has to be a program in order to overwrite the current ExecutionReference")
+  }
+
+  if(!newCommandExecutionReference instanceof CommandDefinition){
+    throw new TypeError("newCommandExecutionReference needs to be an instace of CommandDefinition!");
+  }
+
+  this.#commandExecutionReferenceOverwrite = newCommandExecutionReference;
+}
+
+/**
+* Resets the executionReference to its original State when the Program was created
+**/
+resetCurrentCommandExecutionReferenceForProgram(){
+  this.#commandExecutionReferenceOverwrite = null;
+}
+
+/**
 * Returns the current commandStartAlias
 * @return {String} The commandStartAlias of the Command
 **/
@@ -107,7 +134,12 @@ get isProgram(){
 * @return {commandExecutionType} reference to function or Command Defintion for execution
 **/
 get commandExecutionReference(){
+  //Return standard execution Reference if no overwrite is found
+  if(this.#commandExecutionReferenceOverwrite == null){
    return this.#commandExecutionReference;
+  }
+  //Return overwrite Reference if one is set
+  return this.#commandExecutionReferenceOverwrite;
 }
 
 /**
