@@ -165,8 +165,12 @@ requestConfirm(statement){
   this.printOnConsole("\n");
   //print (Y/N) to clarify input
   this.printOnConsole("(Y/N)");
+  //print input spacing
+  this.#addCommandLineInputSpacing();
   //Set Console to autoExecution
   this.setInputToAutoExecution();
+  //Disable manual execution with enter
+  this.disableInputManualExecution();
 
   //Save old CommandExecutionReference
   let oldCommandExecutionReference = this.currentActiveCommandDefinition;
@@ -175,6 +179,8 @@ requestConfirm(statement){
   let resetAfterConfirm = function () {
     //Disable autoexecution
     this.disableInputAutoExecution();
+    //Reenable Manual execution
+    this.enableInputManualExecution();
     //Rewrite previously saved oldExecutionReferenz
     this.#overwriteCurrentActiveExecutionReference(oldCommandExecutionReference);
   }.bind(this);
