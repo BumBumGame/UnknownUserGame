@@ -328,9 +328,11 @@ clearCommandsTillInputDeactivation(){
 
 /**
 * Executes an Command
+* @async
 * @param {String} command Commandstring that shall be executed
+* @return {Promise} Returns a Promise which is fullfilled once the command has been executed
 **/
-executeCommand(command){
+async executeCommand(command){
   //Disable CommandInput while processing
   this.disableCommandInput();
   //Put Command in Log
@@ -354,7 +356,8 @@ executeCommand(command){
   //Check if program Defintion or normal console Defintion needs to be used
   let commandProcessing = new CommandProcessor(command, this.currentActiveCommandDefinition, this);
 
-  commandProcessing.processCommand();
+  //Wait for command Execution
+  await commandProcessing.processCommand();
   //Print out Answer to Command if exists
     if(commandProcessing.commandResponse != null){
     this.logServerResponse(commandProcessing.commandResponse);

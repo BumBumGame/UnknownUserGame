@@ -415,17 +415,19 @@ getCommandIsProgram(commandIndex){
 
 /**
 * Function that executes the a Command Based on their Alias.
+* @async
 * @param {String} command Command for the Command which function should be executed
-* @return {String[]} Answer Array which each line as seperate, NULL if not successfull
+* @return {Promise(String[])} Answer Array which each line as seperate, NULL if not successfull inside of a Promise
 **/
-executeCommandFunction(command, executingConsole){
+async executeCommandFunction(command, executingConsole){
 var commandIndex = this.getCommandIndex(command);
 //If Command not found then return null
 if(commandIndex == -1){
  return null;
 }
 
-var commandResponse = this.#commandArray[commandIndex].commandExecutionReference(command, executingConsole);
+//Execute Execution Reference and parse Promise if neccessary
+var commandResponse = await this.#commandArray[commandIndex].commandExecutionReference(command, executingConsole);
 
 if(commandResponse == null){
  //Return empty response Array
@@ -490,20 +492,23 @@ constructor(command, commandDefinition, executingConsole){
 
 /**
 * Processes Current saved command through searching it in commandDefinition
+* @async
+* @return {Promises} A Promise which is completed once the function finishes running
 **/
-processCommand(){
-  var currentCommandResponse = this.#commandDefinition.executeCommandFunction(this.#currentCommand, this.#executingConsole);
-  //Check if Command exists local
-  if(currentCommandResponse != null) {
-    //If he does exist
-     //Check if Command send Response
-     if(currentCommandResponse.length != 0){
-       this.#currentCommandAnswer = currentCommandResponse;
-     }
+async processCommand(){
+  //Wait for fullfill of promise
+  let currentCommandResponse = await this.#commandDefinition.executeCommandFunction(this.#currentCommand, this.#executingConsole);
+      //Check if Command exists local
+      if(currentCommandResponse != null) {
+        //If he does exist
+         //Check if Command send Response
+         if(currentCommandResponse.length != 0){
+           this.#currentCommandAnswer = currentCommandResponse;
+         }
 
-  }else{
-    //Send Command to Server
-  }
+      }else{
+        //Send Command to Server
+      }
 
 }
 /**
