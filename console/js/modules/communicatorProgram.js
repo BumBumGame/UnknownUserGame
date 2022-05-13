@@ -23,6 +23,9 @@ var awaitingQuestionReply = false; //Variable holds the Satus after a question h
 var offlineChatReachedEnd = false; //Varialbe holds the Status if a Conversation has reached its end
 
 var latestMassageType = null;
+
+//Variable witch contains the information about what answers have been chosen
+var offlineResponseTracker = [];
 //Message Type Constants---------
 /**
 * Message type identifier
@@ -220,6 +223,9 @@ if(!offlineXMLelementsConditionsMatched(chosenAnswer)){
 //Parse set instructions of chosen Answer
 offlineXMLParseElementsSetAttributes(chosenAnswer);
 
+//Save chosen Answer in Tracker
+offlineResponseTracker.push(answerIndex);
+
 //Set Question status to answered
 awaitingQuestionReply = false;
 
@@ -271,6 +277,50 @@ if (jumpToBranchNameAttribute != null) {
   //send Request to Server
 }
 
+}
+
+/**
+* Returns the complete Chatlog messages with their corresponding types
+* @async
+* @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
+* @return {String[][]} Array witch contains each message as an Index: String[][0] = Message; String[][1] = MessageType (Integer)
+**/
+export async function getChatLog(chatname){
+  if(isInOfflineMode()){
+    //create empty ouput array
+    let output = [];
+    //Save old parser
+    let oldParserData = currentParserBranchPosition;
+    //Overwrite current parser and simulate a new go through by using the saved answers
+    currentParserBranchPosition = [];
+    //Start simulation
+    //create counter
+    let i = 0;
+    //create counter for questions
+    let questionCounter = 0;
+    //Loop until no new messages are found
+    while(isNewMessageAvailable()){
+      //Add current Message to output array
+      output[i] = [getLatestMessage(), getCurrentMessageType()];
+
+      //Check whether questions answer needs to be send
+      if(output[i][1] == QUESTION){
+        //Send saved Answer from Buffer
+        sendCurrentQuestionAnswer("", offlineResponseTracker[questionCounter]);
+        //add to questionCounter
+        questionCounter++;
+      }
+      //Add to counter
+      i++;
+    }
+
+    //reset actual parser
+    currentParserBranchPosition = oldParserData;
+    //Return answers
+    return output;
+    }else{
+      //Request data from Server
+  }
 }
 
 /**
