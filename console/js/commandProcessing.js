@@ -3,11 +3,57 @@
 * @typedef {(function|CommandDefinition)} commandExecutionType
 **/
 
+//---Manage Default Command Methods---------------------------------
 /**
-* Array containing all default commands which will be added on program creation
-* @type{Command[]}
+* Static class which contains all Default Commands
 **/
-var defaultCommands = [];
+class DefaultCommands{
+  //Private Variable containing all Default Commands
+  static #defaultCommands = [];
+
+  /**
+  * Adds a command to the default Command list
+  * @static
+  * @param {Command} commandObject Reference to the commandObject of the Command that is going to be added
+  **/
+  static addCommandToDefaults(commandObject){
+    //Check if Object is a Command Object
+    if(!commandObject instanceof Command){
+      throw new TypeError("commandObject needs to be of Type Command!");
+    }
+
+    //If Object is valid: Add it to defaultCommands
+    this.#defaultCommands.push(commandObject);
+  }
+
+  /**
+  * Removes a command from the default Command list
+  * @static
+  * @param {Number} commandObject Reference to the commandObject of the Command that is going to be removed
+  **/
+  static removeCommandFromDefaults(commandIndex){
+    this.#defaultCommands.splice(commandIndex, 1);
+  }
+
+  /**
+  * Clears all default Commands
+  * @static
+  **/
+  static clearCommandDefaults(){
+    this.#defaultCommands = [];
+  }
+
+  /**
+  * Returns the current List of default Commands
+  * @static
+  * @return {Command[]} Array which contains all Commands in the List
+  **/
+  static get defaultCommandList(){
+    return this.#defaultCommands;
+  }
+
+}
+//---------------------------------------------------
 
 /**
 * Class that represents an Command
@@ -59,7 +105,9 @@ constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionR
        if(exitable){
          commandExecutionReference.addCommand("exit", "Exists the current Program", exitProgram);
        }
-        //Add default Commands
+        //Get default Commands
+        let defaultCommands = DefaultCommands.defaultCommandList;
+        //Add all default Commands
         for(let i = 0; i < defaultCommands.length; i++){
           //Only add Commands which are of type Command
           if(defaultCommands[i] instanceof Command){
@@ -519,29 +567,4 @@ get commandResponse(){
     return this.#currentCommandAnswer;
 }
 
-}
-
-//---Manage Default Command Methods---------------------------------
-
-/**
-* Adds a command to the default Command list
-* @param {Command} commandObject Reference to the commandObject of the Command that is going to be added
-**/
-function addCommandToDefaults(commandObject){
-  defaultCommands.push(commandObject);
-}
-
-/**
-* Removes a command from the default Command list
-* @param {Number} commandObject Reference to the commandObject of the Command that is going to be removed
-**/
-function removeCommandFromDefaults(commandIndex){
-  defaultCommands.splice(commandIndex, 1);
-}
-
-/**
-* Clears all default Commands
-**/
-function clearCommandDefaults(){
-  defaultCommands = [];
 }

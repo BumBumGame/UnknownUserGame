@@ -57,7 +57,7 @@ function executeClearConsole(command, executingConsole){
 
 //-----Add default Commands:--------------------------------------------------------------------------------------------
 //Add help Command
-addCommandToDefaults(new Command("help", "Zeigt eine Liste der Verfügbaren Commands mit ihrer Beschreibung an. \n"
+DefaultCommands.addCommandToDefaults(new Command("help", "Zeigt eine Liste der Verfügbaren Commands mit ihrer Beschreibung an. \n"
                    + "Um genauere Informationen über einen Befehl zu erhalten schreiben sie: help [Befehl].", false, showHelpDialog));
 
-addCommandToDefaults(new Command("clear", "Löscht den Kompletten Kommando-Log.", false, executeClearConsole));
+DefaultCommands.addCommandToDefaults(new Command("clear", "Löscht den Kompletten Kommando-Log.", false, executeClearConsole));
