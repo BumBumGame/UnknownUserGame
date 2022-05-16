@@ -238,12 +238,6 @@ function anyKeyPressedForThirdStage(){
 
 /* CONSOLE TEST -THIS SECTION WILL BE DELETED LATER-*/
 
-//Add clear Command
-localCommands.addCommand("clear", "Löscht den Kompletten Kommando-Log.", executeClearConsole);
-//Add help Command
-localCommands.addCommand("help", "Zeigt eine Liste der Verfügbaren Commands mit ihrer Beschreibung an. \n"
-                    + "Um genauere Informationen über einen Befehl zu erhalten schreiben sie: help [Befehl].", showHelpDialog);
-
 //Creating a test program
 function printForTestProgram(){
   return "lol hi i can print";

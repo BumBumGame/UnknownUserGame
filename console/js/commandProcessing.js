@@ -109,10 +109,8 @@ constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionR
         let defaultCommands = DefaultCommands.defaultCommandList;
         //Add all default Commands
         for(let i = 0; i < defaultCommands.length; i++){
-          //Only add Commands which are of type Command
-          if(defaultCommands[i] instanceof Command){
+          //Add All loaded Commands
           commandExecutionReference.addCommandObject(defaultCommands[i]);
-          }
         }
 
   }

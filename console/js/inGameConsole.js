@@ -46,10 +46,11 @@ static currentConsoleInFocus = null;
 * @param {htmlObject} consoleInputObject Html input=text element that the commands are being put in
 * @param {htmlObject} commandLineObject htmlelement that surrounds the consoleInput and the PathDisplay next to it
 * @param {CommandDefinition} commandDefinition CommandDefinition object that holds the information about all the commands available in this console
-* @param {htmlObject} consoleContainer Reference to Dom element of the container around the console (Default: Uses the next parent element of console input as container)
-* @param {String} currentPath Path that the console will be initialized with (Default: ~)
+* @param {Boolean} [addDefaultCommands=true] This Parameter sets wheter all the Default Commands will be added to this console on creation
+* @param {htmlObject} [consoleContainer=null] - consoleContainer Reference to Dom element of the container around the console (Default: Uses the next parent element of console input as container)
+* @param {String} [currentPath="~"] - Path that the console will be initialized with (Default: ~)
 **/
-constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefinition, consoleContainer = null, currentPath = "~"){
+constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefinition, addDefaultCommands = true, consoleContainer = null, currentPath = "~"){
   //Set console Log Object
   this.#consoleLog = consoleLogObject;
   //Set Console Input Object
@@ -75,6 +76,16 @@ constructor(consoleLogObject, consoleInputObject, commandLineObject, commandDefi
   //Check if consoleContainer needs to be set automaticly
   if(consoleContainer === null){
     consoleContainer = commandLineObject.parentElement;
+  }
+
+  //Add default Commands to Execution Reference if Parameter is set to true
+  if(addDefaultCommands){
+    //load DefaultCommands
+    let defaultCommands = DefaultCommands.defaultCommandList;
+    //Add Default Commands to commandDefinition
+    for(let i = 0; i < defaultCommands.length; i++){
+      this.#commandDefinition.addCommandObject(defaultCommands[i]);
+    }
   }
 
   //Set Path to init
