@@ -8,21 +8,37 @@
 {
 let communicatorCommandDefinition = new CommandDefinition();
 
-async function checkForNewMessages(command, executingConsole){
+//----------
+//Report new messages Command
+//---------
+async function reportNewMessages(command, executingConsole){
   //load communicator Module
   let communicatorModule = await import("./modules/communicatorProgram.js");
 
-  //Check if a new message is even available
-  if(! await communicatorModule.isNewMessageAvailable("introChat")){
-    return "Keine neuen Nachrichten verfügbar!";
+  //Get all active ChatNames
+  let activeChatNames = communicatorModule.getActiveChatNames();
+
+  //Define Output String Array
+  let output = [];
+
+  //Check if a new message is availalbe in any active Chat
+  for(let i = 0; i < activeChatNames.length; i++){
+
+  if(await communicatorModule.isNewMessageAvailable(activeChatNames[i])){
+    output.push("Neue Nachrichten in Chat '" + activeChatNames[i] + "' !");
   }
 
-  //Else: get latest Message
-  return communicatorModule.getLatestMessage();
+  }
+
+  //Return output Array or No new Messages found if empty
+  return output.length == 0 ? "Keine neuen Nachrichten verfügbar!" : output;
 }
 
 //Add check newMessage Method as a command
-communicatorCommandDefinition.addCommand("Check", "Dieser Befehl überprüft, ob neue Nachrichten verfügbar sind.", checkForNewMessages);
+communicatorCommandDefinition.addCommand("Check", "Dieser Befehl überprüft, ob neue Nachrichten verfügbar sind.\n"
+                                        + "Neue Chats mit Nachrichten werden aufgelistet.", reportNewMessages);
+//------------
+
 
 //Create Communicator Program
 var communicatorProgram = new Command("Communicator", "Ein Programm, dass die Kommunikation über das System möglich macht.", true, communicatorCommandDefinition);

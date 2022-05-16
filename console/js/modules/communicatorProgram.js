@@ -7,6 +7,9 @@
 //Load asnyLoaderModule
 import * as asyncLoader from "./asyncLoader.js";
 
+//Global Variable which stores all the active chatNames
+var activeChatNames = [];
+
 //Global Module variable for xmlFile (null if on online mode)
 var xmlFile = null;
 
@@ -393,11 +396,36 @@ export function isInOfflineMode(){
    return xmlFile == null ? false : true;
 }
 
+/**
+* Returns all Current active Chatnames
+* @return {String[]} String array with all current Chatnames
+**/
+export function getActiveChatNames(){
+  //If in Offline Mode only return current loaded chatname
+  if(isInOfflineMode()){
+    return [getCurrentOfflineXMLChatName()];
+  }
+  //else
+  return activeChatNames;
+}
+
 //---------------------------------------------------
 //Parser
 //---------------------------------------------------
 
 //---Offline-----
+/**
+* Returns the chatname of the currently loaded xml File
+* @return {String|null} Chatname of current xmlFile or null if not in Offline Mode
+**/
+function getCurrentOfflineXMLChatName(){
+  if(!isInOfflineMode()){
+    return null;
+  }
+
+  return xmlFile.getElementsByTagName("communicatorChat")[0].getAttribute("chatName");
+}
+
 /**
 * Checks if the end of the current Offline Branch has been reached
 * @return {Boolean|null} Returns null if in Online Mode and true or false wheter endOffCurrentofflineBRanch is reached
