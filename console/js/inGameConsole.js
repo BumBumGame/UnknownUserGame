@@ -365,7 +365,7 @@ async executeCommand(command){
   }else{
   //process Command
   //Check if program Defintion or normal console Defintion needs to be used
-  let commandProcessing = new CommandProcessor(command, this.currentActiveCommandDefinition, this);
+  let commandProcessing = new CommandProcessor(command, this);
 
   //Wait for command Execution
   await commandProcessing.processCommand();
@@ -476,6 +476,19 @@ get currentActiveCommandDefinition(){
   }
 
     return this.#commandDefinition;
+}
+
+/**
+* Method which returns the currently active Program
+* @return {Command|null} Command Object of the active Program or null if none is active
+**/
+get currentActiveProgram(){
+  //Return null if no program is active
+  if(this.#programs.length == 0){
+    return null;
+  }
+  //Else: return active Program
+  return this.#programs[this.#programs.length - 1];
 }
 
 /**

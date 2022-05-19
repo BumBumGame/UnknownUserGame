@@ -69,8 +69,11 @@ class Command{
 #commandExecutionReference;
 //Object which holds a overwrite Value for the commandexecution reference
 #commandExecutionReferenceOverwrite;
+//-Program only Datafields
 //Custom path that will be used for the program
 #customProgramPath;
+//Custom Program Parameters
+#customProgramParameters;
 
 /**
 * constructor of Command class
@@ -80,8 +83,9 @@ class Command{
 * @param {commandExecutionType} commandExecutionReference Reference to the CommandDefinition or the function that shall be used to execute the Command/Programm
 * @param {String} [customProgramPath = null] OptionalParameter for adding a customProgramPath to a program (null = no CustomPath)
 * @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
+* @param {Object} [customProgramParameters = {}] Object which contains custom Program Parameters (Default: Emtpy Object)
 **/
-constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionReference, customProgramPath = null, exitable = true){
+constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionReference, customProgramPath = null, exitable = true, customProgramParameters = {}){
   //Set default for overwriteCommandDefinition
   this.#commandExecutionReferenceOverwrite = null;
 
@@ -119,6 +123,9 @@ constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionR
       throw new TypeError("commandExececutionReference for isProgram = true, needs to be an instace of CommandDefinition!");
   }
 
+  //Save Custom Program Parameters
+  this.#customProgramParameters = customProgramParameters;
+  //Save Command execution reference
   this.#commandExecutionReference = commandExecutionReference;
   //Save startAlias
   this.#commandStartAlias = commandStartAlias.trim();
@@ -149,6 +156,15 @@ overwriteCurrentCommandExecutionReferenceForProgram(newCommandExecutionReference
 **/
 resetCurrentCommandExecutionReferenceForProgram(){
   this.#commandExecutionReferenceOverwrite = null;
+}
+
+/**
+* Sets a custom Parameter for the specified key and Value (existing Key values will be overidden!)
+* @param {String} key The Key for the custom Parameter
+* @param {*} value The Value of the optional Parameter (Can be of any type)
+**/
+setCustomParameter(key, value){
+  this.#customProgramParameters[key] = value;
 }
 
 /**
@@ -190,9 +206,14 @@ get commandExecutionReference(){
 
 /**
 * Return CommandCustom path as String or null if no one has been set
-* @return {String|null} CustomPath as String or null if no one exists
+* @return {String|null} CustomPath as String or null if no one exists or command not a Program
 **/
 get customProgramPath(){
+  //If command is not a program return null
+  if(!this.isProgram){
+    return null;
+  }
+  //Return Program Path
   return this.#customProgramPath;
 }
 
@@ -202,6 +223,19 @@ get customProgramPath(){
 **/
 get hasCustomProgramPath(){
   return this.#customProgramPath !== null;
+}
+
+/**
+* Returns the Optional Program parameter object or null if not a program
+* @return {Object|null} Optionalparameter-Object or null if not a program
+**/
+get optionalParameters(){
+  //Return null if not a program
+  if(!this.isProgram){
+    return null;
+  }
+  //Else: Return Optional Parameters
+  return this.#customProgramParameters;
 }
 
 }
@@ -463,9 +497,11 @@ getCommandIsProgram(commandIndex){
 * Function that executes the a Command Based on their Alias.
 * @async
 * @param {String} command Command for the Command which function should be executed
+* @param {InGameConsole} executingConsole The Console which the Command is being executed
+* @param {Object} optionalProgramParameters Object which holds all OptionalParameters of the current programm
 * @return {Promise(String[])} Answer Array which each line as seperate, NULL if not successfull inside of a Promise
 **/
-async executeCommandFunction(command, executingConsole){
+async executeCommandFunction(command, executingConsole, optionalProgramParameters){
 var commandIndex = this.getCommandIndex(command);
 //If Command not found then return null
 if(commandIndex == -1){
@@ -518,22 +554,29 @@ class CommandProcessor{
 #commandDefinition;
 //executingConsole
 #executingConsole;
+//Variable with optional ProgramParameterData
+#optionalProgramParameters;
 
 /**
 * Constructor of class
 * @param {String} command Command that shall be processed
-* @param {CommandDefinition:Object} CommandDefinition that the command should be searched for in
 * @param {InGameConsole} executingConsole Reference to the Console which is executing the command
 **/
-constructor(command, commandDefinition, executingConsole){
+constructor(command, executingConsole){
   //Save Command to Datafield
  this.#currentCommand = command.toLowerCase().trim();
  //Standard init CommandAnswer
  this.#currentCommandAnswer = null;
  //Set commandDefinition Reference
- this.#commandDefinition = commandDefinition;
+ this.#commandDefinition = executingConsole.currentActiveCommandDefinition;
  //Save executing console reference
  this.#executingConsole = executingConsole;
+ //Save optional Program Parameters if exist
+ if(executingConsole.currentActiveProgram != null){
+ this.#optionalProgramParameters = executingConsole.currentActiveProgram.optionalParameters;
+  }
+ //Else: Save empty Paramters
+ this.#optionalProgramParameters = {};
 }
 
 /**
@@ -543,7 +586,7 @@ constructor(command, commandDefinition, executingConsole){
 **/
 async processCommand(){
   //Wait for fullfill of promise
-  let currentCommandResponse = await this.#commandDefinition.executeCommandFunction(this.#currentCommand, this.#executingConsole);
+  let currentCommandResponse = await this.#commandDefinition.executeCommandFunction(this.#currentCommand, this.#executingConsole, this.#optionalProgramParameters);
       //Check if Command exists local
       if(currentCommandResponse != null) {
         //If he does exist
