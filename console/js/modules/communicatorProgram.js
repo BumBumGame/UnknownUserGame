@@ -31,33 +31,40 @@ var latestMassageType = null;
 var offlineResponseTracker = [];
 //Message Type Constants---------
 /**
-* Message type identifier
+* Defines a Statement send out by the communicatorProgram
 * @constant
 * @type{Number}
 * @default 0
 **/
 export const MESSAGER_STATEMENT = 0;
 /**
-* Message type identifier
+* Defines a Warning Message send by the communicatorProgram
 * @constant
 * @type{Number}
 * @default 3
 **/
 export const MESSAGER_WARNING = 3;
 /**
-* Message type identifier
+* Defines a Question from the Chat-Contact which needs to be answered by the user
 * @constant
 * @type{Number}
 * @default 1
 **/
 export const QUESTION = 1;
 /**
-* Message type identifier
+* Defines a Message send from the Chat-Contact
 * @constant
 * @type{Number}
 * @default 2
 **/
 export const MESSAGE = 2;
+/**
+* Defines a response given by the User
+* @constant
+* @type{Number}
+* @default 4
+**/
+export const RESPONSE = 4;
 //------------------------------
 
 /**
@@ -310,6 +317,9 @@ export async function getChatLog(chatname){
       if(output[i][1] == QUESTION){
         //Send saved Answer from Buffer
         sendCurrentQuestionAnswer("", offlineResponseTracker[questionCounter]);
+        //Save Response as next Element of output
+        i++;
+        output[i] = [offlineResponseTracker[questionCounter], RESPONSE]; 
         //add to questionCounter
         questionCounter++;
       }
@@ -408,6 +418,16 @@ export function getActiveChatNames(){
   //else
   return activeChatNames;
 }
+
+/**
+* Checks if a current chatName is active
+* @param {String} chatName The Name of the chat
+* @return {boolean} True or false whether the ChatName is active or not
+**/
+export function chatNameIsActive(chatName){
+return activeChatNames.includes(chatName);
+}
+
 
 //---------------------------------------------------
 //Parser
