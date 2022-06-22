@@ -518,10 +518,11 @@ get currentActiveProgram(){
 * @param {CommandDefinition} programCommandDefinition Command Definiton for the Program
 * @param {String} [customProgramPath = null] OptionalParameter for adding a customProgramPath to a program (null = no CustomPath)
 * @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
+* @param {Object} [customProgramParameters = {}] Object which contains custom Program Parameters (Default: Emtpy Object)
 **/
-startCustomProgram(programName, programCommandDefinition, customProgramPath = null, programExitable = true){
+startCustomProgram(programName, programCommandDefinition, customProgramPath = null, programExitable = true, customProgramParameters = {}){
 //Push a new Program into ProgramStack of the Console
-this.#programs.push(new Command(programName, "", true, programCommandDefinition, customProgramPath, programExitable));
+this.#programs.push(new Command(programName, "", true, programCommandDefinition, customProgramPath, programExitable, customProgramParameters));
 
 //Set path changed to true to let the console now that a new program is running
 this.#pathChanged = true;
