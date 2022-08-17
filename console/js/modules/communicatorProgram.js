@@ -319,7 +319,7 @@ export async function getChatLog(chatname){
         sendCurrentQuestionAnswer("", offlineResponseTracker[questionCounter]);
         //Save Response as next Element of output
         i++;
-        output[i] = [offlineResponseTracker[questionCounter], RESPONSE]; 
+        output[i] = [offlineResponseTracker[questionCounter], RESPONSE];
         //add to questionCounter
         questionCounter++;
       }
@@ -333,6 +333,30 @@ export async function getChatLog(chatname){
     return output;
     }else{
       //Request data from Server
+  }
+}
+
+/**
+* Generates css classnames for each Message type
+* @param {Number} msgType Type of the Message which the className shall be returned to
+* @return {String} className to the msgType or null if messageType invalid
+**/
+export function getClassNameToMessageType(msgType){
+  let classNamePrefix = "Communicator_";
+
+  switch(msgType){
+    case 0:
+      return classNamePrefix + "Messager_Statement";
+    case 1:
+      return classNamePrefix + "Question";
+    case 2:
+      return classNamePrefix + "Message";
+    case 3:
+      return classNamePrefix + "Messager_Warning";
+    case 4:
+      return classNamePrefix + "Response";
+    default:
+      return null;
   }
 }
 
