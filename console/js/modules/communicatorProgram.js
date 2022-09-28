@@ -449,7 +449,8 @@ export function getActiveChatNames(){
 * @return {boolean} True or false whether the ChatName is active or not
 **/
 export function chatNameIsActive(chatName){
-return activeChatNames.includes(chatName);
+  //Checks current activeChatnames
+return getActiveChatNames().includes(chatName);
 }
 
 
