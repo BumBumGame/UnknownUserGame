@@ -25,3 +25,15 @@ function functionIsAsync(functionReference){
     return false;
 }
 }
+
+/**
+Returns true if it is a DOM element
+* @param {DomElement} o Reference to the Dom Element being checked
+* @return {Boolean} true if it is a DOM element 
+**/
+function isElement(o){
+  return (
+    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+    o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
+);
+}
