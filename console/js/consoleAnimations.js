@@ -495,6 +495,20 @@ deleteDomElement(){
   this.#animationObject = null;
 }
 
+setAnimationObject(newAnimationObject){
+  //Check if object is a html Element
+  if(!isElement(newAnimationObject)){
+    throw new TypeError("newAnimationObject is not an HTML-Element!");
+  }
+
+  if(!this.consoleObject.consoleLogObject.contains(newAnimationObject)){
+    throw new TypeError("newAnimationObject does not belong to this console");
+  }
+
+  //set AnimationObject
+  this.#animationObject = newAnimationObject;
+}
+
 }
 
 /**
@@ -676,7 +690,7 @@ start(){
             //Get AnimationObject
             this.#animationObject = this.#typingAnimationObject.currentAnimationObject;
             //Set ConsoleTextLoadingAnimaiton animationObject to the same as the others
-            this.#loadingAnimationObject.animationObject = this.#animationObject;
+            this.#loadingAnimationObject.setAnimationObject(this.#animationObject);
            //Check if animation is stopped at typing
          }else if(this.#animationObject.textContent.length > 0 && this.#typingAnimationObject.animationText.length >= this.#typingAnimationObject.currentAnimationCharIndex) {
             this.#typingAnimationObject.start();
@@ -686,7 +700,7 @@ start(){
          this.setAnimationState(true);
 
         //Start next step after Typing animation is finished
-        var prevThis = this;
+        let prevThis = this;
         //Set millis
         this.#animationMilliseconds = performance.now();
         setTimeout(function () { prevThis.#animationStep(); }, 0);
