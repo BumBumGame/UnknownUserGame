@@ -136,6 +136,57 @@ constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionR
 }
 
 /**
+* Checks if object is a command
+* @static
+* @param {Object} object Object to be checked
+* @param {Boolean} [errorThrow=false] Determines whether an automatic error is thrown
+* @return {Boolean} Returns true or false (if errorThrow = true: Exeption thrown insted of fall)
+* @throws {TypeError} Throws type error if errorThrow = true
+**/
+static isCommand(object, errorThrow = false){
+  if(!(object instanceof Command)){
+
+    if(errorThrow){
+    throw new TypeError("Object needs to be of Type Command!");
+    }
+
+    return false;
+  }
+
+  return true;
+}
+
+/**
+*Checks if object is a program
+* @static
+* @param {Object} object Object to be checked
+* @param {Boolean} [errorThrow=false] Determines whether an automatic error is thrown
+* @return {Boolean} Returns true or false (if errorThrow = true: Exeption thrown insted of fall)
+* @throws {TypeError} Throws type error if errorThrow = true
+
+**/
+static isProgram(object, errorThrow = false){
+  if(!(object instanceof Command)){
+   if(errorThrow){
+   throw new TypeError("Object needs to be of Type Command!");
+   }
+
+   //Check if programObject is a program
+   if(!object.isProgram){
+    if(errorThrow){
+    throw new TypeError("Object needs to be a program!");
+    }
+    
+    return false
+   }
+
+   return false;
+  }
+
+  return true;
+}
+
+/**
 * Overwrites the current Command executionreference (only works if this command is a program)
 * @param {CommandDefinition} newCommandExecutionReference Reference to the new CommandDefintion thall overwrites the old one
 **/
