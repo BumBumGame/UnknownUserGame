@@ -1,9 +1,76 @@
 /**
+* Stores all the available programs which can be added to consoles
+* All programes can be accessed through their start alias as key for the array
+**/
+class ProgramCollection{
+  static #programList = [];
+
+  /**
+  * Adds a new program to the Collection
+  @param {Command} programObject the Object of the new program
+  **/
+  static addProgramToCollection(programObject){
+    //Check if new program is a program
+    try {
+      Command.isProgram(programObject, true);
+
+      //add program to collection
+      this.#programList.push(programObject);
+    } catch (e) {
+      console.log(e);
+    }
+
+  }
+
+  /**
+  * Searches and returnes the index of program matching the Alias
+  * @param {String} programAlias Alias of the program
+  * @return {Number} Index of the Program or -1 if not found
+  **/
+  static getIndexOfProgram(programAlias){
+    //Run through list until alias found
+    for(let i = 0; i < this.length; i++){
+      if(this.#programList[i].commandStartAlias == programAlias.trim()){
+        return i;
+      }
+    }
+
+    //else:
+    return -1;
+  }
+
+  /**
+  * Removes program with corresponding Index from Collection
+  * @param {Number} index index of the program to be removed
+  **/
+  static removeProgram(index){
+    this.#programList.splice(index, 1);
+  }
+
+  /**
+  * Returns the complete program list
+  * @return {AssioArray} Programs in assioative array with their alias as key
+  **/
+  static get wholeProgramCollection(){
+    return this.#programList;
+  }
+
+  /**
+  * Returns the length of the Collection
+  **/
+  static get length(){
+    return this.#programList.length;
+  }
+
+}
+
+
+/**
 * Functions for CommandExecution (Return null if no out to the console is needed) (Return Array of Strings for Answer: Each element = one line)
 * Each Method will automatically get 2 Parameters assgined to it: command(Contains the complete inputted Command as String), executingConsole(contains a reference to the consoleObject of the console eecuting the function)
 * Example: functionName(command, executingConsole){}
 **/
-//-----Communicator Program-------
+//-----Communicator Program-----------------------------
 
 {
 let communicatorCommandDefinition = new CommandDefinition();
@@ -135,7 +202,7 @@ communicatorCommandDefinition.addCommand("openChat", "Opens chosen chat. \n \n"
 
 //-----------------------------------------------------------
 
-//Create Communicator Program
-var communicatorProgram = new Command("Communicator", "Ein Programm, dass die Kommunikation über das System möglich macht.", true, communicatorCommandDefinition);
+//Create Communicator Program and add it to Program Collection
+ProgramCollection.addProgramToCollection(new Command("Communicator", "Ein Programm, dass die Kommunikation über das System möglich macht.", true, communicatorCommandDefinition));
 }
-//--------------------------------
+//---------------------------------------------------
