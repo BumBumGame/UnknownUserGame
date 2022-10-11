@@ -14,16 +14,19 @@ class DefaultCommands{
   /**
   * Adds a command to the default Command list
   * @static
+  * @throws {TypeError}
   * @param {Command} commandObject Reference to the commandObject of the Command that is going to be added
   **/
   static addCommandToDefaults(commandObject){
-    //Check if Object is a Command Object
-    if(!commandObject instanceof Command){
-      throw new TypeError("commandObject needs to be of Type Command!");
+    //Check if Object is a Command Object by trying
+    try {
+      Command.isCommand(commandObject, true);
+      //If Object is valid: Add it to defaultCommands
+      this.#defaultCommands.push(commandObject);
+    }catch(e){
+      console.log(e);
     }
 
-    //If Object is valid: Add it to defaultCommands
-    this.#defaultCommands.push(commandObject);
   }
 
   /**
@@ -77,6 +80,7 @@ class Command{
 
 /**
 * constructor of Command class
+* @throws {TypeError}
 * @param {String} commandStartAlias First Word/Alias that the command Starts with
 * @param {String} commandDescritption The description of the Command
 * @param {Boolean} isProgram Boolean that sets if the Command starts a new Program or executes a simple function
@@ -176,7 +180,7 @@ static isProgram(object, errorThrow = false){
     if(errorThrow){
     throw new TypeError("Object needs to be a program!");
     }
-    
+
     return false
    }
 
@@ -188,6 +192,7 @@ static isProgram(object, errorThrow = false){
 
 /**
 * Overwrites the current Command executionreference (only works if this command is a program)
+* @throws {TypeError}
 * @param {CommandDefinition} newCommandExecutionReference Reference to the new CommandDefintion thall overwrites the old one
 **/
 overwriteCurrentCommandExecutionReferenceForProgram(newCommandExecutionReference){
