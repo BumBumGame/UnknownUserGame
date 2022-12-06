@@ -521,13 +521,28 @@ get currentActiveProgram(){
 * @param {Object} [customProgramParameters = {}] Object which contains custom Program Parameters (Default: Emtpy Object)
 **/
 startCustomProgram(programName, programCommandDefinition, customProgramPath = null, programExitable = true, customProgramParameters = {}){
-//Push a new Program into ProgramStack of the Console
-this.#programs.push(new Command(programName, "", true, programCommandDefinition, customProgramPath, programExitable, customProgramParameters));
+//Create and start custom Object
+startCustomProgramWithObject(new Command(programName, "", true, programCommandDefinition, customProgramPath, programExitable, customProgramParameters));
+}
 
-//Set path changed to true to let the console now that a new program is running
-this.#pathChanged = true;
-//Update Visible Path of the Console
-this.updateVisiblePath();
+/**
+* Starts and injects a custom Program into the console (will be started over currentrunning program)
+@param {Command} programObject Instance of class comand in Program Mode
+**/
+startCustomProgramWithObject(programObject){
+//Check if Object is a program
+try {
+  Command.isProgram(programObject, true);
+
+  //Push new program on top of program Stack
+  this.#programs.push(programObject);
+
+  //Update Path
+  this.#pathChanged = true;
+  this.updateVisiblePath();
+} catch (e) {
+  return;
+}
 }
 
 /**
