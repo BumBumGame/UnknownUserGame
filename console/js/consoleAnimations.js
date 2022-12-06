@@ -242,8 +242,8 @@ class ConsoleAnimation{
   **/
   constructor(animationPlayTime, animationStepTime, consoleObject){
      //This class is not allowed to be initialized alone
-     if(this.constructor === Animation) {
-            throw new TypeError('Abstract class "Animation" cannot be instantiated directly!');
+     if(this.constructor === ConsoleAnimation) {
+            throw new TypeError('Abstract class "ConsoleAnimation" cannot be instantiated directly!');
         }
      //Check if consoleObject is of type InGameConsole
      if(!consoleObject instanceof InGameConsole){
