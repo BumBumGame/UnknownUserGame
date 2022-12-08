@@ -1,6 +1,6 @@
 /**
 * Type that can hold either a commandDefinition- or a function reference
-* @typedef {(function|CommandDefinition)} commandExecutionType
+* @typedef {(function|CommandDefinition)} executionType
 **/
 
 //---Manage Default Command Methods---------------------------------
@@ -68,26 +68,26 @@ class Command{
 #commandStartAlias;
 //Description of the Command
 #commandDescritption;
-//Object of type commandExecutionType that holds either an commandDefinition or an Reference to a function
-#commandExecutionReference;
+//Object of type executionType that holds either an commandDefinition or an Reference to a function
+#executionReference;
 
 /**
 * constructor of Command class
 * @throws {TypeError}
 * @param {String} commandStartAlias First Word/Alias that the command Starts with
 * @param {String} commandDescritption The description of the Command
-* @param {commandExecutionType} commandExecutionReference Reference to the CommandDefinition or the function that shall be used to execute the Command/Programm
+* @param {executionType} executionReference Reference to the CommandDefinition or the function that shall be used to execute the Command/Programm
 **/
-constructor(commandStartAlias, commandDescritption, commandExecutionReference){
+constructor(commandStartAlias, commandDescritption, executionReference){
 
   //Check if conditions of a command are met
   //(Only if this class is instantietet directly!!!)
-  if(typeof commandExecutionReference !== "function" && this.constructor === Command){
+  if(typeof executionReference !== "function" && this.constructor === Command){
       throw new TypeError("commandExececutionReference for a Command, needs to be an function!");
   }
 
   //Save Command execution reference
-  this.#commandExecutionReference = commandExecutionReference;
+  this.#executionReference = executionReference;
   //Save startAlias
   this.#commandStartAlias = commandStartAlias.trim();
   //Save description
@@ -145,10 +145,10 @@ get isProgram(){
 
 /**
 * Return the Reference to the executionInformation
-* @return {commandExecutionType} reference to function or Command Defintion for execution
+* @return {executionType} reference to function or Command Defintion for execution
 **/
-get commandExecutionReference(){
-   return this.#commandExecutionReference;
+get executionReference(){
+   return this.#executionReference;
 }
 
 }
@@ -163,8 +163,8 @@ class Program extends Command{
   #customProgramPath;
   //Custom Program Parameters
   #customProgramParameters;
-  //Object which holds a overwrite Value for the commandexecution reference
-  #commandExecutionReferenceOverwrite;
+  //Object which holds a overwrite Value for the execution reference
+  #executionReferenceOverwrite;
 
   /**
   * constructor of Program class
@@ -181,7 +181,7 @@ class Program extends Command{
     super(programStartAlias, programDescription, programCommandDefinition);
 
     //Set default for overwriteCommandDefinition
-    this.#commandExecutionReferenceOverwrite = null;
+    this.#executionReferenceOverwrite = null;
 
     //Check and save commandExececutionReference
     if(typeof programCommandDefinition !== "object" || !programCommandDefinition instanceof CommandDefinition){
@@ -253,19 +253,19 @@ class Program extends Command{
   * @throws {TypeError}
   * @param {CommandDefinition} newProgramExecutionReference Reference to the new CommandDefintion which overwrites the old one
   **/
-  overwriteCurrentCommandExecutionReferenceForProgram(newProgramExecutionReference){
+  overwriteCurrentexecutionReferenceForProgram(newProgramExecutionReference){
     if(!newProgramExecutionReference instanceof CommandDefinition){
-      throw new TypeError("newCommandExecutionReference needs to be an instace of CommandDefinition!");
+      throw new TypeError("newexecutionReference needs to be an instace of CommandDefinition!");
     }
 
-    this.#commandExecutionReferenceOverwrite = newProgramExecutionReference;
+    this.#executionReferenceOverwrite = newProgramExecutionReference;
   }
 
   /**
   * Resets the executionReference to its original State when the Program was created
   **/
-  resetCurrentCommandExecutionReferenceForProgram(){
-    this.#commandExecutionReferenceOverwrite = null;
+  resetCurrentexecutionReferenceForProgram(){
+    this.#executionReferenceOverwrite = null;
   }
 
   /**
@@ -296,15 +296,16 @@ class Program extends Command{
 
   /**
   * Return the Reference to the executionInformation
-  * @return {commandExecutionType} reference to function or Command Defintion for execution
+  * @return {executionType} reference to function or Command Defintion for execution
   **/
-  get commandExecutionReference(){
+  get executionReference(){
     //Return standard execution Reference if no overwrite is found
-    if(this.#commandExecutionReferenceOverwrite == null){
-     return this.commandExecutionReference;
+    if(this.#executionReferenceOverwrite == null){
+      //Get execution reference from Command class
+     return super.executionReference;
     }
     //Return overwrite Reference if one is set
-    return this.#commandExecutionReferenceOverwrite;
+    return this.#executionReferenceOverwrite;
   }
 }
 
@@ -327,14 +328,14 @@ constructor(){
 * Adds Command to Local Command definition or overides exising one
 * @param {String} commandStartAlias Alias that the command will be started with in the console input
 * @param {String} commandDescription A Description of the command (newline marked with /n)
-* @param {commandExecutionType} commandExecutionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
+* @param {executionType} executionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
 **/
-addCommand(commandStartAlias, commandDescription, commandExecutionReference){
+addCommand(commandStartAlias, commandDescription, executionReference){
   //get existing alias commandIndex (or -1 if not exists)
   let existingCommandIndex = this.getCommandIndex(commandStartAlias);
 
   //Create a new command and add it to array
-  var newCommand = new Command(commandStartAlias, commandDescription, commandExecutionReference);
+  var newCommand = new Command(commandStartAlias, commandDescription, executionReference);
 
   //Add or overide program if alias exists
   if(existingCommandIndex == -1){
@@ -351,7 +352,7 @@ addCommand(commandStartAlias, commandDescription, commandExecutionReference){
 * Adds Command to Local Command definition or overwrites exising one
 * @param {String} programStartAlias Alias that the command will be started with in the console input
 * @param {String} commandDescription A Description of the command (newline marked with /n)
-* @param {commandExecutionType} programExecutionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
+* @param {executionType} programExecutionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
 * @param {String} [customProgramPath = null] OptionalParameter for adding a customProgramPath to a program (null = no CustomPath)
 * @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
 **/
@@ -506,11 +507,11 @@ getCommandObject(commandIndex){
 /**
 * Returns the execution reference of an command
 * @param {int} commandIndex Index of the command
-* @return {commandExecutionType} ExecutionRefernce to the requested Index or null if index doesnt exist
+* @return {executionType} ExecutionRefernce to the requested Index or null if index doesnt exist
 **/
-getCommandExecutionReference(commandIndex){
+getexecutionReference(commandIndex){
   if(commandIndex >= 0 && commandIndex < this.length){
-    return this.#commandArray[commandIndex].commandExecutionReference;
+    return this.#commandArray[commandIndex].executionReference;
   }
   //else
     return null;
@@ -587,18 +588,18 @@ getCommandIsProgram(commandIndex){
 * @return {Promise(String[])} Answer Array which each line as seperate, NULL if not successfull inside of a Promise
 **/
 async executeCommandFunction(command, executingConsole, optionalProgramParameters){
-var commandIndex = this.getCommandIndex(command);
+let commandIndex = this.getCommandIndex(command);
 //If Command not found then return null
 if(commandIndex == -1){
  return null;
 }
 
 //Execute Execution Reference and parse Promise if neccessary
-var commandResponse = await this.#commandArray[commandIndex].commandExecutionReference(command, executingConsole);
+let commandResponse = await this.#commandArray[commandIndex].executionReference(command, executingConsole);
 
 if(commandResponse == null){
  //Return empty response Array
- var emptyResponseArray = [];
+ let emptyResponseArray = [];
  return emptyResponseArray;
 }
 

@@ -183,8 +183,8 @@ requestConfirm(statement){
   //Disable manual execution with enter
   this.disableInputManualExecution();
 
-  //Save old CommandExecutionReference
-  let oldCommandExecutionReference = this.currentActiveCommandDefinition;
+  //Save old executionReference
+  let oldexecutionReference = this.currentActiveCommandDefinition;
 
   //Define Reset after Confirm Method
   let resetAfterConfirm = function () {
@@ -193,7 +193,7 @@ requestConfirm(statement){
     //Reenable Manual execution
     this.enableInputManualExecution();
     //Rewrite previously saved oldExecutionReferenz
-    this.#overwriteCurrentActiveExecutionReference(oldCommandExecutionReference);
+    this.#overwriteCurrentActiveExecutionReference(oldexecutionReference);
   }.bind(this);
 
   //replace Execution reference temporary with a reference that contains the yes and no answer
@@ -290,6 +290,8 @@ enableCommandInput(){
   this.#consoleInput.focus();
   //Set Consoleflag to input disabled
   this.#inputActive = true;
+  //Recalculate Input size in case path changed while disabled
+  this.#adjustInputCommandWidth();
 }
 
 /**
@@ -305,7 +307,7 @@ enableCommandInput(){
   }
 
   //Overwrite currentProgram command definition
-  this.#programs[this.#programs.length - 1].overwriteCurrentCommandExecutionReferenceForProgram(newExecutionReference);
+  this.#programs[this.#programs.length - 1].overwriteCurrentexecutionReferenceForProgram(newExecutionReference);
 }
 
 /**
@@ -453,10 +455,10 @@ updateVisiblePath(){
    //create programStructureAlias
    //Add all previos programs
    for(let i = 0; i < this.#programs.length - 1; i++){
-     programStructureAlias += this.#programs[i].commandStartAlias + "/";
+     programStructureAlias += this.#programs[i].startAlias + "/";
    }
    //Add last program underlined
-   programStructureAlias += "<u>" + this.#programs[this.#programs.length - 1].commandStartAlias + "</u> >";
+   programStructureAlias += "<u>" + this.#programs[this.#programs.length - 1].startAlias + "</u> >";
 
    this.#commandLine.firstElementChild.innerHTML = programStructureAlias;
     }
@@ -484,7 +486,7 @@ get getCurrentPath(){
 **/
 get currentActiveCommandDefinition(){
   if(this.#programs.length > 0){
-    return this.#programs[this.#programs.length - 1].commandExecutionReference;
+    return this.#programs[this.#programs.length - 1].executionReference;
   }
 
     return this.#commandDefinition;
@@ -505,6 +507,7 @@ get currentActiveProgram(){
 
 /**
 * Method that starts a program
+* @throws {TypeError}
 * @param {Number} commandIndex The Index inside the commandDefinition currently used by this console
 * @private
 **/
