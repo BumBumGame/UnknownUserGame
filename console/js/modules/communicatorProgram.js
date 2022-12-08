@@ -72,6 +72,7 @@ export const RESPONSE = 4;
 * Note: This is supposed to be the main function for getting new Messages. It handles all conditions and chooses the first matching options automatically
 * @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
 * @return {String|null} Next newest unread message or the last read one if no new ones are available (or null if no message can be read)
+ * @async
 **/
 export async function getLatestMessage(chatName){
 
@@ -80,7 +81,7 @@ export async function getLatestMessage(chatName){
 
     //load latest Message from offline XML
     //Check if new message is available
-    if (!isNewMessageAvailable(chatName)) {
+    if (!await isNewMessageAvailable(chatName)) {
       //Repeat old Message (if exist)
         if(currentParserBranchPosition.length == 0 && currentParserMessagePosition == -1){
         return null;
@@ -143,6 +144,7 @@ export async function getLatestMessage(chatName){
 * Request the type of the last message that has been request through getLatestMessage()
 * @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
 * @return {Number|null} Returns Message Type id as referenced by constant or null if no message can be referenced
+ * @async
 **/
 export async function getCurrentMessageType(chatName){
    return latestMassageType;
@@ -152,6 +154,7 @@ export async function getCurrentMessageType(chatName){
 * Checks wether there is a new method available to read on the current Path
 * @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
 * @return {Boolean} Returns true or false whether a new Message is available on the given Chat
+ * @async
 **/
 export async function isNewMessageAvailable(chatName){
   //Check if Module is awaiting a question Answer
@@ -182,6 +185,7 @@ export async function isNewMessageAvailable(chatName){
 * Gets all answer Options for current Question
 * @param {String} chatName The Name of the chat (a.e filename) - If an offlineXml is loaded this Parameter does not have any effect
 * @return {String[][]|null} 2dim String Array with each entry containing the answer id as the first index and the answer TextContent as the second
+ * @async
 **/
 export async function getCurrentAnswerOptionsAsString(chatName){
   //Return null if not awaiting Question Replay
@@ -219,7 +223,7 @@ let currentAnswerOptions = getCurrentOfflineAnswerOptions();
 
 //Check if answer index is valid
 if(typeof currentAnswerOptions[answerIndex] === "undefined"){
-  throw new Error("Error: Answer Index doe not exist!");
+  throw new Error("Error: Answerindex does not exist!");
 }
 
 //Parse the chosen Answer
@@ -301,20 +305,28 @@ export async function getChatLog(chatname){
     let output = [];
     //Save old parser
     let oldParserData = currentParserBranchPosition;
-    //Overwrite current parser and simulate a new go through by using the saved answers
-    currentParserBranchPosition = [];
+    let oldmessageParserData = currentParserMessagePosition;
+    //Overwrite current parser and simulate a new go through by using the saved answers (start with 1st old branch)
+    currentParserBranchPosition = [oldParserData[0]];
+    currentParserMessagePosition = -1;
     //Start simulation
     //create counter
     let i = 0;
     //create counter for questions
     let questionCounter = 0;
-    //Loop until no new messages are found
-    while(isNewMessageAvailable()){
+    //Loop until no new messages are found or an unanswered Question is found
+    while(await isNewMessageAvailable(chatname)){
       //Add current Message to output array
-      output[i] = [getLatestMessage(), getCurrentMessageType()];
+      output[i] = [await getLatestMessage(chatname), await getCurrentMessageType(chatname)];
 
       //Check whether questions answer needs to be send
-      if(output[i][1] == QUESTION){
+      if(output[i][1] === QUESTION){
+        //Check if answer for Question is available
+        if(questionCounter >= offlineResponseTracker.length){
+          //If true: Remove last question from output and end Simulation
+          output.pop();
+          break;
+        }
         //Send saved Answer from Buffer
         sendCurrentQuestionAnswer("", offlineResponseTracker[questionCounter]);
         //Save Response as next Element of output
@@ -329,6 +341,7 @@ export async function getChatLog(chatname){
 
     //reset actual parser
     currentParserBranchPosition = oldParserData;
+    currentParserMessagePosition = oldmessageParserData;
     //Return answers
     return output;
     }else{
@@ -389,8 +402,7 @@ export async function setOfflineXML(pathToXML){
   //Save xml in variable
   xmlFile = loadedXmlFile;
 
-  //Set first brach
-  if(currentParserBranchPosition.length == 0){
+  //Set first branch
     let newBranchIndex = getCurrentFirstConditionMatchingBranchIndex();
     //If not possible:
     if(newBranchIndex == null){
@@ -398,7 +410,6 @@ export async function setOfflineXML(pathToXML){
     }
     //else
     addNextBranchToParser(newBranchIndex);
-  }
 
   //return true
   return true;
