@@ -6,6 +6,7 @@
 //---Manage Default Command Methods---------------------------------
 /**
 * Static class which contains all Default Commands
+* @class
 **/
 class DefaultCommands{
   //Private Variable containing all Default Commands
@@ -24,7 +25,7 @@ class DefaultCommands{
       //If Object is valid: Add it to defaultCommands
       this.#defaultCommands.push(commandObject);
     }catch(e){
-      console.log(e);
+      throw e;
     }
 
   }
@@ -60,83 +61,37 @@ class DefaultCommands{
 
 /**
 * Class that represents an Command
+* @class
 **/
 class Command{
-//bool if command is a program that needs to be started
-#isProgram;
 //start alias of the command
 #commandStartAlias;
 //Description of the Command
 #commandDescritption;
 //Object of type commandExecutionType that holds either an commandDefinition or an Reference to a function
 #commandExecutionReference;
-//Object which holds a overwrite Value for the commandexecution reference
-#commandExecutionReferenceOverwrite;
-//-Program only Datafields
-//Custom path that will be used for the program
-#customProgramPath;
-//Custom Program Parameters
-#customProgramParameters;
 
 /**
 * constructor of Command class
 * @throws {TypeError}
 * @param {String} commandStartAlias First Word/Alias that the command Starts with
 * @param {String} commandDescritption The description of the Command
-* @param {Boolean} isProgram Boolean that sets if the Command starts a new Program or executes a simple function
 * @param {commandExecutionType} commandExecutionReference Reference to the CommandDefinition or the function that shall be used to execute the Command/Programm
-* @param {String} [customProgramPath = null] OptionalParameter for adding a customProgramPath to a program (null = no CustomPath)
-* @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
-* @param {Object} [customProgramParameters = {}] Object which contains custom Program Parameters (Default: Emtpy Object)
 **/
-constructor(commandStartAlias, commandDescritption, isProgram, commandExecutionReference, customProgramPath = null, exitable = true, customProgramParameters = {}){
-  //Set default for overwriteCommandDefinition
-  this.#commandExecutionReferenceOverwrite = null;
+constructor(commandStartAlias, commandDescritption, commandExecutionReference){
 
-  //Check and save commandExececutionReference
-  if(typeof commandExecutionReference === "object"){
-
-     if(!isProgram){
-       throw new TypeError("For isProgram = false, commandExecutionReference needs to be of type function!");
-      }
-
-     if(!commandExecutionReference instanceof CommandDefinition){
-       throw new TypeError("commandExececutionReference for isProgram = true, needs to be an instace of CommandDefinition!");
-     }
-
-       //IF command is a program
-
-       //Save custom path
-       this.#customProgramPath = customProgramPath;
-
-       //Add exit function to executionreference if program is exitable
-       if(exitable){
-         commandExecutionReference.addCommand("exit", "Exists the current Program", exitProgram);
-       }
-        //Get default Commands
-        let defaultCommands = DefaultCommands.defaultCommandList;
-        //Add all default Commands
-        for(let i = 0; i < defaultCommands.length; i++){
-          //Add All loaded Commands
-          commandExecutionReference.addCommandObject(defaultCommands[i]);
-        }
-
+  //Check if conditions of a command are met
+  //(Only if this class is instantietet directly!!!)
+  if(typeof commandExecutionReference !== "function" && this.constructor === Command){
+      throw new TypeError("commandExececutionReference for a Command, needs to be an function!");
   }
 
-  if(typeof commandExecutionReference === "function" && isProgram){
-      throw new TypeError("commandExececutionReference for isProgram = true, needs to be an instace of CommandDefinition!");
-  }
-
-  //Save Custom Program Parameters
-  this.#customProgramParameters = customProgramParameters;
   //Save Command execution reference
   this.#commandExecutionReference = commandExecutionReference;
   //Save startAlias
   this.#commandStartAlias = commandStartAlias.trim();
   //Save description
   this.#commandDescritption = commandDescritption.trim();
-  //Save isProgram
-  this.#isProgram = isProgram;
 }
 
 /**
@@ -161,73 +116,10 @@ static isCommand(object, errorThrow = false){
 }
 
 /**
-*Checks if object is a program
-* @static
-* @param {Object} object Object to be checked
-* @param {Boolean} [errorThrow=false] Determines whether an automatic error is thrown
-* @return {Boolean} Returns true or false (if errorThrow = true: Exeption thrown insted of fall)
-* @throws {TypeError} Throws type error if errorThrow = true
-
-**/
-static isProgram(object, errorThrow = false){
-  if(!(object instanceof Command)){
-   if(errorThrow){
-   throw new TypeError("Object needs to be of Type Command!");
-   }
-
-   //Check if programObject is a program
-   if(!object.isProgram){
-    if(errorThrow){
-    throw new TypeError("Object needs to be a program!");
-    }
-
-    return false
-   }
-
-   return false;
-  }
-
-  return true;
-}
-
-/**
-* Overwrites the current Command executionreference (only works if this command is a program)
-* @throws {TypeError}
-* @param {CommandDefinition} newCommandExecutionReference Reference to the new CommandDefintion thall overwrites the old one
-**/
-overwriteCurrentCommandExecutionReferenceForProgram(newCommandExecutionReference){
-  if(!this.#isProgram){
-    throw new TypeError("Command has to be a program in order to overwrite the current ExecutionReference")
-  }
-
-  if(!newCommandExecutionReference instanceof CommandDefinition){
-    throw new TypeError("newCommandExecutionReference needs to be an instace of CommandDefinition!");
-  }
-
-  this.#commandExecutionReferenceOverwrite = newCommandExecutionReference;
-}
-
-/**
-* Resets the executionReference to its original State when the Program was created
-**/
-resetCurrentCommandExecutionReferenceForProgram(){
-  this.#commandExecutionReferenceOverwrite = null;
-}
-
-/**
-* Sets a custom Parameter for the specified key and Value (existing Key values will be overidden!)
-* @param {String} key The Key for the custom Parameter
-* @param {*} value The Value of the optional Parameter (Can be of any type)
-**/
-setCustomParameter(key, value){
-  this.#customProgramParameters[key] = value;
-}
-
-/**
 * Returns the current commandStartAlias
 * @return {String} The commandStartAlias of the Command
 **/
-get commandStartAlias(){
+get startAlias(){
   return this.#commandStartAlias;
 }
 
@@ -235,16 +127,20 @@ get commandStartAlias(){
 * Returns the description of the command
 * @return {String} Description of the Command
 **/
-get commandDescritption(){
+get description(){
   return this.#commandDescritption;
 }
 
 /**
-* Return if the command is a program or not
-* @return {Boolean} if command is a Program or not
+* Returns if the Object is a program or not
+* @return {Boolean} if Object is a Program or not
 **/
 get isProgram(){
-   return this.#isProgram;
+  if(this instanceof Program){
+    return true;
+  }
+  //else (if Program)
+   return false;
 }
 
 /**
@@ -252,52 +148,169 @@ get isProgram(){
 * @return {commandExecutionType} reference to function or Command Defintion for execution
 **/
 get commandExecutionReference(){
-  //Return standard execution Reference if no overwrite is found
-  if(this.#commandExecutionReferenceOverwrite == null){
    return this.#commandExecutionReference;
-  }
-  //Return overwrite Reference if one is set
-  return this.#commandExecutionReferenceOverwrite;
+}
+
 }
 
 /**
-* Return CommandCustom path as String or null if no one has been set
-* @return {String|null} CustomPath as String or null if no one exists or command not a Program
+* Class represents a Program
+* @class
+* @augments Command
 **/
-get customProgramPath(){
-  //If command is not a program return null
-  if(!this.isProgram){
-    return null;
+class Program extends Command{
+  //Custom path that will be used for the program
+  #customProgramPath;
+  //Custom Program Parameters
+  #customProgramParameters;
+  //Object which holds a overwrite Value for the commandexecution reference
+  #commandExecutionReferenceOverwrite;
+
+  /**
+  * constructor of Program class
+  * @throws {TypeError}
+  * @param {String} programStartAlias First Word/Alias which starts the program
+  * @param {String} programDescription The description of the Program
+  * @param {commandDefinition} programCommandDefinition Reference to the CommandDefinition
+  * @param {String} [customProgramPath = null] OptionalParameter for adding a customProgramPath to a program (null = no CustomPath)
+  * @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
+  * @param {Object} [customProgramParameters = {}] Object which contains custom Program Parameters (Default: Emtpy Object)
+  **/
+  constructor(programStartAlias, programDescription, programCommandDefinition, customProgramPath = null, exitable = true, customProgramParameters = {}){
+    //Call command class constructor to save basic data
+    super(programStartAlias, programDescription, programCommandDefinition);
+
+    //Set default for overwriteCommandDefinition
+    this.#commandExecutionReferenceOverwrite = null;
+
+    //Check and save commandExececutionReference
+    if(typeof programCommandDefinition !== "object" || !programCommandDefinition instanceof CommandDefinition){
+         throw new TypeError("commandExececutionReference for a Program, needs to be an instace of CommandDefinition!");
+    }
+         //IF command is a program
+
+         //Save custom path
+         this.#customProgramPath = customProgramPath;
+
+         //Add exit function to executionreference if program is exitable
+         if(exitable){
+           programCommandDefinition.addCommand("exit", "Exits the current Program", exitProgram);
+         }
+          //Get default Commands
+          let defaultCommands = DefaultCommands.defaultCommandList;
+          //Add all default Commands
+          for(let i = 0; i < defaultCommands.length; i++){
+         //Add All loaded Commands
+         programCommandDefinition.addCommandObject(defaultCommands[i]);
+       }
+
+
+    //Save Custom Program Parameters
+    this.#customProgramParameters = customProgramParameters;
   }
-  //Return Program Path
-  return this.#customProgramPath;
-}
 
-/**
-* Return if the command has a customProgramPath
-* @return {Boolean} if command has a customProgramPath or not
-**/
-get hasCustomProgramPath(){
-  return this.#customProgramPath !== null;
-}
+  /**
+  *Checks if object is a program
+  * @static
+  * @param {Object} object Object to be checked
+  * @param {Boolean} [errorThrow=false] Determines whether an automatic error is thrown
+  * @return {Boolean} Returns true or false (if errorThrow = true: Exeption thrown insted of fall)
+  * @throws {TypeError} Throws type error if errorThrow = true
 
-/**
-* Returns the Optional Program parameter object or null if not a program
-* @return {Object|null} Optionalparameter-Object or null if not a program
-**/
-get optionalParameters(){
-  //Return null if not a program
-  if(!this.isProgram){
-    return null;
+  **/
+  static isProgram(object, errorThrow = false){
+    if(!(object instanceof Command)){
+     if(errorThrow){
+     throw new TypeError("Object needs to be of Type Command!");
+     }
+
+     //Check if programObject is a program
+     if(!object.isProgram){
+      if(errorThrow){
+      throw new TypeError("Object needs to be a program!");
+      }
+
+      return false
+     }
+
+     return false;
+    }
+
+    return true;
   }
-  //Else: Return Optional Parameters
-  return this.#customProgramParameters;
-}
 
+  /**
+  * Sets a custom Parameter for the specified key and Value (existing Key values will be overidden!)
+  * @param {String} key The Key for the custom Parameter
+  * @param {*} value The Value of the optional Parameter (Can be of any type)
+  **/
+  setCustomParameter(key, value){
+    this.#customProgramParameters[key] = value;
+  }
+
+  /**
+  * Overwrites the current Command executionreference (only works if this command is a program)
+  * @throws {TypeError}
+  * @param {CommandDefinition} newProgramExecutionReference Reference to the new CommandDefintion which overwrites the old one
+  **/
+  overwriteCurrentCommandExecutionReferenceForProgram(newProgramExecutionReference){
+    if(!newProgramExecutionReference instanceof CommandDefinition){
+      throw new TypeError("newCommandExecutionReference needs to be an instace of CommandDefinition!");
+    }
+
+    this.#commandExecutionReferenceOverwrite = newProgramExecutionReference;
+  }
+
+  /**
+  * Resets the executionReference to its original State when the Program was created
+  **/
+  resetCurrentCommandExecutionReferenceForProgram(){
+    this.#commandExecutionReferenceOverwrite = null;
+  }
+
+  /**
+  * Return CommandCustom path as String or null if no one has been set
+  * @return {String} CustomPath as String
+  **/
+  get customProgramPath(){
+    //Return Program Path
+    return this.#customProgramPath;
+  }
+
+  /**
+  * Return if the command has a customProgramPath
+  * @return {Boolean} if command has a customProgramPath or not
+  **/
+  get hasCustomProgramPath(){
+    return this.#customProgramPath !== null;
+  }
+
+  /**
+  * Returns the Optional Program parameter object
+  * @return {Object} Optionalparameter-Object
+  **/
+  get optionalParameters(){
+    //Return Optional Parameters
+    return this.#customProgramParameters;
+  }
+
+  /**
+  * Return the Reference to the executionInformation
+  * @return {commandExecutionType} reference to function or Command Defintion for execution
+  **/
+  get commandExecutionReference(){
+    //Return standard execution Reference if no overwrite is found
+    if(this.#commandExecutionReferenceOverwrite == null){
+     return this.commandExecutionReference;
+    }
+    //Return overwrite Reference if one is set
+    return this.#commandExecutionReferenceOverwrite;
+  }
 }
 
 /**
 * Class that holds all Command defintitions for a console
+* @class
 **/
 class CommandDefinition{
 //Array Collection of commands
@@ -321,7 +334,7 @@ addCommand(commandStartAlias, commandDescription, commandExecutionReference){
   let existingCommandIndex = this.getCommandIndex(commandStartAlias);
 
   //Create a new command and add it to array
-  var newCommand = new Command(commandStartAlias, commandDescription, false, commandExecutionReference);
+  var newCommand = new Command(commandStartAlias, commandDescription, commandExecutionReference);
 
   //Add or overide program if alias exists
   if(existingCommandIndex == -1){
@@ -347,7 +360,7 @@ addProgram(programStartAlias, programDescription, programExecutionReference, cus
   let existingCommandIndex = this.getCommandIndex(programStartAlias);
 
   //Create new program
-  let newProgram = new Command(programStartAlias, programDescription, true, programExecutionReference, customProgramPath, exitable);
+  let newProgram = new Program(programStartAlias, programDescription, programExecutionReference, customProgramPath, exitable);
 
   //Add or overide program if alias exists
   if(existingCommandIndex == -1){
@@ -364,10 +377,18 @@ addProgram(programStartAlias, programDescription, programExecutionReference, cus
 * Adds Program Object to command list or overides existing one
 * @param {Objekt:Command} programObject The command Object to be added
 * @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
+* @throws{TypeError}
 **/
 addProgramObject(programObject, exitable = true){
+  //Check if programObject is program
+  try{
+  Program.isProgram(programObject, true);
+  }catch(error){
+  throw error;
+  return;
+  }
   //get existing alias commandIndex (or -1 if not exists)
-  let existingCommandIndex = this.getCommandIndex(programObject.commandStartAlias);
+  let existingCommandIndex = this.getCommandIndex(programObject.startAlias);
 
   //Add or overide program if alias exists
   if(existingCommandIndex == -1){
@@ -382,10 +403,18 @@ addProgramObject(programObject, exitable = true){
 /**
 * Adds Command Object to command List or overides existing one
 * @param {Objekt:Command} commandObject The command Object to be added
+* @throws {TypeError}
 **/
 addCommandObject(commandObject){
+  //Check if programObject is program
+  try{
+  Command.isCommand(commandObject, true);
+  }catch(error){
+  throw error;
+  return;
+  }
   //get existing alias commandIndex (or -1 if not exists)
-  let existingCommandIndex = this.getCommandIndex(commandObject.commandStartAlias);
+  let existingCommandIndex = this.getCommandIndex(commandObject.startAlias);
 
   //Add or overide program if alias exists
   if(existingCommandIndex == -1){
@@ -425,12 +454,12 @@ removeCommand(commandIndex){
 * @return {int} Index of the Command, if not found -1
 **/
 getCommandIndex(command){
- var currentCommandStartAlias = command.split(" ")[0].trim().toLowerCase();
+ let currentCommandStartAlias = command.split(" ")[0].trim().toLowerCase();
 
  //Search all commands
  for(var i = 0; i < this.#commandArray.length; i++){
 
-    if(this.#commandArray[i].commandStartAlias.toLowerCase() == currentCommandStartAlias){
+    if(this.#commandArray[i].startAlias.toLowerCase() == currentCommandStartAlias){
       return i;
     }
 
@@ -454,7 +483,7 @@ get length(){
 **/
 getCommandAlias(commandIndex){
   if(commandIndex >= 0 && commandIndex < this.length){
-      return this.#commandArray[commandIndex].commandStartAlias;
+      return this.#commandArray[commandIndex].startAlias;
   }
       //else
     	return null;
@@ -494,7 +523,7 @@ getCommandExecutionReference(commandIndex){
 **/
 getCommandDescription(commandIndex){
   if(commandIndex >= 0 && commandIndex < this.length){
-    var descriptionArray = this.#commandArray[commandIndex].commandDescritption.split("\n");
+    var descriptionArray = this.#commandArray[commandIndex].description.split("\n");
 
     return descriptionArray;
   }
@@ -510,7 +539,7 @@ getCommandDescription(commandIndex){
 **/
 getFirstLineOfCommandDescription(commandIndex){
   if(commandIndex >= 0 && commandIndex < this.length){
-      return this.#commandArray[commandIndex].commandDescritption.split("\n")[0];
+      return this.#commandArray[commandIndex].description.split("\n")[0];
   }
 
   //else
@@ -530,8 +559,8 @@ getCommandsStartingWith(commandStart){
   //Check Start of each Alias and add any Matching to Array
   for(var i = 0; i < this.length; i++){
 
-    if(this.#commandArray[i].commandStartAlias.toLowerCase().startsWith(commandStart)){
-      fittingCommandArray.push(this.#commandArray[i].commandStartAlias);
+    if(this.#commandArray[i].startAlias.toLowerCase().startsWith(commandStart)){
+      fittingCommandArray.push(this.#commandArray[i].startAlias);
     }
 
   }
@@ -600,6 +629,7 @@ const localCommands = new CommandDefinition();
 
 /**
 * Class that is used to process Commands-------------------------------------------------------------------------------------------
+* @class
 */
 class CommandProcessor{
 //Current command Answer variable

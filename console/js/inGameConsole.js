@@ -263,21 +263,33 @@ clearCommandInput(){
 * Hides InputCommandLine
 **/
 disableCommandInput(){
+  //Skip if already disabled
+ if(!this.#inputActive){
+   return;
+ }
  this.clearCommandInput();
  this.#commandLine.style.display = "none";
  this.#removeActiveEventListenerForConsole();
  this.#consoleInput.disabled = true;
+ //Set Consoleflag to input disabled
+ this.#inputActive = false;
 }
 
 /**
 * Shows input CommandLine of console
 **/
 enableCommandInput(){
+  //Skip if already enabled
+ if(this.#inputActive){
+   return;
+ }
   this.clearCommandInput();
   this.#commandLine.removeAttribute("style");
   this.#consoleInput.removeAttribute("disabled");
   this.#addActiveEventListenerForConsole();
   this.#consoleInput.focus();
+  //Set Consoleflag to input disabled
+  this.#inputActive = true;
 }
 
 /**
@@ -522,7 +534,7 @@ get currentActiveProgram(){
 **/
 startCustomProgram(programName, programCommandDefinition, customProgramPath = null, programExitable = true, customProgramParameters = {}){
 //Create and start custom Object
-startCustomProgramWithObject(new Command(programName, "", true, programCommandDefinition, customProgramPath, programExitable, customProgramParameters));
+startCustomProgramWithObject(new Program(programName, "", programCommandDefinition, customProgramPath, programExitable, customProgramParameters));
 }
 
 /**
@@ -532,7 +544,7 @@ startCustomProgramWithObject(new Command(programName, "", true, programCommandDe
 startCustomProgramWithObject(programObject){
 //Check if Object is a program
 try {
-  Command.isProgram(programObject, true);
+  Program.isProgram(programObject, true);
 
   //Push new program on top of program Stack
   this.#programs.push(programObject);
@@ -749,6 +761,14 @@ static setFocusOnConsole(console){
   }
   //Set datafield to current active Console
   this.currentConsoleInFocus = console;
+}
+
+/**
+* Method returns whether input is enabled on this console or not
+* @return {Bool} Returns if consoleInputisActive
+**/
+get inputIsActive(){
+  return this.#inputActive;
 }
 
 }

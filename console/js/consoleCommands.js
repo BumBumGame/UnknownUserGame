@@ -1,6 +1,7 @@
 /**
 * Stores all the available programs which can be added to consoles
 * All programes can be accessed through their start alias as key for the array
+* @class
 **/
 class ProgramCollection{
   static #programList = [];
@@ -12,7 +13,7 @@ class ProgramCollection{
   static addProgramToCollection(programObject){
     //Check if new program is a program
     try {
-      Command.isProgram(programObject, true);
+      Program.isProgram(programObject, true);
 
       //add program to collection
       this.#programList.push(programObject);
@@ -203,6 +204,6 @@ communicatorCommandDefinition.addCommand("openChat", "Opens chosen chat. \n \n"
 //-----------------------------------------------------------
 
 //Create Communicator Program and add it to Program Collection
-ProgramCollection.addProgramToCollection(new Command("Communicator", "Ein Programm, dass die Kommunikation über das System möglich macht.", true, communicatorCommandDefinition));
+ProgramCollection.addProgramToCollection(new Program("Communicator", "Ein Programm, dass die Kommunikation über das System möglich macht.", communicatorCommandDefinition));
 }
 //---------------------------------------------------
