@@ -2,13 +2,17 @@
 * Stores all the available programs which can be added to consoles
 * All programes can be accessed through their start alias as key for the array
 * @class
+ * @static
 **/
 class ProgramCollection{
-  static #programList = [];
+    //Assoziative Array which contains all program Objects
+    static #programList = [];
+    //saves size
+    static #collectionSize = 0;
 
   /**
   * Adds a new program to the Collection
-  @param {Command} programObject the Object of the new program
+  @param {Program} programObject the Object of the new program
   **/
   static addProgramToCollection(programObject){
     //Check if new program is a program
@@ -16,7 +20,9 @@ class ProgramCollection{
       Program.isProgram(programObject, true);
 
       //add program to collection
-      this.#programList.push(programObject);
+      this.#programList[programObject.startAlias] = programObject;
+      //count up size
+        this.#collectionSize++;
     } catch (e) {
       console.log(e);
     }
@@ -24,43 +30,68 @@ class ProgramCollection{
   }
 
   /**
-  * Searches and returnes the index of program matching the Alias
+  * Returns the program corresponding to the Alias or null if not found
   * @param {String} programAlias Alias of the program
-  * @return {Number} Index of the Program or -1 if not found
+  * @return {Program|null} Programobject or null if not found
   **/
-  static getIndexOfProgram(programAlias){
-    //Run through list until alias found
-    for(let i = 0; i < this.length; i++){
-      if(this.#programList[i].commandStartAlias == programAlias.trim()){
-        return i;
-      }
+  static getProgram(programAlias){
+      //Check if program exists
+    if(!this.programExists(programAlias)){
+        return null;
     }
 
-    //else:
-    return -1;
+    //If exists: return program
+      return this.#programList[programAlias];
   }
 
   /**
-  * Removes program with corresponding Index from Collection
-  * @param {Number} index index of the program to be removed
+  * Removes program with corresponding programAlias from Collection (if existing)
+  * @param {String} programAlias Alias of the program to be removed
   **/
-  static removeProgram(index){
-    this.#programList.splice(index, 1);
+  static removeProgram(programAlias){
+      if(this.programExists(programAlias)){
+          //delete from main list
+         delete this.#programList[programAlias];
+         //cout down size
+          this.#collectionSize--;
+      }
   }
 
   /**
   * Returns the complete program list
-  * @return {AssioArray} Programs in assioative array with their alias as key
+  * @return {Object} Programs in assioative array with their alias as key
   **/
   static get wholeProgramCollection(){
     return this.#programList;
   }
 
+    /**
+     * Returns the complete program list as an interative array
+     * @return {Array} Programs in normal array
+     **/
+    static get wholeProgramCollectionAsArray(){
+        let tmpArray = [];
+        for(let key in this.#programList){
+            tmpArray.push(this.#programList[key]);
+        }
+        return tmpArray;
+    }
+
   /**
   * Returns the length of the Collection
+   * @return {Number} size of the Collection
   **/
   static get length(){
-    return this.#programList.length;
+    return this.#collectionSize;
+  }
+
+    /**
+     * Checks whether a program exists inside of the Collection
+     * @param {String} programAlias Alias of the program
+     * @return {Boolean} True: Program Exists, False: it doesnt
+     */
+  static programExists(programAlias){
+      return typeof this.#programList[programAlias] !== undefined;
   }
 
 }
