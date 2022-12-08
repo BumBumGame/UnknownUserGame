@@ -537,7 +537,7 @@ get currentActiveProgram(){
 **/
 startCustomProgram(programName, programCommandDefinition, customProgramPath = null, programExitable = true, customProgramParameters = {}){
 //Create and start custom Object
-startCustomProgramWithObject(new Program(programName, "", programCommandDefinition, customProgramPath, programExitable, customProgramParameters));
+this.startCustomProgramWithObject(new Program(programName, "", programCommandDefinition, customProgramPath, programExitable, customProgramParameters));
 }
 
 /**
