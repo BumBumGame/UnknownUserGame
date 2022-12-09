@@ -278,7 +278,7 @@ class Program extends Command{
 
     /**
      * Sets an Initialisation function, which will be called when the program is started
-     * Function will be called with optional parameter containing the executing Console!
+     * Function will be called with optional parameter containing the executing Console and optionalProgramParameters: function (executingConsole,optionalProgramParameters)!
      * @param {'function' | null} initFunctionReference reference to the function or null to set no init
      * @throws {TypeError}
      */
@@ -297,7 +297,7 @@ class Program extends Command{
 
     /**
      * Sets an Exit function to the program which will be executed along the exit command
-     * Function will be called with optional parameter containing the executing Console!
+     * Function will be called with optional parameter containing the executing Console and optionalProgramParameters: function (executingConsole,optionalProgramParameters)!
      * @param {'function' | null} preExitFunctionReference reference to the function or null to set no exit
      * @throws{TypeError}
      */
@@ -565,9 +565,9 @@ getCommandAlias(commandIndex){
 }
 
 /**
-* Functions returns Command commandObject
+* Functions returns Command or Program Object at index
 * @param {int} commandIndex Index of the command which Alias shall be returned;
-* @return {Command} Command Object
+* @return {Command|Program} Command Object
 **/
 getCommandObject(commandIndex){
     if(commandIndex >= 0 && commandIndex < this.length){

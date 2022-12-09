@@ -494,7 +494,7 @@ get currentActiveCommandDefinition(){
 
 /**
 * Method which returns the currently active Program
-* @return {Command|null} Command Object of the active Program or null if none is active
+* @return {Program|null} Command Object of the active Program or null if none is active
 **/
 get currentActiveProgram(){
   //Return null if no program is active
@@ -526,7 +526,7 @@ get currentActiveProgram(){
   //Set path to changed
   this.#pathChanged = true;
   //Run init function of program with console parameter
-  programObject.initFunction(this);
+  programObject.initFunction(this, this.currentActiveProgram.optionalParameters);
 }
 
 /**
@@ -534,7 +534,7 @@ get currentActiveProgram(){
 * @param {String} programName Alias of the Program
 * @param {CommandDefinition} programCommandDefinition Command Definiton for the Program
 * @param {String} [customProgramPath = null] OptionalParameter for adding a customProgramPath to a program (null = no CustomPath)
-* @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
+* @param {boolean} [programExitable = true] OptionalParameter which controls if the program will be exitable
 * @param {Object} [customProgramParameters = {}] Object which contains custom Program Parameters (Default: Emtpy Object)
 **/
 startCustomProgram(programName, programCommandDefinition, customProgramPath = null, programExitable = true, customProgramParameters = {}){
@@ -544,7 +544,7 @@ this.startCustomProgramWithObject(new Program(programName, "", programCommandDef
 
 /**
 * Starts and injects a custom Program into the console (will be started over currentrunning program)
-@param {Command} programObject Instance of class comand in Program Mode
+@param {Program} programObject Instance of class comand in Program Mode
 **/
 startCustomProgramWithObject(programObject){
 //Check if Object is a program
@@ -558,7 +558,7 @@ try {
   this.#pathChanged = true;
   this.updateVisiblePath();
   //Call init function of program
-    programObject.initFunction(this);
+    programObject.initFunction(this, this.currentActiveProgram.optionalParameters);
 } catch (e) {
   return;
 }
@@ -571,7 +571,7 @@ closeCurrentProgram(){
   //if there is a program to close - close it
   if(this.#programs.length > 0){
       //Run preExitFunction of program being closed
-      this.#programs[this.#programs.length - 1].preExitFunction();
+      this.currentActiveProgram.preExitFunction(this, this.currentActiveProgram.optionalParameters);
      //if there are more than one program in que
      if(this.#programs.length > 1){
        this.#programs.pop();
