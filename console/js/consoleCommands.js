@@ -170,19 +170,18 @@ async function openChat(command, executingConsole){
    executingConsole.printOnConsole(chatLog[i][0], communicatorModule.getClassNameToMessageType(chatLog[i][1]));
  }
 
- //Create variable for reference to the interval which checks for new messages in a chat
- //(will be stopped as soon as Chat is closed)
- let newMessageCheckInterval;
-
  //Start new programm on the executing Console with the Chatname as title
- executingConsole.startCustomProgram("Chat: " + chatName, openChatProgramCommands, null, true, {checkInterval: newMessageCheckInterval});
+  let newProgram = new Program("Chat:" + chatName, "", openChatProgramCommands);
+ executingConsole.startCustomProgramWithObject(newProgram);
+ //Add a PreExit Function to kill check interval after ending
+ executingConsole.currentActiveProgram.addPreExitFunction(function(consoleObject, optionalParameters) {
+     clearInterval(optionalParameters["checkIntervalReference"]);
+ });
 
  //Create synced temp function for Message check
  let checkForNewMessage = function () {
    //Create temp async function to be waited for
    communicatorModule.isNewMessageAvailable(chatName).then(function (result) {
-     //TEMP: Log
-     console.log("check");
      //Set store variables
      let latestMessage;
      let latestMessageType;
@@ -203,24 +202,8 @@ async function openChat(command, executingConsole){
    });
  }
 
- //Start Interval for check funtion
- newMessageCheckInterval = setInterval(checkForNewMessage, 1000);
-
- /**--Old Intveral Version----
- //Start Message check Interval
- newMessageCheckInterval = setInterval(async function () {
-    //Check if new Message is available
-    if(await communicatorModule.isNewMessageAvailable(chatName)){
-      //TRUE: Print latest Message
-      //get latest Message and Type:
-      let latestMessage = await communicatorModule.getLatestMessage(chatName);
-      let latestMessageType = await communicatorModule.getCurrentMessageType(chatName);
-      //Print Message
-      executingConsole.printOnConsole(latestMessage, communicatorModule.getClassNameToMessageType(latestMessageType));
-    }//FALSE: Do nothing
-
- }, 1000);
- **/
+ //Start Interval for check funtion and add the reference to the program
+ newProgram.setCustomParameter("checkIntervalReference", setInterval(checkForNewMessage, 1000));
 
 }
 
