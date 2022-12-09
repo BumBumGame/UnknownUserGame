@@ -497,7 +497,7 @@ addCommandObject(commandObject){
     this.#commandArray.push(commandObject);
   }else{
     //override program
-    this.#commandArray[existingCommandIndex] = newProgram;
+    this.#commandArray[existingCommandIndex] = commandObject;
   }
 
 }
