@@ -388,7 +388,6 @@ class ConsoleTextLoadingAnimation extends ConsoleAnimation{
     * @param {Number} playtime (in ms) Time after the animation stops (gets paused) (playtime = 0 --> indefinite)
     * @param {Number} steptime (in ms) Time how long the animation will wait between each Step
     * @param {Number} maxDotCount Number of dots that will be displayed (def:3)
-    * @param {Number} steptime (in ms) Time between each step (=speed)
     * @param {String} animationText Text that is displayed by the Animation
     * @param {Object:InGameConsole} consoleObject Console animation will be aplied to
     **/
