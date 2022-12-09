@@ -306,16 +306,18 @@ export async function getChatLog(chatname){
     //Save old parser
     let oldParserData = currentParserBranchPosition;
     let oldmessageParserData = currentParserMessagePosition;
+    let oldAwaitingQuestion = awaitingQuestionReply;
     //Overwrite current parser and simulate a new go through by using the saved answers (start with 1st old branch)
     currentParserBranchPosition = [oldParserData[0]];
     currentParserMessagePosition = -1;
+    awaitingQuestionReply = false;
     //Start simulation
     //create counter
     let i = 0;
     //create counter for questions
     let questionCounter = 0;
-    //Loop until no new messages are found or an unanswered Question is found
-    while(await isNewMessageAvailable(chatname)){
+    //Loop until no new messages are found or an unanswered Question is found or the oldParserLimit is hit
+    while(await isNewMessageAvailable(chatname) && (oldParserData.length === currentParserBranchPosition.length ? (oldParserData[oldParserData.length - 1] === currentParserBranchPosition[currentParserBranchPosition.length - 1] && currentParserMessagePosition !== oldmessageParserData) : true)){
       //Add current Message to output array
       output[i] = [await getLatestMessage(chatname), await getCurrentMessageType(chatname)];
 
@@ -323,8 +325,7 @@ export async function getChatLog(chatname){
       if(output[i][1] === QUESTION){
         //Check if answer for Question is available
         if(questionCounter >= offlineResponseTracker.length){
-          //If true: Remove last question from output and end Simulation
-          output.pop();
+          //If true: Leave loop
           break;
         }
         //Send saved Answer from Buffer
@@ -342,6 +343,7 @@ export async function getChatLog(chatname){
     //reset actual parser
     currentParserBranchPosition = oldParserData;
     currentParserMessagePosition = oldmessageParserData;
+    awaitingQuestionReply = oldAwaitingQuestion;
     //Return answers
     return output;
     }else{
