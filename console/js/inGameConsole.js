@@ -518,13 +518,15 @@ get currentActiveProgram(){
   //Check if command is acutally a program
   if(!activeCommandDefinition.getCommandIsProgram(commandIndex)){
     throw new TypeError("Given Command is not a Program!");
-    return;
   }
 
   //Get commandObject and add it to program Array
-  this.#programs.push(activeCommandDefinition.getCommandObject(commandIndex));
+    let programObject = activeCommandDefinition.getCommandObject(commandIndex);
+  this.#programs.push(programObject);
   //Set path to changed
   this.#pathChanged = true;
+  //Run init function of program with console parameter
+  programObject.initFunction(this);
 }
 
 /**
@@ -555,6 +557,8 @@ try {
   //Update Path
   this.#pathChanged = true;
   this.updateVisiblePath();
+  //Call init function of program
+    programObject.initFunction(this);
 } catch (e) {
   return;
 }
@@ -566,9 +570,11 @@ try {
 closeCurrentProgram(){
   //if there is a program to close - close it
   if(this.#programs.length > 0){
+      //Run preExitFunction of program being closed
+      this.#programs[this.#programs.length - 1].preExitFunction();
      //if there are more than one program in que
      if(this.#programs.length > 1){
-       this.#programs.splice(this.#programs.length - 1, 1);
+       this.#programs.pop();
      }else{
         //if its the last program in cue
         //clear program array
@@ -577,7 +583,6 @@ closeCurrentProgram(){
 
      //set path change to true
      this.#pathChanged = true;
-
   }
 
 }

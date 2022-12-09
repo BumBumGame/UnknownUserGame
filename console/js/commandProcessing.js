@@ -165,13 +165,17 @@ class Program extends Command{
   #customProgramParameters;
   //Object which holds a overwrite Value for the execution reference
   #executionReferenceOverwrite;
+  //Stores reference for the Init function
+  #initFunctionReference;
+  //Stores reference for the preExit function
+  #preExitFunctionReference;
 
   /**
   * constructor of Program class
   * @throws {TypeError}
   * @param {String} programStartAlias First Word/Alias which starts the program
   * @param {String} programDescription The description of the Program
-  * @param {commandDefinition} programCommandDefinition Reference to the CommandDefinition
+  * @param {CommandDefinition} programCommandDefinition Reference to the CommandDefinition
   * @param {String} [customProgramPath = null] OptionalParameter for adding a customProgramPath to a program (null = no CustomPath)
   * @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
   * @param {Object} [customProgramParameters = {}] Object which contains custom Program Parameters (Default: Emtpy Object)
@@ -194,7 +198,7 @@ class Program extends Command{
 
          //Add exit function to executionreference if program is exitable
          if(exitable){
-           programCommandDefinition.addCommand("exit", "Exits the current Program", exitProgram);
+           programCommandDefinition.addCommand("exit", "Exits the current Program", Program.#exitProgram);
          }
           //Get default Commands
           let defaultCommands = DefaultCommands.defaultCommandList;
@@ -207,6 +211,10 @@ class Program extends Command{
 
     //Save Custom Program Parameters
     this.#customProgramParameters = customProgramParameters;
+    //Init init function
+    this.#initFunctionReference = function() {};
+    //Inti prexExitFunction
+    this.#preExitFunctionReference = function() {};
   }
 
   /**
@@ -255,7 +263,7 @@ class Program extends Command{
   **/
   overwriteCurrentexecutionReferenceForProgram(newProgramExecutionReference){
     if(!newProgramExecutionReference instanceof CommandDefinition){
-      throw new TypeError("newexecutionReference needs to be an instace of CommandDefinition!");
+      throw new TypeError("newProgramExecutionReference needs to be an instance of CommandDefinition!");
     }
 
     this.#executionReferenceOverwrite = newProgramExecutionReference;
@@ -266,6 +274,72 @@ class Program extends Command{
   **/
   resetCurrentexecutionReferenceForProgram(){
     this.#executionReferenceOverwrite = null;
+  }
+
+    /**
+     * Sets an Initialisation function, which will be called when the program is started
+     * Function will be called with optional parameter containing the executing Console!
+     * @param {'function' | null} initFunctionReference reference to the function or null to set no init
+     * @throws {TypeError}
+     */
+  addInitFunction(initFunctionReference){
+      if(initFunctionReference == null){
+        this.#initFunctionReference = function () {};
+        return;
+      }
+      //Check if parameter is valid
+    if(typeof initFunctionReference !== 'function'){
+        throw new TypeError("Error: initFunctionReference needs to be of type 'function' or null!");
+    }
+    //If valid: store reference
+    this.#initFunctionReference = initFunctionReference;
+  }
+
+    /**
+     * Sets an Exit function to the program which will be executed along the exit command
+     * Function will be called with optional parameter containing the executing Console!
+     * @param {'function' | null} preExitFunctionReference reference to the function or null to set no exit
+     * @throws{TypeError}
+     */
+  addPreExitFunction(preExitFunctionReference){
+      if(preExitFunctionReference === null){
+        this.#preExitFunctionReference = function () {};
+        return;
+      }
+      //Check if parameter is valid
+      if(typeof preExitFunctionReference !== 'function'){
+          throw new TypeError("Error: initFunctionReference needs to be of type 'function' or null!");
+      }
+      //If valid: store reference
+      this.#preExitFunctionReference = preExitFunctionReference;
+  }
+
+  /** Function for exiting inside a program
+   * @param {String} command command which has been put in the console
+   * @param {InGameConsole} executingConsole console Object which the command has been executed on
+   * @private
+   * @static
+   **/
+  static #exitProgram(command, executingConsole){
+    //Call close function of executing Console
+    executingConsole.closeCurrentProgram();
+    return null;
+  }
+
+  /**
+   * Returns a reference to the init function of the program
+   * @return {'function'} reference to initFunction
+   */
+  get initFunction(){
+    return this.#initFunctionReference;
+  }
+
+  /**
+   * Returns a reference to the preExit function of the program
+   * @return {'function'} reference to preExitFunction
+   */
+  get preExitFunction(){
+    return this.#preExitFunctionReference;
   }
 
   /**
@@ -351,7 +425,7 @@ addCommand(commandStartAlias, commandDescription, executionReference){
 /**
 * Adds Command to Local Command definition or overwrites exising one
 * @param {String} programStartAlias Alias that the command will be started with in the console input
-* @param {String} commandDescription A Description of the command (newline marked with /n)
+* @param {String} programDescription A Description of the command (newline marked with /n)
 * @param {executionType} programExecutionReference A reference to the function or ProgramCommandDefinition that will be executed with this command
 * @param {String} [customProgramPath = null] OptionalParameter for adding a customProgramPath to a program (null = no CustomPath)
 * @param {boolean} [exitable = true] OptionalParameter which controls if the program will be exitable
@@ -608,21 +682,6 @@ return commandResponse;
 }
 
 }
-
-//--------------------------------------------Standard command functions
-/**
-* Function for exiting inside a program
-* @param {String} command command which has been put in the console
-* @param {InGameConsole} executingConsole console Object which the command has been executed on
-**/
-function exitProgram(command, executingConsole){
-  //Call close function of executing Console
-  executingConsole.closeCurrentProgram();
-
-  return null;
-}
-//--------------------------------------------
-
 //-------------------------------------------------
 //Create Global Command Definition Object
 const localCommands = new CommandDefinition();
