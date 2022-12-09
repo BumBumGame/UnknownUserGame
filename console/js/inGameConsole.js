@@ -374,7 +374,7 @@ async executeCommand(command){
   //Check if Command is a program
   if(currentActiveCommandDefinition.getCommandIsProgram(commandIndex)){
     //start the program
-    this.#startProgram(commandIndex);
+    await this.#startProgram(currentActiveCommandDefinition.getCommandObject(commandIndex));
 
   }else{
   //process Command
@@ -508,25 +508,25 @@ get currentActiveProgram(){
 /**
 * Method that starts a program
 * @throws {TypeError}
-* @param {Number} commandIndex The Index inside the commandDefinition currently used by this console
+* @param {Program} programObject Reference to the object of the program to be started.
 * @private
+ * @async
 **/
-#startProgram(commandIndex){
+async #startProgram(programObject){
   //Get currently used commandDefinition
   let activeCommandDefinition = this.currentActiveCommandDefinition;
 
   //Check if command is acutally a program
-  if(!activeCommandDefinition.getCommandIsProgram(commandIndex)){
+  if(!Program.isProgram(programObject)){
     throw new TypeError("Given Command is not a Program!");
   }
 
-  //Get commandObject and add it to program Array
-    let programObject = activeCommandDefinition.getCommandObject(commandIndex);
+  //Add program to array
   this.#programs.push(programObject);
   //Set path to changed
   this.#pathChanged = true;
   //Run init function of program with console parameter
-  programObject.initFunction(this, this.currentActiveProgram.optionalParameters);
+  await programObject.initFunction(this, this.currentActiveProgram.optionalParameters);
 }
 
 /**
@@ -551,16 +551,15 @@ startCustomProgramWithObject(programObject){
 try {
   Program.isProgram(programObject, true);
 
-  //Push new program on top of program Stack
-  this.#programs.push(programObject);
+  //save this context
+    let thisContext = this;
 
-  //Update Path
-  this.#pathChanged = true;
-  this.updateVisiblePath();
-  //Call init function of program
-    programObject.initFunction(this, this.currentActiveProgram.optionalParameters);
+  //Start the program and update the path after
+    this.#startProgram(programObject).then(function () {
+        //Update Path
+        thisContext.updateVisiblePath();
+    });
 } catch (e) {
-  return;
 }
 }
 
