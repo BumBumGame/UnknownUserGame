@@ -1,0 +1,39 @@
+---XML Format for communicator:
+- As Maintag <communicatorChat> will be used to create a new chat structure
+- A chatname needs to be added as Attribute chatName = [ChatName] inside of the Maintag
+  - The filename needs to be the chatName (exception: This is not needed if a chat is only loaded as OfflineXML)
+- Every Message or Question will have the Tag <communicatorChatMessage>
+  - As Types there can currently be used: messagerStatement, question, messagerWarning, message
+- The Content of every message will be defined with a <messageContent> Tag inside of <communicatorChatMessage>
+  - In Questions every possible Answer can be defined with a new <Answer> Tag
+    - To save a condition if a certain Answer has been chosen, put a setCondition=[ConditionName] Attribute in the Answer Tag (multiple can be set divided by [,])
+    - To set a false condition put a setNotCondition=[conditionName] Attribute in the Answer Tag
+- To check for a condition at any communicatorChatMessage or Answer then just put a checkCondition = [ConditionName] or checkNotCondition = [ConditionName] Attribute in the according Tag
+- To end a communicator chat put a empty <endCommunication> tag at the corresponding Spot
+
+Communicator Branches:
+- New Conversation Branches will be created with <branch> Tags at the End of the currently active branch
+- Branch tags can have an optional name = [BranchName] Attribute for better description
+- <branch> Tags can also check conditions
+- If a branch reaches its end it will check the Conditions for the new <branch> tags and will choose the first one of which all conditions are true
+- If there are no further <branch> Tags at the end of a branch, The communicator will be ended.
+- The main starting Branch needs to be defined with a branch tag
+- To jump to a branch from an answer: Put a jumpToBranch = [BranchIndex] or jumpToBranchName = [BranchName] Attribute in the Answer tag
+  - BranchIndex: Index of the Branch text starting from 0, Example: 1.Branchtag: Index = 0, 2.Branchtag: Index = 1, etc.
+  - BranchName: The name of a branch, if written as Attribute into Branch name
+  - If Branch to Jump to is not found, it will be ignored and the Reader carries on as normal
+
+Conditions:
+- Conditions don't have to be set by answers
+- Not set Conditions are treated as !true by default
+- Conditions can also be set through a Method of the communicator-Reader-Module
+- To set a Condition for the whole communication, add the checkCondition = [ConditionName] or checkNotCondition = [ConditionName] Attribute to the <communicatorChat> Tag
+- To set multiple conditions, seperate them with a white space
+
+Info:
+- All conditions will be stored in the save file
+  - Conditions being set in an offline loaded xml wont be stored in a save file. (But they will be saved locally as long as the xml is active)
+  - Offline loaded XMLs cannot access conditions saved in a saveFile
+  - --> Offline Xmls have their one condition scope
+  - Each old condition scope will be overridden if a new offlineXml is being loaded
+---

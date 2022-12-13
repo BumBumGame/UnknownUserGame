@@ -9,10 +9,12 @@
     <!--Javascript-->
     <script src="js/InGameConsole.js" defer></script>
     <script src="js/commandProcessing.js" defer></script>
-    <script src="js/animations.js" defer></script>
-    <script src="js/basicTerminal.js" defer></script>
+    <script src="js/defaultCommands.js" defer></script>
+    <script src="js/consoleAnimations.js" defer></script>
+
+    <script src="js/usefulFunctions.js" defer></script>
     <!--Script will later be switched by php-->
-    <script src="js/localConsoleFunctions.js" defer></script>
+    <script src="js/consoleCommands.js" defer></script>
     <script src="js/newGame.js" defer></script>
   </head>
   <body>
@@ -21,7 +23,7 @@
       <div id="consoleLog">
 
      </div>
-     <div id="commandLine"> > <input id="mainConsoleInput" type="text" autofocus /> </div>
+     <div id="commandLine"><div class="commandLinePrefix"></div> <input id="mainConsoleInput" type="text" autofocus /> </div>
     </div>
 
   </body>

@@ -5,10 +5,13 @@ body{
 
 #mainConsoleWindow{
    position: absolute;
-   margin: 0.5%;
+   margin-right: 0.5%;
+   margin-left: 0.5%;
+   margin-top: 0%;
+   margin-bottom: 0%;
    padding: 0.5%;
    width: 98%;
-   height: 95%;
+   max-height: 98%;
    font-size: 1.1em;
    overflow: auto;
 }
@@ -31,6 +34,7 @@ body{
   width: 100%;
   margin: 0%;
   padding: 0%;
+  overflow-wrap: break-word;
 }
 
 #consoleLog pre{
@@ -42,12 +46,17 @@ body{
   margin: 0%;
   padding: 0%;
   font-size: 1.2em;
+  min-height: 2ch;
 }
 
 #commandLine{
   width: 100%;
   margin: 0%;
   padding: 0%;
+}
+
+#commandLine div{
+  display: inline-block;
 }
 
 .serverResponse{

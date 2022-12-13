@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<communicatorChat chatName="???">
+  <branch>
+  <communicatorChatMessage type="messagerStatement" setCondition="lol1,lol2">
+    <messageContent>
+      Warnung: Speech-to-Text auf diesem Gerät nicht verfügbar!
+    </messageContent>
+  </communicatorChatMessage>
+
+  <communicatorChatMessage type="messagerStatement" checkCondition="lol1,lol2">
+    <messageContent>
+      Info: Text-To-Speech aktiviert.
+    </messageContent>
+  </communicatorChatMessage>
+
+  <communicatorChatMessage type="question">
+      <messageContent>
+        Wer ist da?
+      </messageContent>
+
+      <Answer>
+        Wer will das wissen?
+      </Answer>
+
+      <Answer>
+        Dein Spiegel.
+      </Answer>
+
+      <Answer checkCondition="notSet">
+          Test
+      </Answer>
+  </communicatorChatMessage>
+
+  <branch>
+    <communicatorChatMessage type="messagerStatement">
+      <messageContent>
+        Branch2Test
+      </messageContent>
+    </communicatorChatMessage>
+  </branch>
+</branch>
+
+<branch>
+</branch>
+</communicatorChat>
