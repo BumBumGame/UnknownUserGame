@@ -54,7 +54,7 @@ addAnimation(animation, startDelay = 0){
 * @param {int} animationQueueIndex Index for the Animation that shall be deleted
 */
 removeAnimmation(animationQueueIndex){
-  var unlimetedRuntimeIndex = 0;
+  let unlimetedRuntimeIndex = 0;
   //stop Queue if running
   this.stop();
   //Check if animation is an indefinite Animation
@@ -62,7 +62,7 @@ removeAnimmation(animationQueueIndex){
      //get Index in queUnlimetedRuntime
      unlimetedRuntimeIndex = this.#queUnlimetedRuntimeAnimations.indexOf(animationQueueIndex);
      //Decreade every Index after this
-     for(var i = unlimetedRuntimeIndex; i < this.#queUnlimetedRuntimeAnimations.length; i++){
+     for(let i = unlimetedRuntimeIndex; i < this.#queUnlimetedRuntimeAnimations.length; i++){
        this.#queUnlimetedRuntimeAnimations[i]--;
      }
      //Add totaltime After Pause to previos
@@ -73,9 +73,9 @@ removeAnimmation(animationQueueIndex){
      this.#queUnlimetedRuntimeAnimations.splice(unlimetedRuntimeIndex, 1);
   }else{
     //Get Animationplaytime
-    var animationPlayTime = this.#animationObjectArray[animationQueueIndex].animationPlayTime;
+    let animationPlayTime = this.#animationObjectArray[animationQueueIndex].animationPlayTime;
     //Get unlimeteRuntimeIndex from witch everything has to shiftet by one
-    for(var i = 0; i < this.#queUnlimetedRuntimeAnimations.length; i++){
+    for(let i = 0; i < this.#queUnlimetedRuntimeAnimations.length; i++){
        //Check when index is smaller than in queUnlimetedRuntimeAnimations
        if(this.#queUnlimetedRuntimeAnimations[i] > animationQueueIndex){
           //Save index
@@ -90,7 +90,7 @@ removeAnimmation(animationQueueIndex){
 
     }
     //Shift unlimeteRuntimeIndex
-    for(var i = unlimetedRuntimeIndex; i < this.#queUnlimetedRuntimeAnimations.length; i++){
+    for(let i = unlimetedRuntimeIndex; i < this.#queUnlimetedRuntimeAnimations.length; i++){
       this.#queUnlimetedRuntimeAnimations[i]--;
     }
 
@@ -111,7 +111,7 @@ removeAnimmation(animationQueueIndex){
 start(){
   //Set status to running
   this.#queCurrentlyRunning = true;
-  var prevThis = this;
+  let prevThis = this;
    //Start only when there are Elements in the Cue
    if(this.length > 0){
   //Start first Animation with delay
@@ -139,7 +139,7 @@ stop(){
 Jump to next Animation
 */
 next(){
-    var prevThis = this;
+    let prevThis = this;
   //Check if Current Running Animation is done
   if(this.#animationObjectArray[this.#currentRunningAnimationIndex].animationRunning == false){
     //Start next animation
@@ -182,7 +182,7 @@ reset(){
   this.stop();
 
   //Call Reseters of every single Animation Object
-  for(var i = 0; i < this.length; i++){
+  for(let i = 0; i < this.length; i++){
      this.#animationObjectArray[i].reset();
   }
 
@@ -198,7 +198,7 @@ deleteAnimationsDomElements(){
   //Reset Qeue
   this.reset();
  //Call all delete Functions of Elements in Array
- for(var i = 0; i < this.length; i++){
+ for(let i = 0; i < this.length; i++){
    this.#animationObjectArray[i].deleteDomElement();
  }
 
@@ -409,7 +409,7 @@ class ConsoleTextLoadingAnimation extends ConsoleAnimation{
 * Animationstep
 **/
 #animationStep(){
-  var millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
+  let millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
 
   //Check if next Step can be Executed
   if(millisSinceLastExecution >= this.animationStepTime){
@@ -436,7 +436,7 @@ class ConsoleTextLoadingAnimation extends ConsoleAnimation{
 
 }
 
-  var prevThis = this;
+  let prevThis = this;
 
   if(this.animationRunning){
     //Set async restart of function
@@ -456,7 +456,7 @@ start(){
      this.setAnimationState(true);
 
      //Call Step to enable loop with stepDelay
-     var prevThis = this;
+     let prevThis = this;
 
      //Set current time
      this.#animationMilliseconds = performance.now();
@@ -568,7 +568,7 @@ start(){
 **/
 #animationStep(){
    //Get millis since last execution
-   var millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
+   let millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
    //Check if Step can be performed
    if(millisSinceLastExecution >= this.animationStepTime){
       //Execute Step
@@ -585,7 +585,7 @@ start(){
       this.#animationMilliseconds = performance.now();
    }
 
-      var prevThis = this;
+      let prevThis = this;
       //Start next execution check if animation is running
       if(this.animationRunning){
       setTimeout(function () { prevThis.#animationStep(); }, 0);
@@ -727,7 +727,7 @@ stop(){
 **/
 #animationStep(){
   //Get current Milliseconds
-  var millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
+  let millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
   //Check if Step can be performed
      if(millisSinceLastExecution >= this.animationStepTime){
 
@@ -768,7 +768,7 @@ stop(){
    }
 
 
-      var prevThis = this;
+      let prevThis = this;
 
     //If Animation is running rerun this function
     if(this.animationRunning){
@@ -827,7 +827,7 @@ class ConsoleLinePrint extends ConsoleAnimation{
   **/
   constructor(playtime, lines, consoleObject){
     //Calculate Steptime
-     var steptime = playtime/lines.length;
+     let steptime = playtime/lines.length;
      //Call aniamtion construtor
      super(playtime, steptime, consoleObject);
      //save array in Attribute
@@ -848,7 +848,7 @@ class ConsoleLinePrint extends ConsoleAnimation{
         //Check if Animation is at last step
         if(!(this.#currentLine >= this.#textLineArray.length)){
            //Start step
-           var prevThis = this;
+           let prevThis = this;
            //Set animation Millis
            this.#animationMilliseconds = performance.now();
            //Start animationStep
@@ -873,10 +873,10 @@ class ConsoleLinePrint extends ConsoleAnimation{
   **/
   #animationStep(){
     //Calculate millis since last execution
-    var millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
+    let millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
     //Check if Next execution can be made
       if(millisSinceLastExecution >= this.animationStepTime){
-        var lineObject = this.consoleObject.printOnConsole(this.#textLineArray[this.#currentLine], this.#animationClassString);
+        let lineObject = this.consoleObject.printOnConsole(this.#textLineArray[this.#currentLine], this.#animationClassString);
         //Add to Object Array
         this.#animationObjects.push(lineObject);
         //Goto next line
@@ -892,7 +892,7 @@ class ConsoleLinePrint extends ConsoleAnimation{
 
       //Start next step
       if(this.animationRunning){
-        var prevThis = this;
+        let prevThis = this;
 
        setTimeout(function () { prevThis.#animationStep();}, 0);
       }
@@ -914,7 +914,7 @@ class ConsoleLinePrint extends ConsoleAnimation{
   **/
   deleteDomElement(){
    //Delete all Dom elements
-   for(var i =  1; i < this.#textLineArray.length; i++){
+   for(let i =  1; i < this.#textLineArray.length; i++){
      this.#animationObjects.remove();
    }
 
@@ -1085,7 +1085,7 @@ class ProgressBarLoadingAnimation extends ConsoleAnimation{
     **/
     #animationStep(directJump = false){
       //Calculate millis since last execution
-      var millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
+      let millisSinceLastExecution = performance.now() - this.#animationMilliseconds;
 
 
         //Check if next step can be performed
@@ -1197,7 +1197,7 @@ class ProgressBarLoadingAnimation extends ConsoleAnimation{
           break;
       }
 
-        var prevThis = this;
+        let prevThis = this;
 
       if(this.animationRunning){
          setTimeout(function() {
