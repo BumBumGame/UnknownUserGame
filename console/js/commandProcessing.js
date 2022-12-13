@@ -319,10 +319,11 @@ class Program extends Command{
    * @param {InGameConsole} executingConsole console Object which the command has been executed on
    * @private
    * @static
+   * @async
    **/
-  static #exitProgram(command, executingConsole){
+  static async #exitProgram(command, executingConsole){
     //Call close function of executing Console
-    executingConsole.closeCurrentProgram();
+    await executingConsole.closeCurrentProgram();
     return null;
   }
 

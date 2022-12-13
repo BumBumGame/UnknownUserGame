@@ -565,12 +565,13 @@ try {
 
 /**
 * Method that closes the currently active program (doesnt do anything if no program is active)
+ * @async
 **/
-closeCurrentProgram(){
+async closeCurrentProgram(){
   //if there is a program to close - close it
   if(this.#programs.length > 0){
       //Run preExitFunction of program being closed
-      this.currentActiveProgram.preExitFunction(this, this.currentActiveProgram.optionalParameters);
+      await this.currentActiveProgram.preExitFunction(this, this.currentActiveProgram.optionalParameters);
      //if there are more than one program in que
      if(this.#programs.length > 1){
        this.#programs.pop();
@@ -582,6 +583,8 @@ closeCurrentProgram(){
 
      //set path change to true
      this.#pathChanged = true;
+     //Update path
+     this.updateVisiblePath();
   }
 
 }
