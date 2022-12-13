@@ -1,6 +1,7 @@
 //create console
 
 //Console log object
+{
 const consoleLog = document.getElementById("consoleLog");
 //Console input Object
 const consoleInput = document.getElementById("mainConsoleInput");
@@ -8,9 +9,12 @@ const consoleInput = document.getElementById("mainConsoleInput");
 const commandLine = document.getElementById("commandLine");
 
 //Attach functionality Object to console-----------------------------------------
-const mainConsoleObject = new InGameConsole(consoleLog, consoleInput, commandLine, localCommands);
+var mainConsoleObjectTmp = new InGameConsole(consoleLog, consoleInput, commandLine, localCommands);
 //-------------------------------------------------------------------------------
+}
 
+//Turn mainConsoleObject into const
+const mainConsoleObject = mainConsoleObjectTmp;
 
 function startNewGame(){
    mainConsoleObject.disableCommandInput()
@@ -225,16 +229,33 @@ function loadFileAnimation(){
 
 }
 
-function anyKeyPressedForThirdStage(){
+async function anyKeyPressedForThirdStage(){
   //Remove Event Listener
   window.removeEventListener("keydown", anyKeyPressedForThirdStage);
   //Clear console
   mainConsoleObject.clearCommandLog();
 //TODO WRITE next step here
-//TODO Next step: Write messagerClient
+//TODO Add loading Animation for Communicator
+  //Start Messager client in offline Mode with intro chat
+  //Import Communicator
+  let communicatorProgram = await import("./modules/communicatorProgram.js");
+  //Try to load offline IntroXML
+  if(!await communicatorProgram.setOfflineXML("../lang/de/introCommunicator.xml")){
+      console.log("Error: Intro Xml could not be loaded!");
+      alert("Fehler! Bitte versuchen sie es später nochmal.");
+      //Return to Main Menu
+      location.href = "../index.html?startPage=MainPage";
+  }
+
+  //If loaded succesfully:
+  //start program on console and open chat
+  mainConsoleObject.startCustomProgramWithObject(ProgramCollection.getProgram("Communicator"));
+  mainConsoleObject.enableCommandInput();
 }
 
 window.addEventListener("load", startNewGame);
 
 //mainConsoleObject.disableCommandInput();
 //window.addEventListener("load", loadFileAnimation);
+
+//window.addEventListener("load", anyKeyPressedForThirdStage);
